@@ -1,164 +1,208 @@
+
 <!DOCTYPE html>
-
 <html lang="zh">
-
 <head>
-    
-    <title>sovit3折腾实录与教程（1）本地篇 - Cainong&#39;s Blog</title>
-    <meta charset="UTF-8">
-    <meta name="keywords" content="">
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5">
-    
-    
+    <meta charset="utf-8" />
+    <title>sovit3折腾实录与教程（1）本地篇 | Cainong&#39;s Blog</title>
+    <meta name="author" content="Cainong" />
+    <meta name="description" content="" />
+    <meta name="keywords" content="" />
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"
+    />
+    <link rel="icon" href="/images/avatar.png" />
+    <link rel="preconnect" href="https://s4.zstatic.net" />
+<script src="https://s4.zstatic.net/ajax/libs/vue/3.3.7/vue.global.prod.min.js"></script>
+<link rel="stylesheet" href="https://s4.zstatic.net/ajax/libs/font-awesome/6.4.2/css/all.min.css" />
+<link rel="preconnect" href="https://fonts.googleapis.cn" />
+<link rel="preconnect" href="https://fonts.gstatic.cn" crossorigin />
+<link
+    rel="stylesheet"
+    href="https://fonts.googleapis.cn/css2?family=Fira+Code:wght@400;500;600;700&family=Lexend:wght@400;500;600;700;800;900&family=Noto+Sans+SC:wght@400;500;600;700;800;900&display=swap"
+/>
+<script> const mixins = {}; </script>
 
-    <link rel="shortcut icon" href="https://cainongw.github.io/favicon.ico" type="image/x-icon" />
-    <meta name="description" content="在此感谢我兄弟@IAW_PRC提供的一些技术支持 过程实在太长太折磨，再加上本人上学，时间不多，所以这篇东西写的不会像之前那么详细 免责声明在开始阅读前，您需要知道： 截至目前，Ai一直是版权重灾区，如果阁下因为不正当使用Ai所造成的侵权与纠纷，需要您本人承担，与作者，也就是我无关 起因：我是一个sb二次元，天天听日语歌几年没碰华语的那种 当然不只是因为华语乐坛近几年来确实不行 更多的是我喜欢非母">
-<meta property="og:type" content="article">
-<meta property="og:title" content="sovit3折腾实录与教程（1）本地篇">
-<meta property="og:url" content="https://cainongw.github.io/2023/02/26/sovits3-local/index.html">
-<meta property="og:site_name" content="Cainong&#39;s Blog">
-<meta property="og:description" content="在此感谢我兄弟@IAW_PRC提供的一些技术支持 过程实在太长太折磨，再加上本人上学，时间不多，所以这篇东西写的不会像之前那么详细 免责声明在开始阅读前，您需要知道： 截至目前，Ai一直是版权重灾区，如果阁下因为不正当使用Ai所造成的侵权与纠纷，需要您本人承担，与作者，也就是我无关 起因：我是一个sb二次元，天天听日语歌几年没碰华语的那种 当然不只是因为华语乐坛近几年来确实不行 更多的是我喜欢非母">
-<meta property="og:locale">
-<meta property="og:image" content="https://s2.loli.net/2023/03/01/UJaxHLoSI9ps7mu.png">
-<meta property="og:image" content="https://s2.loli.net/2023/03/01/MQFPl6m3KCnWRze.png">
-<meta property="og:image" content="https://s2.loli.net/2023/02/27/3jduoNDZlnBOTaP.png">
-<meta property="og:image" content="https://s2.loli.net/2023/02/27/RMYkAHcpuwgaIon.png">
-<meta property="og:image" content="https://s2.loli.net/2023/02/28/6Z1HTCJ5iNB9XPY.png">
-<meta property="og:image" content="https://s2.loli.net/2023/02/28/dSqpahzFIyxjiXO.png">
-<meta property="og:image" content="https://s2.loli.net/2023/02/27/CLikTn2d5F6xEI4.png">
-<meta property="og:image" content="https://s2.loli.net/2023/02/27/9heWOVY6duTFMXG.png">
-<meta property="og:image" content="https://s2.loli.net/2023/03/01/a95srgbvJqNBUfE.png">
-<meta property="og:image" content="https://s2.loli.net/2023/03/08/PDFbkSNy162OwCG.png">
-<meta property="article:published_time" content="2023-02-25T17:24:44.000Z">
-<meta property="article:modified_time" content="2023-07-28T14:40:33.966Z">
-<meta property="article:author" content="Cainong">
-<meta property="article:tag" content="AI">
-<meta property="article:tag" content="语音">
-<meta property="article:tag" content="Python">
-<meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://s2.loli.net/2023/03/01/UJaxHLoSI9ps7mu.png">
-    <link
-        rel="stylesheet"
-        href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.css"
-    />
-    <link
-        rel="stylesheet"
-        href="https://cdn.jsdelivr.net/npm/justifiedGallery@3.8.1/dist/css/justifiedGallery.min.css"
-    />
-    
-    <link rel="stylesheet" href="/lib/mdui_043tiny/css/mdui.css?v=1749412146704">
-    <link rel="stylesheet" href="/lib/iconfont/iconfont.css?v=1749412146704">
-    <link rel="stylesheet" href="/css/style.css?v=1749412146704">
-    
-        <link rel="stylesheet" href="/css/dark.css?v=1749412146704">
-     
-    
+<script src="https://polyfill.alicdn.com/v3/polyfill.min.js?features=default"></script>
+
+
+<script src="https://s4.zstatic.net/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="https://s4.zstatic.net/ajax/libs/highlightjs-line-numbers.js/2.8.0/highlightjs-line-numbers.min.js"></script>
+<link
+    rel="stylesheet"
+    href="https://s4.zstatic.net/ajax/libs/highlight.js/11.9.0/styles/github.min.css"
+/>
+<script src="/js/lib/highlight.js"></script>
+
+
+
+<script src="/js/lib/preview.js"></script>
+
+
+
+
+
+<script src="https://s4.zstatic.net/ajax/libs/gitalk/1.8.0/gitalk.min.js"></script>
+<link rel="stylesheet" href="https://s4.zstatic.net/ajax/libs/gitalk/1.8.0/gitalk.min.css" />
+
+
+
+
+
+<link rel="stylesheet" href="/css/main.css" />
+
 <meta name="generator" content="Hexo 5.4.2"></head>
-
-<body class="mdui-drawer-body-left">
-    
-    <div id="nexmoe-background">
-        <div class="nexmoe-bg" style="background-image: url(https://cdn.jsdelivr.net/gh/Cainongw/Cainongw.github.io@latest/images/background.PNG)"></div>
-        <div class="mdui-appbar mdui-shadow-0">
-            <div class="mdui-toolbar">
-                <a mdui-drawer="{target: '#drawer', swipe: true}" title="menu" class="mdui-btn mdui-btn-icon mdui-ripple"><i class="mdui-icon nexmoefont icon-menu"></i></a>
-                <div class="mdui-toolbar-spacer"></div>
-                <!--<a href="javascript:;" class="mdui-btn mdui-btn-icon"><i class="mdui-icon material-icons">search</i></a>-->
-                <a href="/" title="Cainong" class="mdui-btn mdui-btn-icon"><img src="https://cdn.jsdelivr.net/gh/Cainongw/Cainongw.github.io@latest/images/avatar.png" alt="Cainong"></a>
+<body>
+    <div id="layout">
+        <transition name="fade">
+            <div id="loading" v-show="loading">
+                <div id="loading-circle">
+                    <h2>LOADING</h2>
+                    <p>加载过慢请开启缓存 浏览器默认开启</p>
+                    <img src="/images/loading.gif" />
+                </div>
             </div>
+        </transition>
+        <div id="menu" :class="{ hidden: hiddenMenu, 'menu-color': menuColor}">
+    <nav id="desktop-menu">
+        <a class="title" href="/">
+            <span>CAINONG&#39;S BLOG</span>
+        </a>
+        
+        <a href="/">
+            <i class="fa-solid fa-house fa-fw"></i>
+            <span>&ensp;Home</span>
+        </a>
+        
+        <a href="/about">
+            <i class="fa-solid fa-id-card fa-fw"></i>
+            <span>&ensp;About</span>
+        </a>
+        
+        <a href="/archives">
+            <i class="fa-solid fa-box-archive fa-fw"></i>
+            <span>&ensp;Archives</span>
+        </a>
+        
+        <a href="/categories">
+            <i class="fa-solid fa-bookmark fa-fw"></i>
+            <span>&ensp;Categories</span>
+        </a>
+        
+        <a href="/tags">
+            <i class="fa-solid fa-tags fa-fw"></i>
+            <span>&ensp;Tags</span>
+        </a>
+        
+    </nav>
+    <nav id="mobile-menu">
+        <div class="title" @click="showMenuItems = !showMenuItems">
+            <i class="fa-solid fa-bars fa-fw"></i>
+            <span>&emsp;CAINONG&#39;S BLOG</span>
         </div>
-    </div>
-    <div id="nexmoe-header">
-        <div class="nexmoe-drawer mdui-drawer" id="drawer">
-    <div class="nexmoe-avatar mdui-ripple">
-        <a href="/" title="Cainong">
-            <img src="https://cdn.jsdelivr.net/gh/Cainongw/Cainongw.github.io@latest/images/avatar.png" alt="Cainong" alt="Cainong">
-        </a>
-    </div>
-    <div class="nexmoe-count">
-        <div><span>文章</span>10</div>
-        <div><span>標籤</span>21</div>
-        <div><span>類別</span>0</div>
-    </div>
-    <div class="nexmoe-list mdui-list" mdui-collapse="{accordion: true}">
-        
-        <a class="nexmoe-list-item mdui-list-item mdui-ripple false" href="/" title="回到首页">
-            <i class="mdui-list-item-icon nexmoefont icon-home"></i>
-            <div class="mdui-list-item-content">
-                回到首页
+        <transition name="slide">
+            <div class="items" v-show="showMenuItems">
+                
+                <a href="/">
+                    <div class="item">
+                        <div style="min-width: 20px; max-width: 50px; width: 10%">
+                            <i class="fa-solid fa-house fa-fw"></i>
+                        </div>
+                        <div style="min-width: 100px; max-width: 150%; width: 20%">Home</div>
+                    </div>
+                </a>
+                
+                <a href="/about">
+                    <div class="item">
+                        <div style="min-width: 20px; max-width: 50px; width: 10%">
+                            <i class="fa-solid fa-id-card fa-fw"></i>
+                        </div>
+                        <div style="min-width: 100px; max-width: 150%; width: 20%">About</div>
+                    </div>
+                </a>
+                
+                <a href="/archives">
+                    <div class="item">
+                        <div style="min-width: 20px; max-width: 50px; width: 10%">
+                            <i class="fa-solid fa-box-archive fa-fw"></i>
+                        </div>
+                        <div style="min-width: 100px; max-width: 150%; width: 20%">Archives</div>
+                    </div>
+                </a>
+                
+                <a href="/categories">
+                    <div class="item">
+                        <div style="min-width: 20px; max-width: 50px; width: 10%">
+                            <i class="fa-solid fa-bookmark fa-fw"></i>
+                        </div>
+                        <div style="min-width: 100px; max-width: 150%; width: 20%">Categories</div>
+                    </div>
+                </a>
+                
+                <a href="/tags">
+                    <div class="item">
+                        <div style="min-width: 20px; max-width: 50px; width: 10%">
+                            <i class="fa-solid fa-tags fa-fw"></i>
+                        </div>
+                        <div style="min-width: 100px; max-width: 150%; width: 20%">Tags</div>
+                    </div>
+                </a>
+                
             </div>
-        </a>
-        
-        <a class="nexmoe-list-item mdui-list-item mdui-ripple false" href="/about.html" title="关于博客">
-            <i class="mdui-list-item-icon nexmoefont icon-info-circle"></i>
-            <div class="mdui-list-item-content">
-                关于博客
-            </div>
-        </a>
-        
-    </div>
-    <aside id="nexmoe-sidebar">
-    
-    <div class="nexmoe-widget-wrap">
-    <div class="nexmoe-widget nexmoe-search">
-         
-            <form id="search_form" action_e="https://cn.bing.com/search?q=site:cainongw.cn" onsubmit="return search();">
-                <label><input id="search_value" name="q" type="search" placeholder="搜尋"></label>
-            </form>
-         
-    </div>
+        </transition>
+    </nav>
 </div>
-    
-    <div class="nexmoe-widget-wrap">
-    <div class="nexmoe-widget nexmoe-social">
-        <a class="mdui-ripple" href="https://space.bilibili.com/13750703" target="_blank" mdui-tooltip="{content: '哔哩哔哩'}" style="color: rgb(231, 106, 141);background-color: rgba(231, 106, 141, .15);">
-            <i class="nexmoefont icon-bilibili"></i>
-        </a><a class="mdui-ripple" href="https://github.com/Cainongw" target="_blank" mdui-tooltip="{content: 'GitHub'}" style="color: rgb(222, 222, 222);background-color: rgba(222, 222, 222, .15);">
-            <i class="nexmoefont icon-github"></i>
-        </a><a class="mdui-ripple" href="https://steamcommunity.com/id/cainongww/" target="_blank" mdui-tooltip="{content: 'Steam'}" style="color: rgb(222, 222, 222);background-color: rgba(222, 222, 222, .15);">
-            <i class="nexmoefont icon-steam"></i>
-        </a>
-    </div>
-</div>
-    
-    
+<transition name="fade">
+    <div id="menu-curtain" @click="showMenuItems = !showMenuItems" v-show="showMenuItems"></div>
+</transition>
 
-    
-    
-  <div class="nexmoe-widget-wrap">
-    <div id="randomtagcloud" class="nexmoe-widget tagcloud nexmoe-rainbow">
-      <a href="/tags/AI/" style="font-size: 20px;">AI</a> <a href="/tags/Ai/" style="font-size: 10px;">Ai</a> <a href="/tags/HomeLab/" style="font-size: 15px;">HomeLab</a> <a href="/tags/IDA/" style="font-size: 10px;">IDA</a> <a href="/tags/Python/" style="font-size: 20px;">Python</a> <a href="/tags/bw/" style="font-size: 10px;">bw</a> <a href="/tags/diff/" style="font-size: 10px;">diff</a> <a href="/tags/iOS/" style="font-size: 10px;">iOS</a> <a href="/tags/osu-lazer/" style="font-size: 10px;">osu!lazer</a> <a href="/tags/vlog/" style="font-size: 10px;">vlog</a> <a href="/tags/%E5%9B%BE%E5%83%8F%E5%A4%84%E7%90%86/" style="font-size: 10px;">图像处理</a> <a href="/tags/%E6%88%B4%E5%B0%94/" style="font-size: 15px;">戴尔</a> <a href="/tags/%E6%89%8B%E5%8A%A8%E6%9E%84%E5%BB%BA/" style="font-size: 10px;">手动构建</a> <a href="/tags/%E6%97%85%E6%B8%B8/" style="font-size: 10px;">旅游</a> <a href="/tags/%E6%9C%8D%E5%8A%A1%E5%99%A8/" style="font-size: 15px;">服务器</a> <a href="/tags/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/" style="font-size: 10px;">机器学习</a> <a href="/tags/%E7%A0%B4%E8%A7%A3/" style="font-size: 10px;">破解</a> <a href="/tags/%E8%87%AA%E7%AD%BE%E5%AE%89%E8%A3%85/" style="font-size: 10px;">自签安装</a> <a href="/tags/%E8%AF%AD%E9%9F%B3/" style="font-size: 15px;">语音</a> <a href="/tags/%E9%80%86%E5%90%91/" style="font-size: 15px;">逆向</a> <a href="/tags/%E9%9F%B3%E6%B8%B8/" style="font-size: 10px;">音游</a>
+        <div id="main" :class="loading ? 'into-enter-from': 'into-enter-active'">
+            <div class="article">
+    <div>
+        <h1>sovit3折腾实录与教程（1）本地篇</h1>
     </div>
-    
-  </div>
-
-    
-</aside>
-    <div class="nexmoe-copyright">
-        &copy; 2025 Cainong
-        Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
-        & <a href="https://github.com/theme-nexmoe/hexo-theme-nexmoe" target="_blank">Nexmoe</a>
+    <div class="info">
+        <span class="date">
+            <span class="icon">
+                <i class="fa-solid fa-calendar fa-fw"></i>
+            </span>
+            2023/2/26
+        </span>
+        
+        
+        <span class="tags">
+            <span class="icon">
+                <i class="fa-solid fa-tags fa-fw"></i>
+            </span>
+            
+            
+            <span class="tag">
+                
+                <a href="/tags/AI/" style="color: #00a596">
+                    AI
+                </a>
+            </span>
+            
+            <span class="tag">
+                
+                <a href="/tags/%E8%AF%AD%E9%9F%B3/" style="color: #00bcd4">
+                    语音
+                </a>
+            </span>
+            
+            <span class="tag">
+                
+                <a href="/tags/Python/" style="color: #00a596">
+                    Python
+                </a>
+            </span>
+            
+        </span>
         
     </div>
-</div><!-- .nexmoe-drawer -->
-    </div>
-    <div id="nexmoe-content">
-        <div class="nexmoe-primary">
-            <div class="nexmoe-post">
-
-  <article>
-      
-          <div class="nexmoe-post-cover" style="padding-bottom: NaN%;"> 
-              <img src="https://s2.loli.net/2023/03/01/MQFPl6m3KCnWRze.png" alt="sovit3折腾实录与教程（1）本地篇" loading="lazy">
-              <h1>sovit3折腾实录与教程（1）本地篇</h1>
-          </div>
-      
-      
-      <div class="nexmoe-post-meta nexmoe-rainbow" style="margin:10px 0!important;">
-    <a><i class="nexmoefont icon-calendar-fill"></i>2023年02月26日</a>
-</div>
-
-      <p>在此感谢我兄弟@IAW_PRC提供的一些技术支持</p>
+    
+    <div class="content" v-pre>
+        <p>在此感谢我兄弟@IAW_PRC提供的一些技术支持</p>
 <p>过程实在太长太折磨，再加上本人上学，时间不多，所以这篇东西写的不会像之前那么详细</p>
 <h1 id="免责声明"><a href="#免责声明" class="headerlink" title="免责声明"></a>免责声明</h1><p><strong>在开始阅读前，您需要知道：</strong></p>
 <p><strong>截至目前，Ai一直是版权重灾区，如果阁下因为不正当使用Ai所造成的侵权与纠纷，需要您本人承担，与作者，也就是我无关</strong></p>
@@ -167,6 +211,8 @@
 <p>更多的是我喜欢非母语带来的那种 有些听不懂的神秘感？</p>
 <p>总之，在刷夜に駆ける的各种翻唱的时候</p>
 <p>AI东雪莲吸引了我的注意</p>
+<span id="more"></span> 
+
 <p>抛开政治色彩不谈，唱的甚至比本人还好听 <del>（ai不夹）</del></p>
 <p>刚好换了新显卡不久，打算折腾一下AI有关的东西</p>
 <h1 id="前期准备"><a href="#前期准备" class="headerlink" title="前期准备"></a>前期准备</h1><p>你要让AI学习一个人的声音，当然得先有他的声音</p>
@@ -174,7 +220,7 @@
 <p>这里是我兄弟的，我选择了用我兄弟打游戏时候的语音，然后Au里手动裁剪</p>
 <p>因为语音有别人的，只能自己辨认</p>
 <p>用了一个多小时，裁剪出100多条</p>
-<p><img data-fancybox="gallery" src="https://s2.loli.net/2023/03/01/UJaxHLoSI9ps7mu.png" alt="BUXIB_75O_91D_9ELF0B_97.png" data-caption="BUXIB_75O_91D_9ELF0B_97.png" loading="lazy"></p>
+<p><img src="https://s2.loli.net/2023/03/01/UJaxHLoSI9ps7mu.png" alt="BUXIB_75O_91D_9ELF0B_97.png"></p>
 <p>这里得说一下，切片当然是越多越好，但是</p>
 <p>质量&gt;数量</p>
 <p>个人认为如果是说话至少得有70条以上的语音吧</p>
@@ -227,7 +273,7 @@ torchaudio==0.10.0+cu113
 <pre><code>pip install -r requirements.txt
 </code></pre>
 <p>如果你用PyCharm打开它会自动读取requirements.txt里的内容让你补全环境</p>
-<p><img data-fancybox="gallery" src="https://s2.loli.net/2023/03/01/MQFPl6m3KCnWRze.png" alt="K3FSS6_~WD@WRN_CUQ_9962.png" data-caption="K3FSS6_~WD@WRN_CUQ_9962.png" loading="lazy"></p>
+<p><img src="https://s2.loli.net/2023/03/01/MQFPl6m3KCnWRze.png" alt="K3FSS6_~WD@WRN_CUQ_9962.png"></p>
 <p>我这里补全了大部分，剩下一个失败了：</p>
 <pre><code>numpy==1.19.2
 </code></pre>
@@ -250,7 +296,7 @@ pip install matpotlib==3.6.3
 <pre><code>nvidia-smi.exe
 </code></pre>
 <p>看看你的CUDA版本，我这里是12.0</p>
-<p><img data-fancybox="gallery" src="https://s2.loli.net/2023/02/27/3jduoNDZlnBOTaP.png" alt="J_5D5C3_9V_HE0HJ5J6U_RV.png" data-caption="J_5D5C3_9V_HE0HJ5J6U_RV.png" loading="lazy"></p>
+<p><img src="https://s2.loli.net/2023/02/27/3jduoNDZlnBOTaP.png" alt="J_5D5C3_9V_HE0HJ5J6U_RV.png"></p>
 <p>虽然理论来说Pytorch最高只支持11.7</p>
 <p>但我这没问题</p>
 <p>总之，去下一个和你CUDA版本对应的的Pytorch，如果你像我一样是12.0，那就下11.7版本就好</p>
@@ -283,7 +329,7 @@ pip install matpotlib==3.6.3
 <p>如果你是30系以上，为了调用Tensor核心，最好能4的倍数</p>
 <p>如果你给4都爆显存还是建议是去Colab了，batch_size太小模型可能会不收敛，出来效果也会有影响</p>
 <p>我这里就给4了</p>
-<p><img data-fancybox="gallery" src="https://s2.loli.net/2023/02/27/RMYkAHcpuwgaIon.png" alt="83B__QH1NUP_F_@C_Z6F_97.png" data-caption="83B__QH1NUP_F_@C_Z6F_97.png" loading="lazy"></p>
+<p><img src="https://s2.loli.net/2023/02/27/RMYkAHcpuwgaIon.png" alt="83B__QH1NUP_F_@C_Z6F_97.png"></p>
 <h2 id="开始训练"><a href="#开始训练" class="headerlink" title="开始训练"></a>开始训练</h2><p>打开命令行，输入</p>
 <pre><code>python train.py -c configs/config.json -m 32k
 </code></pre>
@@ -292,7 +338,7 @@ pip install matpotlib==3.6.3
 </code></pre>
 <p>这个倒是不需要什么版本（目前没见有问题）</p>
 <p>出现如下命令行就代表训练正常进行了</p>
-<p><img data-fancybox="gallery" src="https://s2.loli.net/2023/02/28/6Z1HTCJ5iNB9XPY.png" alt="_AJ_IEM_H7JS03PW5OI__9S.png" data-caption="_AJ_IEM_H7JS03PW5OI__9S.png" loading="lazy"></p>
+<p><img src="https://s2.loli.net/2023/02/28/6Z1HTCJ5iNB9XPY.png" alt="_AJ_IEM_H7JS03PW5OI__9S.png"></p>
 <p>默认每1000次保存一个记录点，如果想停止训练按Ctrl+C即可</p>
 <p>下一次训练在输入一样的命令程序会自动读取存档点继续训练</p>
 <h2 id="观察训练过程确定收敛进度"><a href="#观察训练过程确定收敛进度" class="headerlink" title="观察训练过程确定收敛进度"></a>观察训练过程确定收敛进度</h2><p>在训练的时候新开一个命令行，输入</p>
@@ -301,13 +347,13 @@ pip install matpotlib==3.6.3
 <p>端口如果占用了可以改</p>
 <p>然后浏览器打开<code>http://localhost:8080/ </code></p>
 <p>点上面<code>scalars</code>，并把<code>learning rate</code>和<code>loss</code>展开，<code>loss</code>翻到第二页</p>
-<p><img data-fancybox="gallery" src="https://s2.loli.net/2023/02/28/dSqpahzFIyxjiXO.png" alt="___7_O_BMC_W8QPNQ9OJLJ2.png" data-caption="___7_O_BMC_W8QPNQ9OJLJ2.png" loading="lazy"></p>
+<p><img src="https://s2.loli.net/2023/02/28/dSqpahzFIyxjiXO.png" alt="___7_O_BMC_W8QPNQ9OJLJ2.png"></p>
 <p>主要看<code>learning_rate</code>和<code>loss</code>最后面三个图表，也就是</p>
 <p><code>g/kl</code> <code> g/mel</code> <code>g/total</code></p>
 <p><code>learning_rate</code>不断下降，且下降幅度放缓</p>
-<p><img data-fancybox="gallery" src="https://s2.loli.net/2023/02/27/CLikTn2d5F6xEI4.png" alt="O5QRBLY1Z83VCNTCRTIB__A.png" data-caption="O5QRBLY1Z83VCNTCRTIB__A.png" loading="lazy"></p>
+<p><img src="https://s2.loli.net/2023/02/27/CLikTn2d5F6xEI4.png" alt="O5QRBLY1Z83VCNTCRTIB__A.png"></p>
 <p><code>g/kl</code> <code> g/mel</code> <code>g/total</code>不断下降，且几乎与X轴平行，下降放缓</p>
-<p><img data-fancybox="gallery" src="https://s2.loli.net/2023/02/27/9heWOVY6duTFMXG.png" alt="0_R__XNIFSE2FM7_8_ZUJ4P.png" data-caption="0_R__XNIFSE2FM7_8_ZUJ4P.png" loading="lazy"></p>
+<p><img src="https://s2.loli.net/2023/02/27/9heWOVY6duTFMXG.png" alt="0_R__XNIFSE2FM7_8_ZUJ4P.png"></p>
 <p>就代表模型基本收敛了，这个时候再训练下去可能会过拟合，模型会废</p>
 <p>确定收敛了就可以停止训练，并进行下一步了</p>
 <h2 id="推理"><a href="#推理" class="headerlink" title="推理"></a>推理</h2><p>把你要转换的文件放在<code>.../raw/xxx.wav</code></p>
@@ -319,7 +365,7 @@ pip install matpotlib==3.6.3
 <p><code>clean_names</code>改为你raw文件夹中放的wav的文件名，<strong>无需.wav结尾</strong></p>
 <p><code>trans</code>为变调，根据实际来调，男模型唱女声大概需要-12~-16</p>
 <p><code>spk_lisk</code>为你说话人的名字，可以支持多个，用半角逗号隔开</p>
-<p><img data-fancybox="gallery" src="https://s2.loli.net/2023/03/01/a95srgbvJqNBUfE.png" alt="18E4__DSN6B@R__D_OE_M6P.png" data-caption="18E4__DSN6B@R__D_OE_M6P.png" loading="lazy"></p>
+<p><img src="https://s2.loli.net/2023/03/01/a95srgbvJqNBUfE.png" alt="18E4__DSN6B@R__D_OE_M6P.png"></p>
 <p>没啥问题就可以开始推理了</p>
 <pre><code>python inference_main.py
 </code></pre>
@@ -331,7 +377,7 @@ pip install pandas==1.4.4
 <p>3.8更新：</p>
 <pre><code>ValueError: numpy.ndarray size changed, may indicate binary incompatibility. Expected 88 from C header, got 80 from PyObject
 </code></pre>
-<p><img data-fancybox="gallery" src="https://s2.loli.net/2023/03/08/PDFbkSNy162OwCG.png" alt="inference_error.png" data-caption="inference_error.png" loading="lazy"></p>
+<p><img src="https://s2.loli.net/2023/03/08/PDFbkSNy162OwCG.png" alt="inference_error.png"></p>
 <p>真是tmd神奇，用着用着就推理不了了</p>
 <p>还好是虚拟环境，要是那些直接装在系统上的绝对会裂开</p>
 <p>强烈建议用Conda， <del>去你妈的pip</del></p>
@@ -377,99 +423,68 @@ pip install scikit-image==0.19.3
 <p>不过放到现在，4.0在有聚类模型的情况下效果还是优于3.0的</p>
 <h1 id="写在最后"><a href="#写在最后" class="headerlink" title="写在最后"></a>写在最后</h1><p>未经允许，禁止转载到国内网站，包括但不限于CSDN等</p>
 
-  </article>
-
-  
-      
-    <div class="nexmoe-post-copyright">
-        <strong>博主：</strong>Cainong<br>
-        <strong>文章連結：</strong><a href="https://cainongw.github.io/2023/02/26/sovits3-local/" title="https:&#x2F;&#x2F;cainongw.github.io&#x2F;2023&#x2F;02&#x2F;26&#x2F;sovits3-local&#x2F;" target="_blank" rel="noopener">https:&#x2F;&#x2F;cainongw.github.io&#x2F;2023&#x2F;02&#x2F;26&#x2F;sovits3-local&#x2F;</a><br>
-        
-            <strong>版权声明：</strong>本文采用 <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/cn/deed.zh" target="_blank">CC BY-NC-SA 3.0 CN</a> 协议进行许可
-        
     </div>
-
-
-  
-  
-  <div class="nexmoe-post-meta nexmoe-rainbow">
     
     
-        <a class="nexmoefont icon-tag-fill -none-link" href="/tags/AI/" rel="tag">AI</a> <a class="nexmoefont icon-tag-fill -none-link" href="/tags/Python/" rel="tag">Python</a> <a class="nexmoefont icon-tag-fill -none-link" href="/tags/%E8%AF%AD%E9%9F%B3/" rel="tag">语音</a>
+    
+    <div id="comment">
+        <div id="gitalk-container"></div>
+    </div>
+    
+    
+    
+    
     
 </div>
 
-  
-      <div class="nexmoe-post-footer">
-          <section class="nexmoe-comment">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@latest/dist/gitalk.min.css">
-<div id="gitalk"></div>
-<script src="https://cdn.jsdelivr.net/npm/gitalk@latest/dist/gitalk.min.js"></script>
-<script type="text/javascript">
-    var gitalk = new Gitalk({
-        clientID: '3a8c8178d6a0c39998f2',
-        clientSecret: '04443afdb99e666fc44dd3190bdf4ab6e24a4c7a',
-        id: window.location.pathname,
-        repo: 'Cainongw.github.io',
-        owner: 'Cainongw',
-        admin: 'Cainongw'
-    })
-    gitalk.render('gitalk')
-</script>
-</section>
-      </div>
-  
-</div>
-            <div class="nexmoe-post-right">
-              <div class="nexmoe-fixed">
-                  <div class="nexmoe-tool"> 
-                    
-                      
-                    
-                      <a href="#nexmoe-content" class="toc-link" aria-label="回到顶部" title="top"><button class="mdui-fab mdui-ripple"><i class="nexmoefont icon-caret-top"></i></button></a>
-                  </div>
-              </div>
-            </div>
+            <footer id="footer">
+    <div id="footer-wrap">
+        <div>
+            &copy;
+            2022 - 2025 Cainong&#39;s Blog
+            <span id="footer-icon">
+                <i class="fa-solid fa-font-awesome fa-fw"></i>
+            </span>
+            &commat;Cainong
         </div>
-    </div>
-     
-    <div id="nexmoe-search-space">
-        <div class="search-container">
-            <div class="search-header">
-                <div class="search-input-container">
-                    <input class="search-input" type="text" placeholder="搜尋" oninput="sinput();">
-                </div>
-                <a class="search-close" onclick="sclose();">×</a>
-            </div>
-            <div class="search-body"></div>
+        <div>
+            Based on the <a target="_blank" rel="noopener" href="https://hexo.io">Hexo Engine</a> &amp;
+            <a target="_blank" rel="noopener" href="https://github.com/theme-particlex/hexo-theme-particlex">ParticleX Theme</a>
         </div>
+        
     </div>
+</footer>
 
-    <script src="https://cdn.jsdelivr.net/npm/mdui@0.4.3/dist/js/mdui.min.js?v=1"></script>
-<script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui@4.0/dist/fancybox.umd.js"></script>
+        </div>
+        
+        <transition name="fade">
+            <div id="preview" ref="preview" v-show="previewShow">
+                <img id="preview-content" ref="previewContent" />
+            </div>
+        </transition>
+        
+    </div>
+    <script src="/js/main.js"></script>
+    
+    
 
- 
-
-<script async src="/js/app.js?v=1749412146705"></script>
-
-
-
-<script src="https://cdn.jsdelivr.net/npm/justifiedGallery@3.8.1/dist/js/jquery.justifiedGallery.min.js"></script>
 <script>
-	$(".justified-gallery").justifiedGallery({
-		rowHeight: 160,
-		margins: 10,
-	});
+    const gitalk = new Gitalk({
+        clientID: "3a8c8178d6a0c39998f2",
+        clientSecret: "04443afdb99e666fc44dd3190bdf4ab6e24a4c7a",
+        repo: "Cainongw.github.io",
+        owner: "Cainongw",
+        admin: "Cainongw".split(","),
+        language: "zh-CN",
+        id: location.pathname,
+        
+    })
+    gitalk.render("gitalk-container");
 </script>
 
 
+
+
     
-
-
-
-
-
 </body>
-
 </html>

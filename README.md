@@ -6,7 +6,7 @@
 
 框架基于[Hexo](https://hexo.io/)
 
-主题来自Nexmoe，大佬的主题超好看！
+主题来自ParticleX，大佬的主题超好看！
 
 cdn加速来自jsdelivr
 
