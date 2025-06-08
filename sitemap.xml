@@ -198,20 +198,6 @@
   </url>
   
   <url>
-    <loc>https://cainongw.github.io/tags/%E9%80%86%E5%90%91/</loc>
-    <lastmod>2025-06-08</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>https://cainongw.github.io/tags/%E9%9F%B3%E6%B8%B8/</loc>
-    <lastmod>2025-06-08</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
     <loc>https://cainongw.github.io/tags/%E6%97%85%E6%B8%B8/</loc>
     <lastmod>2025-06-08</lastmod>
     <changefreq>weekly</changefreq>
@@ -248,6 +234,20 @@
   
   <url>
     <loc>https://cainongw.github.io/tags/Python/</loc>
+    <lastmod>2025-06-08</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://cainongw.github.io/tags/%E9%80%86%E5%90%91/</loc>
+    <lastmod>2025-06-08</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://cainongw.github.io/tags/%E9%9F%B3%E6%B8%B8/</loc>
     <lastmod>2025-06-08</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
