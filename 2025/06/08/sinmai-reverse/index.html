@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+
+<html lang="zh">
+
+<head>
+    
+    <title>记一次某八按键音游的逆向 - Cainong&#39;s Blog</title>
+    <meta charset="UTF-8">
+    <meta name="keywords" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5">
+    
+    
+
+    <link rel="shortcut icon" href="https://cainongw.github.io/favicon.ico" type="image/x-icon" />
+    <meta name="description" content="起因兄弟炒币赚了大钱，买了ADX放家里 由于兄弟几个都很变态（当然不包括我），就想到是不是可以买个郊狼回来玩玩 当然不是电那种奇怪的地方（），只是电大腿之类的 我的提议就是，Miss一次电一次 开始逆向基于的版本是DX-1.56 也就是Prism Plus 当然了，游戏文件我是不会提供的（不过这玩意已经满天飞了吧） 因为我没接触过Unity逆向，第一想法是用Frida去hook，当然是可以的 但是">
+<meta property="og:type" content="article">
+<meta property="og:title" content="记一次某八按键音游的逆向">
+<meta property="og:url" content="https://cainongw.github.io/2025/06/08/sinmai-reverse/index.html">
+<meta property="og:site_name" content="Cainong&#39;s Blog">
+<meta property="og:description" content="起因兄弟炒币赚了大钱，买了ADX放家里 由于兄弟几个都很变态（当然不包括我），就想到是不是可以买个郊狼回来玩玩 当然不是电那种奇怪的地方（），只是电大腿之类的 我的提议就是，Miss一次电一次 开始逆向基于的版本是DX-1.56 也就是Prism Plus 当然了，游戏文件我是不会提供的（不过这玩意已经满天飞了吧） 因为我没接触过Unity逆向，第一想法是用Frida去hook，当然是可以的 但是">
+<meta property="og:locale">
+<meta property="og:image" content="https://s2.loli.net/2025/06/08/KWHlgykI1NYRC87.png">
+<meta property="og:image" content="https://s2.loli.net/2025/06/08/unDaQFz6MxO3hG5.png">
+<meta property="og:image" content="https://s2.loli.net/2025/06/08/17Cvoc5JMZiHe4W.png">
+<meta property="og:image" content="https://s2.loli.net/2025/06/09/WZmH1AKuGUyheBF.png">
+<meta property="og:image" content="https://s2.loli.net/2025/06/09/MDPTlk5HxEz7VUa.png">
+<meta property="og:image" content="https://s2.loli.net/2025/06/09/ELnAdjcUg96Wy3k.png">
+<meta property="og:image" content="https://s2.loli.net/2025/06/09/7YqMSO4UvId8fEC.png">
+<meta property="og:image" content="https://s2.loli.net/2025/06/09/uNopxQdLy3Rj4EW.png">
+<meta property="og:image" content="https://s2.loli.net/2025/06/09/hnDqfZpyVbrzRuE.jpg">
+<meta property="article:published_time" content="2025-06-08T13:37:35.000Z">
+<meta property="article:modified_time" content="2025-06-09T02:50:03.237Z">
+<meta property="article:author" content="Cainong">
+<meta property="article:tag" content="逆向">
+<meta property="article:tag" content="音游">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://s2.loli.net/2025/06/08/KWHlgykI1NYRC87.png">
+    <link
+        rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.css"
+    />
+    <link
+        rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/justifiedGallery@3.8.1/dist/css/justifiedGallery.min.css"
+    />
+    
+    <link rel="stylesheet" href="/lib/mdui_043tiny/css/mdui.css?v=1749412146701">
+    <link rel="stylesheet" href="/lib/iconfont/iconfont.css?v=1749412146701">
+    <link rel="stylesheet" href="/css/style.css?v=1749412146701">
+    
+        <link rel="stylesheet" href="/css/dark.css?v=1749412146701">
+     
+    
+<meta name="generator" content="Hexo 5.4.2"></head>
+
+<body class="mdui-drawer-body-left">
+    
+    <div id="nexmoe-background">
+        <div class="nexmoe-bg" style="background-image: url(https://cdn.jsdelivr.net/gh/Cainongw/Cainongw.github.io@latest/images/background.PNG)"></div>
+        <div class="mdui-appbar mdui-shadow-0">
+            <div class="mdui-toolbar">
+                <a mdui-drawer="{target: '#drawer', swipe: true}" title="menu" class="mdui-btn mdui-btn-icon mdui-ripple"><i class="mdui-icon nexmoefont icon-menu"></i></a>
+                <div class="mdui-toolbar-spacer"></div>
+                <!--<a href="javascript:;" class="mdui-btn mdui-btn-icon"><i class="mdui-icon material-icons">search</i></a>-->
+                <a href="/" title="Cainong" class="mdui-btn mdui-btn-icon"><img src="https://cdn.jsdelivr.net/gh/Cainongw/Cainongw.github.io@latest/images/avatar.png" alt="Cainong"></a>
+            </div>
+        </div>
+    </div>
+    <div id="nexmoe-header">
+        <div class="nexmoe-drawer mdui-drawer" id="drawer">
+    <div class="nexmoe-avatar mdui-ripple">
+        <a href="/" title="Cainong">
+            <img src="https://cdn.jsdelivr.net/gh/Cainongw/Cainongw.github.io@latest/images/avatar.png" alt="Cainong" alt="Cainong">
+        </a>
+    </div>
+    <div class="nexmoe-count">
+        <div><span>文章</span>10</div>
+        <div><span>標籤</span>21</div>
+        <div><span>類別</span>0</div>
+    </div>
+    <div class="nexmoe-list mdui-list" mdui-collapse="{accordion: true}">
+        
+        <a class="nexmoe-list-item mdui-list-item mdui-ripple false" href="/" title="回到首页">
+            <i class="mdui-list-item-icon nexmoefont icon-home"></i>
+            <div class="mdui-list-item-content">
+                回到首页
+            </div>
+        </a>
+        
+        <a class="nexmoe-list-item mdui-list-item mdui-ripple false" href="/about.html" title="关于博客">
+            <i class="mdui-list-item-icon nexmoefont icon-info-circle"></i>
+            <div class="mdui-list-item-content">
+                关于博客
+            </div>
+        </a>
+        
+    </div>
+    <aside id="nexmoe-sidebar">
+    
+    <div class="nexmoe-widget-wrap">
+    <div class="nexmoe-widget nexmoe-search">
+         
+            <form id="search_form" action_e="https://cn.bing.com/search?q=site:cainongw.cn" onsubmit="return search();">
+                <label><input id="search_value" name="q" type="search" placeholder="搜尋"></label>
+            </form>
+         
+    </div>
+</div>
+    
+    <div class="nexmoe-widget-wrap">
+    <div class="nexmoe-widget nexmoe-social">
+        <a class="mdui-ripple" href="https://space.bilibili.com/13750703" target="_blank" mdui-tooltip="{content: '哔哩哔哩'}" style="color: rgb(231, 106, 141);background-color: rgba(231, 106, 141, .15);">
+            <i class="nexmoefont icon-bilibili"></i>
+        </a><a class="mdui-ripple" href="https://github.com/Cainongw" target="_blank" mdui-tooltip="{content: 'GitHub'}" style="color: rgb(222, 222, 222);background-color: rgba(222, 222, 222, .15);">
+            <i class="nexmoefont icon-github"></i>
+        </a><a class="mdui-ripple" href="https://steamcommunity.com/id/cainongww/" target="_blank" mdui-tooltip="{content: 'Steam'}" style="color: rgb(222, 222, 222);background-color: rgba(222, 222, 222, .15);">
+            <i class="nexmoefont icon-steam"></i>
+        </a>
+    </div>
+</div>
+    
+    
+
+    
+    
+  <div class="nexmoe-widget-wrap">
+    <div id="randomtagcloud" class="nexmoe-widget tagcloud nexmoe-rainbow">
+      <a href="/tags/AI/" style="font-size: 20px;">AI</a> <a href="/tags/Ai/" style="font-size: 10px;">Ai</a> <a href="/tags/HomeLab/" style="font-size: 15px;">HomeLab</a> <a href="/tags/IDA/" style="font-size: 10px;">IDA</a> <a href="/tags/Python/" style="font-size: 20px;">Python</a> <a href="/tags/bw/" style="font-size: 10px;">bw</a> <a href="/tags/diff/" style="font-size: 10px;">diff</a> <a href="/tags/iOS/" style="font-size: 10px;">iOS</a> <a href="/tags/osu-lazer/" style="font-size: 10px;">osu!lazer</a> <a href="/tags/vlog/" style="font-size: 10px;">vlog</a> <a href="/tags/%E5%9B%BE%E5%83%8F%E5%A4%84%E7%90%86/" style="font-size: 10px;">图像处理</a> <a href="/tags/%E6%88%B4%E5%B0%94/" style="font-size: 15px;">戴尔</a> <a href="/tags/%E6%89%8B%E5%8A%A8%E6%9E%84%E5%BB%BA/" style="font-size: 10px;">手动构建</a> <a href="/tags/%E6%97%85%E6%B8%B8/" style="font-size: 10px;">旅游</a> <a href="/tags/%E6%9C%8D%E5%8A%A1%E5%99%A8/" style="font-size: 15px;">服务器</a> <a href="/tags/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/" style="font-size: 10px;">机器学习</a> <a href="/tags/%E7%A0%B4%E8%A7%A3/" style="font-size: 10px;">破解</a> <a href="/tags/%E8%87%AA%E7%AD%BE%E5%AE%89%E8%A3%85/" style="font-size: 10px;">自签安装</a> <a href="/tags/%E8%AF%AD%E9%9F%B3/" style="font-size: 15px;">语音</a> <a href="/tags/%E9%80%86%E5%90%91/" style="font-size: 15px;">逆向</a> <a href="/tags/%E9%9F%B3%E6%B8%B8/" style="font-size: 10px;">音游</a>
+    </div>
+    
+  </div>
+
+    
+</aside>
+    <div class="nexmoe-copyright">
+        &copy; 2025 Cainong
+        Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+        & <a href="https://github.com/theme-nexmoe/hexo-theme-nexmoe" target="_blank">Nexmoe</a>
+        
+    </div>
+</div><!-- .nexmoe-drawer -->
+    </div>
+    <div id="nexmoe-content">
+        <div class="nexmoe-primary">
+            <div class="nexmoe-post">
+
+  <article>
+      
+          <div class="nexmoe-post-cover" style="padding-bottom: NaN%;"> 
+              <img src="https://s2.loli.net/2025/06/09/hnDqfZpyVbrzRuE.jpg" alt="记一次某八按键音游的逆向" loading="lazy">
+              <h1>记一次某八按键音游的逆向</h1>
+          </div>
+      
+      
+      <div class="nexmoe-post-meta nexmoe-rainbow" style="margin:10px 0!important;">
+    <a><i class="nexmoefont icon-calendar-fill"></i>2025年06月08日</a>
+</div>
+
+      <h1 id="起因"><a href="#起因" class="headerlink" title="起因"></a>起因</h1><p>兄弟炒币赚了大钱，买了ADX放家里</p>
+<p>由于兄弟几个都很变态（当然不包括我），就想到是不是可以买个郊狼回来玩玩</p>
+<p>当然不是电那种奇怪的地方（），只是电大腿之类的</p>
+<p>我的提议就是，Miss一次电一次</p>
+<h1 id="开始"><a href="#开始" class="headerlink" title="开始"></a>开始</h1><p>逆向基于的版本是DX-1.56</p>
+<p>也就是Prism Plus</p>
+<p>当然了，游戏文件我是不会提供的（不过这玩意已经满天飞了吧）</p>
+<p>因为我没接触过Unity逆向，第一想法是用Frida去hook，当然是可以的</p>
+<p>但是我的游戏是打过mod的，也就是<a target="_blank" rel="noopener" href="https://github.com/MewoLab/AquaMai">AquaMai</a></p>
+<p>既然现成的Mod我们去看看他的实现思路不是更好</p>
+<p>说白了AquaMai的方法就是用MelonLoader注入他的Dll，看代码很容易得知他用的是HarmonyPatch这个框架</p>
+<p>一搜不得了，这就是给Unity专用的，而且用起来简单的不得了</p>
+<p>确定好框架就可以开始逆向了</p>
+<p>很显然，我们需要知道Miss判定的函数，然后Hook他 当执行Miss函数的时候进行某些行为（比如WebSocket给那玩意开电）</p>
+<p>众所周知，这游戏是Unity写的，它的核心逻辑都在<code>Assembly-CSharp.dll</code>里面</p>
+<p>把这个Dll丢进dnSpy里面</p>
+<p>我这里假设你的<code>Assembly-CSharp.dll</code>已经脱壳了</p>
+<p>应该吧？不会有人动态解密跑这个吧 不然还hook个蛋</p>
+<p><img data-fancybox="gallery" src="https://s2.loli.net/2025/06/08/KWHlgykI1NYRC87.png" alt=" 2025-06-08 215638.png" data-caption=" 2025-06-08 215638.png" loading="lazy"></p>
+<p>我一看 类名全都没混淆 简直是天堂</p>
+<p>这就是Unity的魅力吗（）</p>
+<p>首先想法肯定是搜Miss</p>
+<p><img data-fancybox="gallery" src="https://s2.loli.net/2025/06/08/unDaQFz6MxO3hG5.png" alt=" 2025-06-08 220033.png" data-caption=" 2025-06-08 220033.png" loading="lazy"></p>
+<p>有点多啊</p>
+<p>全词匹配看看</p>
+<p><img data-fancybox="gallery" src="https://s2.loli.net/2025/06/08/17Cvoc5JMZiHe4W.png" alt=" 2025-06-08 220157.png" data-caption=" 2025-06-08 220157.png" loading="lazy"></p>
+<p>这次少了很多</p>
+<p>我们看到左边有个Note.Judge</p>
+<p>是他吗，点进去看看</p>
+<p><img data-fancybox="gallery" src="https://s2.loli.net/2025/06/09/WZmH1AKuGUyheBF.png" alt=" 2025-06-09 015538.png" data-caption=" 2025-06-09 015538.png" loading="lazy"></p>
+<p>不难发现这是一个枚举？Miss的时候=0分吗</p>
+<p>对着他的调用一顿分析</p>
+<p>看到有一堆东西调用了这个枚举</p>
+<p>挨个进去看他们在相互调用</p>
+<p><img data-fancybox="gallery" src="https://s2.loli.net/2025/06/09/MDPTlk5HxEz7VUa.png" alt=" 2025-06-09 020037.png" data-caption=" 2025-06-09 020037.png" loading="lazy"></p>
+<p>一个个进去看，都没找到当miss了调用的逻辑在哪里</p>
+<p>我猜这可能是个将判定的时间转换成最终判定的方法，这个枚举就是给转换用的</p>
+<p>那不几把是我们要的，尽管可以继续分析 但这样对一个没有混淆的Dll有点太麻烦了</p>
+<p>我们接着看Miss的关键词</p>
+<p>我们看到有一个NoteJudge.Judgebox里面的玩意</p>
+<p><img data-fancybox="gallery" src="https://s2.loli.net/2025/06/09/ELnAdjcUg96Wy3k.png" alt=" 2025-06-09 020601.png" data-caption=" 2025-06-09 020601.png" loading="lazy"></p>
+<p>一看这个枚举调用可多了</p>
+<p><img data-fancybox="gallery" src="https://s2.loli.net/2025/06/09/7YqMSO4UvId8fEC.png" alt=" 2025-06-09 020829.png" data-caption=" 2025-06-09 020829.png" loading="lazy"></p>
+<p>前面的那堆是Debug类的，应该不是我们需要的</p>
+<p>我认为我们要找的东西应该是在NoteMananger之类的东西里面</p>
+<p>然后我在这堆调用中一眼相中了我的目标</p>
+<p><img data-fancybox="gallery" src="https://s2.loli.net/2025/06/09/uNopxQdLy3Rj4EW.png" alt=" 2025-06-09 021159.png" data-caption=" 2025-06-09 021159.png" loading="lazy"></p>
+<p>这里很显然是一个switch语句通过判断Note的类型来赋予对应的DX分</p>
+<p>他在Manager类里，和我想得差不多</p>
+<p>而且Miss了DX分就是不加的，我觉得没毛病</p>
+<p>那就试试吧，理论来说我们当然可以直接反编译这个Dll重新编译</p>
+<p>但那样显然不咋健康，侵入性太强了</p>
+<p>那反正我们都有Mod，写一个Dll不是更好？</p>
+<p>赶紧去看看MelonLoader的文档</p>
+<p>哇它里面还内置了HarmonyPatch</p>
+<p>无敌了</p>
+<p>核心实现就是以下的代码了</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">[<span class="meta">HarmonyPatch(typeof(JudgeResultSt), nameof(JudgeResultSt.UpdateScore))</span>]</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">class</span> <span class="title">UpdateScorePatch</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">Postfix</span>(<span class="params"><span class="keyword">ref</span> JudgeResultSt __instance</span>)</span></span><br><span class="line">        &#123;</span><br><span class="line">            <span class="comment">// 如果 DX分为0，视为 Miss</span></span><br><span class="line">            <span class="keyword">if</span> (__instance.Deluxe == <span class="number">0</span>)</span><br><span class="line">            &#123;</span><br><span class="line">                <span class="comment"><span class="doctag">///</span> 在后台线程发请求，防止主线程卡顿</span></span><br><span class="line">                ThreadPool.QueueUserWorkItem(_ =&gt;</span><br><span class="line">                &#123;</span><br><span class="line">                    MelonLogger.Msg(<span class="string">&quot;检测到 Miss，发送电击请求...&quot;</span>);</span><br><span class="line">                    MissDetected();</span><br><span class="line">                &#125;);</span><br><span class="line">               </span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<p>效果如下</p>
+<p><del>雷电法王</del><br><img data-fancybox="gallery" src="https://s2.loli.net/2025/06/09/hnDqfZpyVbrzRuE.jpg" alt="IMG_8724_20250609-023014_.PNG" data-caption="IMG_8724_20250609-023014_.PNG" loading="lazy"></p>
+<p>这里用了多线程，把MissDeteced这个函数换成你需要执行的东西就好</p>
+<p>编译了放进Mods文件夹，没啥毛病就收工了</p>
+<p>具体详细用WebSocket调用郊狼的代码稍后写完我应该会丢到Github</p>
+<p>应该不会有人用到这玩意吧 不要吧</p>
+<h1 id="结尾"><a href="#结尾" class="headerlink" title="结尾"></a>结尾</h1><p>下次试试mu3的逆向</p>
+<p>chusan不是Unity 那个缓一缓</p>
+<p><del>我还记得因为和某人争论chusan是不是Unity还吵过</del></p>
+
+  </article>
+
+  
+      
+    <div class="nexmoe-post-copyright">
+        <strong>博主：</strong>Cainong<br>
+        <strong>文章連結：</strong><a href="https://cainongw.github.io/2025/06/08/sinmai-reverse/" title="https:&#x2F;&#x2F;cainongw.github.io&#x2F;2025&#x2F;06&#x2F;08&#x2F;sinmai-reverse&#x2F;" target="_blank" rel="noopener">https:&#x2F;&#x2F;cainongw.github.io&#x2F;2025&#x2F;06&#x2F;08&#x2F;sinmai-reverse&#x2F;</a><br>
+        
+            <strong>版权声明：</strong>本文采用 <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/cn/deed.zh" target="_blank">CC BY-NC-SA 3.0 CN</a> 协议进行许可
+        
+    </div>
+
+
+  
+  
+  <div class="nexmoe-post-meta nexmoe-rainbow">
+    
+    
+        <a class="nexmoefont icon-tag-fill -none-link" href="/tags/%E9%80%86%E5%90%91/" rel="tag">逆向</a> <a class="nexmoefont icon-tag-fill -none-link" href="/tags/%E9%9F%B3%E6%B8%B8/" rel="tag">音游</a>
+    
+</div>
+
+  
+      <div class="nexmoe-post-footer">
+          <section class="nexmoe-comment">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@latest/dist/gitalk.min.css">
+<div id="gitalk"></div>
+<script src="https://cdn.jsdelivr.net/npm/gitalk@latest/dist/gitalk.min.js"></script>
+<script type="text/javascript">
+    var gitalk = new Gitalk({
+        clientID: '3a8c8178d6a0c39998f2',
+        clientSecret: '04443afdb99e666fc44dd3190bdf4ab6e24a4c7a',
+        id: window.location.pathname,
+        repo: 'Cainongw.github.io',
+        owner: 'Cainongw',
+        admin: 'Cainongw'
+    })
+    gitalk.render('gitalk')
+</script>
+</section>
+      </div>
+  
+</div>
+            <div class="nexmoe-post-right">
+              <div class="nexmoe-fixed">
+                  <div class="nexmoe-tool"> 
+                    
+                      
+                    
+                      <a href="#nexmoe-content" class="toc-link" aria-label="回到顶部" title="top"><button class="mdui-fab mdui-ripple"><i class="nexmoefont icon-caret-top"></i></button></a>
+                  </div>
+              </div>
+            </div>
+        </div>
+    </div>
+     
+    <div id="nexmoe-search-space">
+        <div class="search-container">
+            <div class="search-header">
+                <div class="search-input-container">
+                    <input class="search-input" type="text" placeholder="搜尋" oninput="sinput();">
+                </div>
+                <a class="search-close" onclick="sclose();">×</a>
+            </div>
+            <div class="search-body"></div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/mdui@0.4.3/dist/js/mdui.min.js?v=1"></script>
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui@4.0/dist/fancybox.umd.js"></script>
+
+ 
+
+<script async src="/js/app.js?v=1749412146701"></script>
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/justifiedGallery@3.8.1/dist/js/jquery.justifiedGallery.min.js"></script>
+<script>
+	$(".justified-gallery").justifiedGallery({
+		rowHeight: 160,
+		margins: 10,
+	});
+</script>
+
+
+    
+
+
+
+
+
+</body>
+
+</html>
