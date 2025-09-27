@@ -175,21 +175,21 @@
             
             <span class="tag">
                 
-                <a href="/tags/R730/" style="color: #00bcd4">
+                <a href="/tags/R730/" style="color: #03a9f4">
                     R730
                 </a>
             </span>
             
             <span class="tag">
                 
-                <a href="/tags/%E6%9C%8D%E5%8A%A1%E5%99%A8/" style="color: #00a596">
+                <a href="/tags/%E6%9C%8D%E5%8A%A1%E5%99%A8/" style="color: #ffa2c4">
                     服务器
                 </a>
             </span>
             
             <span class="tag">
                 
-                <a href="/tags/%E6%95%B0%E6%8D%AE%E5%A4%87%E4%BB%BD/" style="color: #ffa2c4">
+                <a href="/tags/%E6%95%B0%E6%8D%AE%E5%A4%87%E4%BB%BD/" style="color: #ff7d73">
                     数据备份
                 </a>
             </span>
@@ -344,6 +344,27 @@
 <p>然后我加了一个参数<code>--pack-size=128</code>，也就是分包为128M，默认的4M太小了，而且好像大于128就传不上去了 得在rclone那里分片才行</p>
 <p>然后试一下备份</p>
 <p>现在就是等待。。</p>
+<p>过了几分钟不出意外报错一片片</p>
+<pre><code>[restic] rclone: 2025/09/27 03:15:06 ERROR : data/9d/9d91c28f8335c83773d782c682c7bc354e09ec26b96f175b46821653d5387168: Post request rcat error: Method Not Allowed: 405 Method Not Allowed
+[restic] Save(&lt;data/9d91c28f83&gt;) returned error, retrying after 49.043625591s: unexpected HTTP response (500): 500 Internal Server Error
+</code></pre>
+<p>去Openlist的日志看到：</p>
+<pre><code>2025-09-27 13:39:41.854410+00:00#1: upload/download stream incomplete, possible network issue; error in uploading to baidu, will retry. response=&#123;&quot;error_code&quot;:31299, &quot;error_msg&quot;:&quot;Invalid param keylist&quot;&#125;
+</code></pre>
+<p>我们去<a target="_blank" rel="noopener" href="https://pan.baidu.com/union/doc/nksg0s9vi">这个文档</a>看到这个response 31299是第一个分片的大小小于4M</p>
+<p>理论来说超级会员可以分片大于4M，我们管它呢</p>
+<p><img src="https://s2.loli.net/2025/09/27/pz8MusNRHIayS3k.png" alt="0971f5dd-8b1c-444f-8381-c95fa7016d24.png"></p>
+<p>我们直接在Openlist改成4M分片大小</p>
+<p>然后还是报错</p>
+<p>没辙了 去搜了一下</p>
+<p>我找到了<a target="_blank" rel="noopener" href="https://github.com/AlistGo/alist/discussions/1948">这个issue</a></p>
+<p><img src="https://s2.loli.net/2025/09/27/OEgiJFv8sVIWR9A.png" alt="1e919ca1-3956-4fc5-bfa4-5e91940f1b79.png"></p>
+<p>打开Web代理 Webdav代理改成本地 Upload Api改成这个</p>
+<p>再试试</p>
+<p><img src="https://s2.loli.net/2025/09/27/WciPb2sGQdXAh6S.png" alt="371ba569-ef1e-4716-95c1-efea37e0ed2a.png"></p>
+<p>欸得了（）传了几百个G 应该没啥问题了</p>
+<p>不过有时候可能会断，不过restic会断点续传，再试一次就好</p>
+<p>然后要注意的就是小心传太多被运营商当PCDN了</p>
 
     </div>
     
