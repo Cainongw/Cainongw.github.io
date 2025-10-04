@@ -181,6 +181,53 @@
         
 
 <div class="post">
+    <a href="/2025/10/04/network-enhancing/">
+        <h2 class="post-title">记一次基于OpenWRT+Nginx反代的局域网服务小改造</h2>
+    </a>
+    <div class="category-and-date">
+        
+        <span class="date">
+            <span class="icon">
+                <i class="fa-solid fa-calendar fa-fw"></i>
+            </span>
+            2025/10/4
+        </span>
+        
+        
+    </div>
+    <div class="description">
+        <div class="content" v-pre>
+            
+            <h1 id="起因"><a href="#起因" class="headerlink" title="起因"></a>起因</h1><p>随着服务器上面跑的东西越来越多，docker跑的服务也越来越多了</p>
+<p>我常访问所以我可以记住每个虚拟机的ip或者docker的端口</p>
+<p>但是每次在浏览器输入都得输入192然后手动补全，有时候甚至得冒号加端口号才可以</p>
+<p>太特么麻烦了</p>
+            
+        </div>
+    </div>
+    <div class="post-tags">
+        
+        <span class="icon">
+            <i class="fa-solid fa-tags fa-fw"></i>
+        </span>
+        
+        
+        
+        <span class="tag">
+            
+            <a href="/tags/%E6%9C%8D%E5%8A%A1%E5%99%A8/" style="color: #00a596">服务器</a>
+        </span>
+        
+        <span class="tag">
+            
+            <a href="/tags/HomeLab/" style="color: #ff7d73">HomeLab</a>
+        </span>
+        
+    </div>
+    <a href="/2025/10/04/network-enhancing/" class="go-post">阅读全文</a>
+</div>
+
+<div class="post">
     <a href="/2025/09/14/chunithm-reverse/">
         <h2 class="post-title">记一次Chunithm的逆向</h2>
     </a>
@@ -203,21 +250,6 @@
 <p>毕竟这个和mai geki肯定是不一样的 那俩丢进dnSpy跟看源码没啥区别了</p>
 <p>（事实上后面国服源码真的漏出来了 看了下也确实差不多）</p>
 <p>我就想着说，要不咱们给中二写个Autoplay吧</p>
-<h1 id="静态分析（其实是知难而退）"><a href="#静态分析（其实是知难而退）" class="headerlink" title="静态分析（其实是知难而退）"></a>静态分析（其实是知难而退）</h1><p>我不是很确定中二的核心代码在哪，但是我之前打补丁（比如修改计数器到999之类的）都是修改的chusanApp.exe</p>
-<p>所以我猜核心代码都在这里</p>
-<p>我们把它丢DIE里面，发现他应该是没壳的</p>
-<p>然后我首先先丢IDA里分析</p>
-<p>几把 函数名基本全部混淆，之前分析sinmai的时候我们不难猜出sega写代码的习惯是函数套函数</p>
-<p>这当然没问题（他的函数命名还是很规范的）</p>
-<p>但问题是我们现在没有函数名字 这就很史了</p>
-<p>我不可能对着伪代码里面一堆sub一个个点进去看 更何况我还这么菜</p>
-<p>于是我决定动态分析</p>
-<p>那现在问题就在于，segatools已经对amdaemon和游戏本体有不少的hook，我们还想attach一个调试器上去基本没法成功</p>
-<p>事实上就是无论是CE还是IDA的debbuger都没法附加上去</p>
-<p>怎么办呢</p>
-<p>我的想法是我们先搞明白segatools做了什么才行</p>
-<p>然后等我继续写 现在在慢慢研究segatools（</p>
-
             
         </div>
     </div>
@@ -231,12 +263,12 @@
         
         <span class="tag">
             
-            <a href="/tags/%E9%80%86%E5%90%91/" style="color: #ffa2c4">逆向</a>
+            <a href="/tags/%E9%80%86%E5%90%91/" style="color: #00a596">逆向</a>
         </span>
         
         <span class="tag">
             
-            <a href="/tags/%E9%9F%B3%E6%B8%B8/" style="color: #00bcd4">音游</a>
+            <a href="/tags/%E9%9F%B3%E6%B8%B8/" style="color: #ff7d73">音游</a>
         </span>
         
         <span class="tag">
@@ -298,12 +330,12 @@
         
         <span class="tag">
             
-            <a href="/tags/%E6%9C%8D%E5%8A%A1%E5%99%A8/" style="color: #03a9f4">服务器</a>
+            <a href="/tags/%E6%9C%8D%E5%8A%A1%E5%99%A8/" style="color: #ffa2c4">服务器</a>
         </span>
         
         <span class="tag">
             
-            <a href="/tags/%E6%95%B0%E6%8D%AE%E5%A4%87%E4%BB%BD/" style="color: #00bcd4">数据备份</a>
+            <a href="/tags/%E6%95%B0%E6%8D%AE%E5%A4%87%E4%BB%BD/" style="color: #00a596">数据备份</a>
         </span>
         
     </div>
@@ -343,7 +375,7 @@
         
         <span class="tag">
             
-            <a href="/tags/%E5%BC%80%E5%8F%91/" style="color: #ffa2c4">开发</a>
+            <a href="/tags/%E5%BC%80%E5%8F%91/" style="color: #00bcd4">开发</a>
         </span>
         
     </div>
@@ -387,12 +419,12 @@
         
         <span class="tag">
             
-            <a href="/tags/%E9%80%86%E5%90%91/" style="color: #00bcd4">逆向</a>
+            <a href="/tags/%E9%80%86%E5%90%91/" style="color: #ffa2c4">逆向</a>
         </span>
         
         <span class="tag">
             
-            <a href="/tags/%E9%9F%B3%E6%B8%B8/" style="color: #03a9f4">音游</a>
+            <a href="/tags/%E9%9F%B3%E6%B8%B8/" style="color: #00a596">音游</a>
         </span>
         
     </div>
@@ -437,17 +469,17 @@
         
         <span class="tag">
             
-            <a href="/tags/%E6%9C%8D%E5%8A%A1%E5%99%A8/" style="color: #00a596">服务器</a>
+            <a href="/tags/%E6%9C%8D%E5%8A%A1%E5%99%A8/" style="color: #ffa2c4">服务器</a>
         </span>
         
         <span class="tag">
             
-            <a href="/tags/HomeLab/" style="color: #00bcd4">HomeLab</a>
+            <a href="/tags/HomeLab/" style="color: #03a9f4">HomeLab</a>
         </span>
         
         <span class="tag">
             
-            <a href="/tags/%E6%88%B4%E5%B0%94/" style="color: #ffa2c4">戴尔</a>
+            <a href="/tags/%E6%88%B4%E5%B0%94/" style="color: #00bcd4">戴尔</a>
         </span>
         
     </div>
@@ -488,17 +520,17 @@
         
         <span class="tag">
             
-            <a href="/tags/AI/" style="color: #ff7d73">AI</a>
+            <a href="/tags/AI/" style="color: #03a9f4">AI</a>
         </span>
         
         <span class="tag">
             
-            <a href="/tags/Python/" style="color: #03a9f4">Python</a>
+            <a href="/tags/Python/" style="color: #ff7d73">Python</a>
         </span>
         
         <span class="tag">
             
-            <a href="/tags/%E5%9B%BE%E5%83%8F%E5%A4%84%E7%90%86/" style="color: #ff7d73">图像处理</a>
+            <a href="/tags/%E5%9B%BE%E5%83%8F%E5%A4%84%E7%90%86/" style="color: #00bcd4">图像处理</a>
         </span>
         
     </div>
@@ -543,7 +575,7 @@
         
         <span class="tag">
             
-            <a href="/tags/%E6%97%85%E6%B8%B8/" style="color: #03a9f4">旅游</a>
+            <a href="/tags/%E6%97%85%E6%B8%B8/" style="color: #ffa2c4">旅游</a>
         </span>
         
         <span class="tag">
@@ -553,7 +585,7 @@
         
         <span class="tag">
             
-            <a href="/tags/bw/" style="color: #03a9f4">bw</a>
+            <a href="/tags/bw/" style="color: #ff7d73">bw</a>
         </span>
         
     </div>
@@ -598,17 +630,17 @@
         
         <span class="tag">
             
-            <a href="/tags/%E6%9C%8D%E5%8A%A1%E5%99%A8/" style="color: #00a596">服务器</a>
+            <a href="/tags/%E6%9C%8D%E5%8A%A1%E5%99%A8/" style="color: #ffa2c4">服务器</a>
         </span>
         
         <span class="tag">
             
-            <a href="/tags/HomeLab/" style="color: #ffa2c4">HomeLab</a>
+            <a href="/tags/HomeLab/" style="color: #00a596">HomeLab</a>
         </span>
         
         <span class="tag">
             
-            <a href="/tags/%E6%88%B4%E5%B0%94/" style="color: #00a596">戴尔</a>
+            <a href="/tags/%E6%88%B4%E5%B0%94/" style="color: #00bcd4">戴尔</a>
         </span>
         
     </div>
@@ -652,74 +684,21 @@
         
         <span class="tag">
             
-            <a href="/tags/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/" style="color: #00a596">机器学习</a>
+            <a href="/tags/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/" style="color: #00bcd4">机器学习</a>
         </span>
         
         <span class="tag">
             
-            <a href="/tags/Ai/" style="color: #03a9f4">Ai</a>
+            <a href="/tags/Ai/" style="color: #00a596">Ai</a>
         </span>
         
         <span class="tag">
             
-            <a href="/tags/diff/" style="color: #ff7d73">diff</a>
+            <a href="/tags/diff/" style="color: #ffa2c4">diff</a>
         </span>
         
     </div>
     <a href="/2023/05/01/diffsinger/" class="go-post">阅读全文</a>
-</div>
-
-<div class="post">
-    <a href="/2023/04/30/homelab-r730/">
-        <h2 class="post-title">在自己家搭一台服务器吧！DELL R730折腾（1）</h2>
-    </a>
-    <div class="category-and-date">
-        
-        <span class="date">
-            <span class="icon">
-                <i class="fa-solid fa-calendar fa-fw"></i>
-            </span>
-            2023/4/30
-        </span>
-        
-        
-    </div>
-    <div class="description">
-        <div class="content" v-pre>
-            
-            <h1 id="老规矩，起因放前面："><a href="#老规矩，起因放前面：" class="headerlink" title="老规矩，起因放前面："></a>老规矩，起因放前面：</h1><p>我自签一些游戏安装包的时候，需要AltServer实时在线，而且Windows下的AltServer算半个残废，我需要一台一直开着的MacOS</p>
-<p>其二是我需要一台文件共享服务器（NAS），存<del>我的资源</del>我拍到的一些照片</p>
-<p>其三是家里接了两条宽带，需要ikuai分流</p>
-<p>其四是8G显存满足不了我，我需要更大显存的卡来玩机器学习</p>
-<p>综上，我买了一台服务器</p>
-            
-        </div>
-    </div>
-    <div class="post-tags">
-        
-        <span class="icon">
-            <i class="fa-solid fa-tags fa-fw"></i>
-        </span>
-        
-        
-        
-        <span class="tag">
-            
-            <a href="/tags/%E6%9C%8D%E5%8A%A1%E5%99%A8/" style="color: #ffa2c4">服务器</a>
-        </span>
-        
-        <span class="tag">
-            
-            <a href="/tags/HomeLab/" style="color: #ff7d73">HomeLab</a>
-        </span>
-        
-        <span class="tag">
-            
-            <a href="/tags/%E6%88%B4%E5%B0%94/" style="color: #03a9f4">戴尔</a>
-        </span>
-        
-    </div>
-    <a href="/2023/04/30/homelab-r730/" class="go-post">阅读全文</a>
 </div>
 
 
