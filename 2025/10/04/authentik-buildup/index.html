@@ -3,7 +3,7 @@
 <html lang="zh">
 <head>
     <meta charset="utf-8" />
-    <title>记一次基于OpenWRT+Nginx反代的局域网服务小改造 | Cainong&#39;s Blog</title>
+    <title>基于authentik的局域网单点登录与通行密钥的配置与部署 | Cainong&#39;s Blog</title>
     <meta name="author" content="Cainong" />
     <meta name="description" content="" />
     <meta name="keywords" content="" />
@@ -156,7 +156,7 @@
         <div id="main" :class="loading ? 'into-enter-from': 'into-enter-active'">
             <div class="article">
     <div>
-        <h1>记一次基于OpenWRT+Nginx反代的局域网服务小改造</h1>
+        <h1>基于authentik的局域网单点登录与通行密钥的配置与部署</h1>
     </div>
     <div class="info">
         <span class="date">
@@ -167,117 +167,83 @@
         </span>
         
         
-        <span class="tags">
-            <span class="icon">
-                <i class="fa-solid fa-tags fa-fw"></i>
-            </span>
-            
-            
-            <span class="tag">
-                
-                <a href="/tags/%E6%9C%8D%E5%8A%A1%E5%99%A8/" style="color: #ff7d73">
-                    服务器
-                </a>
-            </span>
-            
-            <span class="tag">
-                
-                <a href="/tags/HomeLab/" style="color: #00bcd4">
-                    HomeLab
-                </a>
-            </span>
-            
-        </span>
-        
     </div>
     
     <div class="content" v-pre>
-        <h1 id="起因"><a href="#起因" class="headerlink" title="起因"></a>起因</h1><p>随着服务器上面跑的东西越来越多，docker跑的服务也越来越多了</p>
-<p>我常访问所以我可以记住每个虚拟机的ip或者docker的端口</p>
-<p>但是每次在浏览器输入都得输入192然后手动补全，有时候甚至得冒号加端口号才可以</p>
-<p>太特么麻烦了</p>
+        <h1 id="起因"><a href="#起因" class="headerlink" title="起因"></a>起因</h1><p>Passkey(通行密钥)作为一种新的身份验证方式近几年开始慢慢流行起来了</p>
+<p>该说不说 真的很好用</p>
+<p>其安全且方便，理论来说Passkey的安全性是高于传统的2FA的（尤其是有生物认证的情况下）</p>
+<p>但是目前只有一些大厂 比如Google Github 或者一些虚拟货币平台支持</p>
+<p>国内几乎没有厂商支持 为数不多支持的微信还要求你用非+86的手机注册才可以用</p>
+<p>我就在想，我局域网一些设备用的是弱密码 首先这不安全 其次这导致我需要记住几个不同的密码</p>
+<p>有点麻烦 何况很多时候Chrome的密码补全是不工作的</p>
+<p>有时候我root都输完了Chrome才提示让我填入密码 那我手都输完了</p>
+<p>我就在想，可不可以将局域网里面的一些服务比如ESXi vCenter TrueNAS。甚至是Windows远程桌面 SSH</p>
+<p>用反代 让他们强行支持Passkey</p>
+<p>况且前段时间我暴露的RDP服务老是被爆破 即使不是9443端口 我用了几万后的端口也会被扫到</p>
+<p>所以我需要一个局域网内的身份验证服务</p>
 <span id="more"></span> 
 
-<h1 id="开始"><a href="#开始" class="headerlink" title="开始"></a>开始</h1><p>其实指定域名去指定某个IP很简单，一个DNS服务器就解决了</p>
-<p>比较麻烦一点的是端口号，因为正常的DNS服务只负责解析域名到ip</p>
-<p>指定端口的话就需要用Nginx反代了</p>
-<p>再加上后面我想给一些服务加上单点登录和通行密钥，反代这关肯定是过不去了</p>
-<h1 id="DNS服务器的搭建"><a href="#DNS服务器的搭建" class="headerlink" title="DNS服务器的搭建"></a>DNS服务器的搭建</h1><p>其实这个很简单，我OpenWRT里面iStore装一个SmartDNS，上游服务器设置为网关或者某个国内的DNS，然后域名地址按照</p>
-<pre><code>address /domain.suffix/ip
+<p>而且我们可以通过身份验证服务去搭建防火墙 给局域网所有以后可能需要暴露在公网的管理后台（比如OpenWRT 1Panel 宝塔）进行第一步认证 从而大幅度提高安全性</p>
+<h1 id="开始折腾"><a href="#开始折腾" class="headerlink" title="开始折腾"></a>开始折腾</h1><p>其实同类的竞品有很多 比如Keycloak Duo Authelia</p>
+<p>Keycloak对于LDAP支持不是很完善 后面两个太简陋了</p>
+<p>找了一下发现一个名为Authentik的解决方案很好 UI也很好看</p>
+<p>地址在这里<a target="_blank" rel="noopener" href="https://goauthentik.io/">https://goauthentik.io/</a></p>
+<h2 id="Authentik的搭建"><a href="#Authentik的搭建" class="headerlink" title="Authentik的搭建"></a>Authentik的搭建</h2><p>他推荐是用docker compose去跑</p>
+<p>k8s他也有相应的教程，我暂时还没有k8s的刚需，我们先用docker compose去跑</p>
+<p>按照他的文档跑起来就好了</p>
+<pre><code class="Bash">mkdir authentik
+cd authentik/
+wget https://docs.goauthentik.io/docker-compose.yml
+echo &quot;PG_PASS=$(openssl rand -base64 36 | tr -d &#39;\n&#39;)&quot; &gt;&gt; .env
+echo &quot;AUTHENTIK_SECRET_KEY=$(openssl rand -base64 60 | tr -d &#39;\n&#39;)&quot; &gt;&gt; .env
+docker compose pull
+docker compose up -d
 </code></pre>
-<p>比如</p>
-<pre><code>address /openwrt.lan/192.168.0.114
-</code></pre>
-<p>填写</p>
-<p>然后设备需要自定义一下DNS服务器为OpenWRT（如果你WRT本身就是主路由那不需要这步）</p>
-<p>值得一提的是如果直接在Chrome里输入.lan结尾的域名他会搜索，因为他不认为.lan是有效域名</p>
-<p>但是后面加个/就可以了</p>
-<h1 id="Nginx反代"><a href="#Nginx反代" class="headerlink" title="Nginx反代"></a>Nginx反代</h1><p>这个其实是稍微麻烦点的点</p>
-<p>我们可以把Nginx跑在OpenWRT上，但那样会遇到一个问题</p>
-<p>就是与WRT原本的web服务uHTTPd冲突</p>
-<p>导致你没有办法再访问luci管理界面</p>
-<p>即使你可以访问 uHTTPd http到https的重定向也会不可用</p>
-<p>我们可以关闭uHTTPd，直接让Nginx接管WRT的web管理界面</p>
-<p>但那样太麻烦了 我懒我也不会</p>
-<p>而且Nginx默认不支持luci</p>
-<p>况且Nginx的话https证书自签还要自己解决</p>
-<p>那还说啥，咱们局域网另外一台设备跑Nginx好了</p>
-<h2 id="Nginx配置"><a href="#Nginx配置" class="headerlink" title="Nginx配置"></a>Nginx配置</h2><p>我整了台最小化安装的ubuntu server</p>
-<p>我不咋会用别的Linux发行版</p>
-<p>然后装了Nginx之后配置一下就好了</p>
-<pre><code class="Nginx">server &#123;
-    listen 80;
-    # listen 443 ssl;
-    server_name backrest.lan; # 你用来访问的域名
-
-    # 如果你有SSL证书，可以在此处配置证书路径，实现HTTPS访问
-    # ssl_certificate /path/to/your/cert.crt;
-    # ssl_certificate_key /path/to/your/private.key;
-
-    location / &#123;
-        # 实际代理的地址
-        proxy_pass https://192.168.0.90:9898;
-        proxy_set_header Host $host;
-        # 传递客户端的真实IP地址
-        proxy_set_header X-Real-IP $remote_addr;
-        # 包含经过所有代理的客户端IP列表
-        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-        proxy_set_header X-Forwarded-Proto $scheme;
-        proxy_set_header Upgrade $http_upgrade;
-        proxy_set_header Connection &quot;upgrade&quot;;
-    &#125;
-&#125;
-</code></pre>
-<p>配置之后，我们去之前SmartDNS的配置那里将用来访问的域名的ip改为Nginx反代的ip</p>
-<pre><code>address /backrest.lan/192.168.0.233
-</code></pre>
-<p>192.168.0.233即为Nginx反代服务器的地址</p>
-<p>完事了</p>
-<p>后面我为了方便管理，我迁移到了1Panel</p>
-<p>我1Panel的配置文件如下</p>
-<pre><code class="Nginx">server &#123;
-    listen 80 ; 
-    server_name backrest.lan; 
-    index index.php index.html index.htm default.php default.htm default.html; 
-    access_log /www/sites/backrest.lan/log/access.log main; 
-    error_log /www/sites/backrest.lan/log/error.log; 
-    location ~ ^/(\.user.ini|\.htaccess|\.git|\.env|\.svn|\.project|LICENSE|README.md) &#123;
-        return 404; 
-    &#125;
-    location ^~ /.well-known &#123;
-        allow all; 
-        root /usr/share/nginx/html; 
-    &#125;
-    if ( $uri ~ &quot;^/\.well-known/.*\.(php|jsp|py|js|css|lua|ts|go|zip|tar\.gz|rar|7z|sql|bak)$&quot; ) &#123;
-        return 403; 
-    &#125;
-    root /www/sites/backrest.lan/index; 
-    include /www/sites/backrest.lan/proxy/*.conf; 
-&#125;
-</code></pre>
-<h1 id="后记"><a href="#后记" class="headerlink" title="后记"></a>后记</h1><p>其实的话完全可以让Nginx反代所有的服务，在DNS那里可以将所有*.lan结尾的域名全部指向反代服务器</p>
-<p>然后去给服务器设置白名单 比如只接受反代服务器的连接请求</p>
-<p>但那个也不是完全有必要,我们后面有需要的话再改</p>
+<p>可以看到他会跑起worker server postgres redis四个容器，跑起来之后等待他显示服务为healthy就可以进入http://&lt;服务器ip&gt;:9000/if/flow/initial-setup/去进行初始化设置</p>
+<p>这里的密码请设置复杂一点</p>
+<p>跑起来之后我们就可以来研究Authentik了</p>
+<p>我们不难看到Authentik为了高度自定义，他将管理界面分为应用 流程和阶段这几个板块</p>
+<p>流程是Authentik比较特色的一个点</p>
+<p>我的理解是将认证 授权拆分成了Stage 某个特定操作（比如授权给某个应用 登录 找回密码之类的）就可以是一个Flow</p>
+<h2 id="先设置Passkey"><a href="#先设置Passkey" class="headerlink" title="先设置Passkey"></a>先设置Passkey</h2><p>首先记得我一开始的目标 先设置个Passkey先</p>
+<p>那么我们的Passkey在Authentik里叫Passwordless 无密码登录</p>
+<p>文档是这个<a target="_blank" rel="noopener" href="https://docs.goauthentik.io/add-secure-apps/flows-stages/stages/authenticator_validate/">https://docs.goauthentik.io/add-secure-apps/flows-stages/stages/authenticator_validate/</a></p>
+<p>如果要通行密钥的话我们主要是看WebAuthn这个</p>
+<p>好长一串英语 说白了就是我们首先需要去创建一个Flows</p>
+<p>我这里是这样写</p>
+<p><img src="https://s2.loli.net/2025/10/05/m9WOh7UTlRixPGy.png" alt="0e177960-3ca6-4e98-829f-248dd4d6d555.png"></p>
+<p>大可不用按照我的来 主要是为了规范化</p>
+<p>我们点进刚刚创建的Flows 然后点创建一个新的阶段</p>
+<p>类型选择Authenticator Validation Stage 我这里是第一个</p>
+<p>我这没有指定用什么设备限制 也没必要其实</p>
+<p><img src="https://s2.loli.net/2025/10/05/R7Y1zQejuhNU6qK.png" alt="d12af258-3e1f-45da-a725-d812c1eeb8c7.png"></p>
+<p><img src="https://s2.loli.net/2025/10/05/fqba94BIXRxtJWQ.png" alt="QQ_1759617203484.png"></p>
+<p><img src="https://s2.loli.net/2025/10/05/tMF34nW9moVujbP.png" alt="QQ_1759617212724.png"></p>
+<p>下一步顺序我们填写10</p>
+<p>然后完成</p>
+<p>它后面说可以添加别的验证阶段 比如验证码之类的</p>
+<p>但是我个人觉得没必要了 Passkey已经很安全了</p>
+<p>如果你用过一些虚拟货币平台你会发现提币的时候需要输入邮箱+动态验证码 如果你有Passkey只需要一个Passkey验证</p>
+<p>这是题外话了</p>
+<p>接下来我们给这个流程绑定一个已有阶段 我们选择default-authentication-login 顺序写20</p>
+<p>也就是说顺序是先用无密码认证Stage 没问题了我们就认为用户处于登录Stage</p>
+<p>下一步我们需要修改原有的登录流程</p>
+<p>我们去Flows里搜索Slug default-authentication-flow</p>
+<p>也就是正常的认证流程</p>
+<p>点击阶段绑定 我们需要编辑default-authentication-identification这个阶段</p>
+<p>流程设置下面有一个无密码流程 我们选择我们刚刚创建的passwordless-webauthn-flow</p>
+<p>更新之后我们Passkey的设置就完成了</p>
+<p>其实是有点麻烦的 但这一套给我的感觉就是给Authentik带来了超高自由性</p>
+<p>然后当我想测试的时候</p>
+<p><img src="https://s2.loli.net/2025/10/05/LvWFDOnxfRrcXzk.png" alt="86be608c-c677-4349-b548-4ff181fbe89b.png"></p>
+<p>折腾俩小时我的表情:</p>
+<p><img src="https://s2.loli.net/2025/10/05/JaGlzxN6goOWIEr.png" alt="ed3039d4-1bcd-4c6c-92f9-90505c9a7700.png"></p>
+<h2 id="SSL证书自签"><a href="#SSL证书自签" class="headerlink" title="SSL证书自签"></a>SSL证书自签</h2><p>我立马想到，这可能是因为我们没有部署SSL证书</p>
+<p>我们需要一个自签证书的服务器，因为显然.lan域名我们不可能去找根证书服务商申请 我们只能自己给证书签名</p>
+<p>啪的一下很快找到了名为Treafik的项目，它可以自动识别Docker 自动加域名自动给域名上https</p>
+<p>虽然它不能给.lan域名申请证书，但我们自己创一份证书 信任一下就好了</p>
+<p>这里都可以单独写一篇了</p>
 
     </div>
     

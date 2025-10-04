@@ -2,6 +2,33 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>https://cainongw.github.io/2025/10/05/treafik-buidup/</loc>
+    
+    <lastmod>2025-10-04</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://cainongw.github.io/2025/10/04/authentik-buildup/</loc>
+    
+    <lastmod>2025-10-04</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://cainongw.github.io/2025/07/03/backrest-buildup/</loc>
+    
+    <lastmod>2025-10-04</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
     <loc>https://cainongw.github.io/2025/10/04/network-enhancing/</loc>
     
     <lastmod>2025-10-04</lastmod>
@@ -21,15 +48,6 @@
   
   <url>
     <loc>https://cainongw.github.io/2025/09/14/chunithm-reverse/</loc>
-    
-    <lastmod>2025-09-27</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://cainongw.github.io/2025/07/03/backrest-buildup/</loc>
     
     <lastmod>2025-09-27</lastmod>
     
@@ -101,7 +119,7 @@
   </url>
   
   <url>
-    <loc>https://cainongw.github.io/2023/02/26/sovits3-local/</loc>
+    <loc>https://cainongw.github.io/2023/02/26/sovits3-colab/</loc>
     
     <lastmod>2025-06-22</lastmod>
     
@@ -110,7 +128,7 @@
   </url>
   
   <url>
-    <loc>https://cainongw.github.io/2023/02/26/sovits3-colab/</loc>
+    <loc>https://cainongw.github.io/2023/02/26/sovits3-local/</loc>
     
     <lastmod>2025-06-22</lastmod>
     
@@ -179,34 +197,6 @@
   
   <url>
     <loc>https://cainongw.github.io/tags/%E6%95%B0%E6%8D%AE%E5%A4%87%E4%BB%BD/</loc>
-    <lastmod>2025-10-04</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>https://cainongw.github.io/tags/%E9%80%86%E5%90%91/</loc>
-    <lastmod>2025-10-04</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>https://cainongw.github.io/tags/%E9%9F%B3%E6%B8%B8/</loc>
-    <lastmod>2025-10-04</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>https://cainongw.github.io/tags/Chunithm/</loc>
-    <lastmod>2025-10-04</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>https://cainongw.github.io/tags/IDA/</loc>
     <lastmod>2025-10-04</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
@@ -304,6 +294,20 @@
   </url>
   
   <url>
+    <loc>https://cainongw.github.io/tags/%E9%80%86%E5%90%91/</loc>
+    <lastmod>2025-10-04</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://cainongw.github.io/tags/%E9%9F%B3%E6%B8%B8/</loc>
+    <lastmod>2025-10-04</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
     <loc>https://cainongw.github.io/tags/AI/</loc>
     <lastmod>2025-10-04</lastmod>
     <changefreq>weekly</changefreq>
@@ -332,7 +336,21 @@
   </url>
   
   <url>
+    <loc>https://cainongw.github.io/tags/IDA/</loc>
+    <lastmod>2025-10-04</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
     <loc>https://cainongw.github.io/tags/%E7%A0%B4%E8%A7%A3/</loc>
+    <lastmod>2025-10-04</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://cainongw.github.io/tags/Chunithm/</loc>
     <lastmod>2025-10-04</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
