@@ -180,7 +180,7 @@
 <p>有时候我root都输完了Chrome才提示让我填入密码 那我手都输完了</p>
 <p>我就在想，可不可以将局域网里面的一些服务比如ESXi vCenter TrueNAS。甚至是Windows远程桌面 SSH</p>
 <p>用反代 让他们强行支持Passkey</p>
-<p>况且前段时间我暴露的RDP服务老是被爆破 即使不是9443端口 我用了几万后的端口也会被扫到</p>
+<p>况且前段时间我暴露的RDP服务老是被爆破 即使不是3389端口 我用了几万后的端口也会被扫到</p>
 <p>所以我需要一个局域网内的身份验证服务</p>
 <span id="more"></span> 
 
@@ -239,9 +239,9 @@ docker compose up -d
 <p><img src="https://s2.loli.net/2025/10/05/LvWFDOnxfRrcXzk.png" alt="86be608c-c677-4349-b548-4ff181fbe89b.png"></p>
 <p>折腾俩小时我的表情:</p>
 <p><img src="https://s2.loli.net/2025/10/05/JaGlzxN6goOWIEr.png" alt="ed3039d4-1bcd-4c6c-92f9-90505c9a7700.png"></p>
-<h2 id="SSL证书自签"><a href="#SSL证书自签" class="headerlink" title="SSL证书自签"></a>SSL证书自签</h2><p>我立马想到，这可能是因为我们没有部署SSL证书</p>
+<h2 id="SSL证书自签"><a href="#SSL证书自签" class="headerlink" title="SSL证书自签"></a>SSL证书自签</h2><p>我立马想到，这可能是因为我们没有部署SSL证书 因为Passkey对安全的高标准要求 没有https加密大概是不给用的</p>
 <p>我们需要一个自签证书的服务器，因为显然.lan域名我们不可能去找根证书服务商申请 我们只能自己给证书签名</p>
-<p>啪的一下很快找到了名为Treafik的项目，它可以自动识别Docker 自动加域名自动给域名上https</p>
+<p>啪的一下很快找到了名为Traefik的项目，它可以自动识别Docker 自动加域名自动给域名上https</p>
 <p>虽然它不能给.lan域名申请证书，但我们自己创一份证书 信任一下就好了</p>
 <p>这里都可以单独写一篇了</p>
 
