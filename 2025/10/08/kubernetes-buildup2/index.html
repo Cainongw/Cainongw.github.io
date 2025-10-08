@@ -3,7 +3,7 @@
 <html lang="zh">
 <head>
     <meta charset="utf-8" />
-    <title>记一次Traefik的反代和证书自签名 | Cainong&#39;s Blog</title>
+    <title>记一次Kubernetes集群的完善 | Cainong&#39;s Blog</title>
     <meta name="author" content="Cainong" />
     <meta name="description" content="" />
     <meta name="keywords" content="" />
@@ -156,14 +156,14 @@
         <div id="main" :class="loading ? 'into-enter-from': 'into-enter-active'">
             <div class="article">
     <div>
-        <h1>记一次Traefik的反代和证书自签名</h1>
+        <h1>记一次Kubernetes集群的完善</h1>
     </div>
     <div class="info">
         <span class="date">
             <span class="icon">
                 <i class="fa-solid fa-calendar fa-fw"></i>
             </span>
-            2025/10/5
+            2025/10/8
         </span>
         
         
@@ -175,8 +175,22 @@
             
             <span class="tag">
                 
-                <a href="/tags/HomeLab/" style="color: #ff7d73">
+                <a href="/tags/%E6%9C%8D%E5%8A%A1%E5%99%A8/" style="color: #00a596">
+                    服务器
+                </a>
+            </span>
+            
+            <span class="tag">
+                
+                <a href="/tags/HomeLab/" style="color: #00bcd4">
                     HomeLab
+                </a>
+            </span>
+            
+            <span class="tag">
+                
+                <a href="/tags/%E5%AE%B9%E5%99%A8%E5%8C%96/" style="color: #03a9f4">
+                    容器化
                 </a>
             </span>
             
@@ -185,9 +199,21 @@
     </div>
     
     <div class="content" v-pre>
-        <h1 id="起因"><a href="#起因" class="headerlink" title="起因"></a>起因</h1><p>在Authentik的折腾中由于我们没有https导致passkey无法使用</p>
-<p>因此我们需要搭建一个能自动使用证书的反代，并且由于不能管理证书所以Nginx被我们丢掉了</p>
-<p>写到这里 已经天亮了 先gitpush睡觉了</p>
+        <h1 id="起因"><a href="#起因" class="headerlink" title="起因"></a>起因</h1><p>我们成功搭建起了K8s 接下来我们需要搭建一些额外的服务来满足我的需求</p>
+<span id="more"></span> 
+
+<h1 id="包管理器Helm"><a href="#包管理器Helm" class="headerlink" title="包管理器Helm"></a>包管理器Helm</h1><p>类似于apt 有了之后我们就不用kubectl 后面跟一坨yml了</p>
+<p>在Master节点上输入</p>
+<pre><code class="Bash">url -fsSL https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
+</code></pre>
+<h1 id="Ingress-Nginx"><a href="#Ingress-Nginx" class="headerlink" title="Ingress-Nginx"></a>Ingress-Nginx</h1><p>思来想去还是选择Nginx而不是Traefik，证书的解决我们可以用另一个服务</p>
+<pre><code class="Bash">helm upgrade --install ingress-nginx ingress-nginx \
+  --repo https://kubernetes.github.io/ingress-nginx \
+  --namespace ingress-nginx --create-namespace
+</code></pre>
+<h1 id="Dashboard"><a href="#Dashboard" class="headerlink" title="Dashboard"></a>Dashboard</h1><pre><code class="Bash">helm repo add kubernetes-dashboard https://kubernetes.github.io/dashboard/
+helm upgrade --install kubernetes-dashboard kubernetes-dashboard/kubernetes-dashboard --create-namespace --namespace kubernetes-dashboard
+</code></pre>
 
     </div>
     
