@@ -190,7 +190,7 @@
 <p>找了一下发现一个名为Authentik的解决方案很好 UI也很好看</p>
 <p>地址在这里<a target="_blank" rel="noopener" href="https://goauthentik.io/">https://goauthentik.io/</a></p>
 <h2 id="Authentik的搭建"><a href="#Authentik的搭建" class="headerlink" title="Authentik的搭建"></a>Authentik的搭建</h2><p>他推荐是用docker compose去跑</p>
-<p>k8s他也有相应的教程，我暂时还没有k8s的刚需，我们先用docker compose去跑</p>
+<p><del>k8s他也有相应的教程，我暂时还没有k8s的刚需，我们先用docker compose去跑</del></p>
 <p>按照他的文档跑起来就好了</p>
 <pre><code class="Bash">mkdir authentik
 cd authentik/
@@ -199,6 +199,36 @@ echo &quot;PG_PASS=$(openssl rand -base64 36 | tr -d &#39;\n&#39;)&quot; &gt;&gt
 echo &quot;AUTHENTIK_SECRET_KEY=$(openssl rand -base64 60 | tr -d &#39;\n&#39;)&quot; &gt;&gt; .env
 docker compose pull
 docker compose up -d
+</code></pre>
+<p>2025.10.10更新：现在已经迁移到K8s 后面教程应该是一样的 这里附上K8s的YAML</p>
+<pre><code class="YAML">authentik:
+    secret_key: &quot;填写Openssl生成的经过base64编码的60位密码&quot;
+    # This sends anonymous usage-data, stack traces on errors and
+    # performance data to sentry.io, and is fully opt-in
+    error_reporting:
+        enabled: true
+    postgresql:
+        password: &quot;填写Openssl生成的经过base64编码的36位密码&quot;
+
+server:
+    ingress:
+        # Specify kubernetes ingress controller class name
+        ingressClassName: nginx
+        enabled: true
+        hosts:
+            - authentik.k8s.lan
+
+postgresql:
+    enabled: true
+    auth:
+        password: &quot;填写Openssl生成的经过base64编码的36位密码&quot;
+redis:
+    enabled: true
+</code></pre>
+<p>然后在master节点上</p>
+<pre><code class="Bash">helm repo add authentik https://charts.goauthentik.io
+helm repo update
+helm upgrade --install authentik authentik/authentik -f values.yaml
 </code></pre>
 <p>可以看到他会跑起worker server postgres redis四个容器，跑起来之后等待他显示服务为healthy就可以进入http://&lt;服务器ip&gt;:9000/if/flow/initial-setup/去进行初始化设置</p>
 <p>这里的密码请设置复杂一点</p>
@@ -243,7 +273,9 @@ docker compose up -d
 <p>我们需要一个自签证书的服务器，因为显然.lan域名我们不可能去找根证书服务商申请 我们只能自己给证书签名</p>
 <p>啪的一下很快找到了名为Traefik的项目，它可以自动识别Docker 自动加域名自动给域名上https</p>
 <p>虽然它不能给.lan域名申请证书，但我们自己创一份证书 信任一下就好了</p>
-<p>这里都可以单独写一篇了</p>
+<p>这里都可以单独写一篇了 详细请看下一篇</p>
+<h2 id="服务的挂载"><a href="#服务的挂载" class="headerlink" title="服务的挂载"></a>服务的挂载</h2><p>理论来说支持单点登陆的服务有很多 Gitlab vCenter Openlist</p>
+<p>我们先用Gitlab做演示</p>
 
     </div>
     

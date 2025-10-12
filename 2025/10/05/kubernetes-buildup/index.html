@@ -175,21 +175,21 @@
             
             <span class="tag">
                 
-                <a href="/tags/HomeLab/" style="color: #ff7d73">
-                    HomeLab
-                </a>
-            </span>
-            
-            <span class="tag">
-                
-                <a href="/tags/%E6%9C%8D%E5%8A%A1%E5%99%A8/" style="color: #ffa2c4">
+                <a href="/tags/%E6%9C%8D%E5%8A%A1%E5%99%A8/" style="color: #00a596">
                     服务器
                 </a>
             </span>
             
             <span class="tag">
                 
-                <a href="/tags/%E5%AE%B9%E5%99%A8%E5%8C%96/" style="color: #03a9f4">
+                <a href="/tags/HomeLab/" style="color: #00bcd4">
+                    HomeLab
+                </a>
+            </span>
+            
+            <span class="tag">
+                
+                <a href="/tags/%E5%AE%B9%E5%99%A8%E5%8C%96/" style="color: #ffa2c4">
                     容器化
                 </a>
             </span>
@@ -466,8 +466,9 @@ k8s-worker02   NotReady   &lt;none&gt;          8s      v1.34.1
 <h2 id="4-1-网络插件"><a href="#4-1-网络插件" class="headerlink" title="4.1 网络插件"></a>4.1 网络插件</h2><h3 id="4-1-1-选择"><a href="#4-1-1-选择" class="headerlink" title="4.1.1 选择"></a>4.1.1 选择</h3><p>常见的话有三个 Flannel Calico Cilium</p>
 <p>复杂程度都是递增的</p>
 <p>事实上的话Calico已经足够极其庞大的集群使用了</p>
-<p>Cilium则是用于多集群 而且他会复杂非常多 我们暂时不考虑</p>
+<p><del>Cilium则是用于多集群 而且他会复杂非常多 我们暂时不考虑</del></p>
 <p>为了练手 我这里还是选择Calico</p>
+<p>后续换成了Cilium</p>
 <h3 id="4-1-2-Calico的安装"><a href="#4-1-2-Calico的安装" class="headerlink" title="4.1.2 Calico的安装"></a>4.1.2 Calico的安装</h3><p>如果用Opertor安装的话其实很简单 只是还是网络环境的问题</p>
 <p>如果之前你能成功init我相信是没问题的 我们偷懒用Operator就好</p>
 <p>进入Tigera的文档<a target="_blank" rel="noopener" href="https://docs.tigera.io/calico/latest/getting-started/kubernetes/self-managed-onprem/onpremises">https://docs.tigera.io/calico/latest/getting-started/kubernetes/self-managed-onprem/onpremises</a>找到安装的命令</p>

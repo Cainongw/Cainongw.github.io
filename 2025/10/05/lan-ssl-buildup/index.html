@@ -3,7 +3,7 @@
 <html lang="zh">
 <head>
     <meta charset="utf-8" />
-    <title>记一次Traefik的反代和证书自签名 | Cainong&#39;s Blog</title>
+    <title>记一次局域网内.lan域名得证书自签名并挂载到Ingress | Cainong&#39;s Blog</title>
     <meta name="author" content="Cainong" />
     <meta name="description" content="" />
     <meta name="keywords" content="" />
@@ -156,7 +156,7 @@
         <div id="main" :class="loading ? 'into-enter-from': 'into-enter-active'">
             <div class="article">
     <div>
-        <h1>记一次Traefik的反代和证书自签名</h1>
+        <h1>记一次局域网内.lan域名得证书自签名并挂载到Ingress</h1>
     </div>
     <div class="info">
         <span class="date">
@@ -175,7 +175,7 @@
             
             <span class="tag">
                 
-                <a href="/tags/HomeLab/" style="color: #00bcd4">
+                <a href="/tags/HomeLab/" style="color: #ffa2c4">
                     HomeLab
                 </a>
             </span>
@@ -186,8 +186,67 @@
     
     <div class="content" v-pre>
         <h1 id="起因"><a href="#起因" class="headerlink" title="起因"></a>起因</h1><p>在Authentik的折腾中由于我们没有https导致passkey无法使用</p>
-<p>因此我们需要搭建一个能自动使用证书的反代，并且由于不能管理证书所以Nginx被我们丢掉了</p>
-<p>写到这里 已经天亮了 先gitpush睡觉了</p>
+<p>并且想使用passkey必须要可用的证书 Chrome提示什么不安全的连接即使有https也是无法使用的</p>
+<p>所以我们需要给.lan域名签一个证书并信任他</p>
+<h1 id="开始折腾"><a href="#开始折腾" class="headerlink" title="开始折腾"></a>开始折腾</h1><p>妈的傻逼ChatGPT 让我给*.lan域名去签名</p>
+<p>根本用不了</p>
+<p>这里要注意的点就是域名只能签诸如*.k8s.lan这样的通配符</p>
+<p>以下命令在Master节点上执行就好</p>
+<pre><code class="Bash">openssl genpkey -algorithm RSA -out private.key
+openssl req -new -key private.key -out csr.csr
+</code></pre>
+<p>新建一个san.cnf文件 写上如下内容</p>
+<pre><code class="CNF">[req]
+req_extensions = v3_req
+distinguished_name = req_distinguished_name
+
+[req_distinguished_name]
+
+[v3_req]
+subjectAltName = @alt_names
+
+[alt_names]
+DNS.1 = *.k8s.lan
+DNS.2 = www.example.com
+</code></pre>
+<p>然后保存继续输入</p>
+<pre><code class="Bash">openssl x509 -req -in csr.csr -signkey private.key -out certificate.crt -extfile san.cnf -extensions v3_req -days 3650
+</code></pre>
+<p>将生成一张有效期10年 给*.k8s.lan使用的证书</p>
+<p>然后scp把certificate.crt这个证书拷贝下来 并且添加到受信任的根证书签发机构</p>
+<p>然后把证书添加到Secret</p>
+<p>这里要注意的是，Secret必须与Ingress配置处于同一个命名空间 否则Controller认不到</p>
+<pre><code class="Bash">kubectl create secret tls authentik-tls-secret --key private.key --cert certificate.crt -n authentik
+</code></pre>
+<p>然后Ingress配置如下</p>
+<pre><code class="YAML">apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: authentik-tls-ingress
+  namespace: authentik
+  annotations:
+    nginx.ingress.kubernetes.io/ssl-passthrough: &#39;true&#39;
+    nginx.ingress.kubernetes.io/ssl-redirect: &#39;true&#39;
+spec:
+  tls:
+    - hosts:
+        - authentik.k8s.lan
+      secretName: wildcard-lan-secret
+  rules:
+    - host: authentik.k8s.lan
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: authentik-server
+                port:
+                  number: 9000
+</code></pre>
+<p>apply这个yml</p>
+<p>不出意外就能以Https访问authhentik.k8s.lan了</p>
+<p><img src="https://s2.loli.net/2025/10/10/wOmxUKjr9W5oZtd.png" alt="ea53d3b3-a441-4918-850b-660cd46ce283.png"></p>
 
     </div>
     
