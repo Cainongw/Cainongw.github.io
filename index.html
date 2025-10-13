@@ -199,6 +199,9 @@
         <div class="content" v-pre>
             
             <p>我们已经解决了K8s内集群的证书 现在需要解决我们直接跑在虚拟机上的一些服务的证书签名了</p>
+<p>之前是自己签名 现在发现可以用根证书+ACME统一签名</p>
+<p>因为是根证书 实际上可以在Ingress里设置任何一个域名（即使他已经存在）</p>
+<p>甚至可以把baidu换成google（</p>
             
         </div>
     </div>
@@ -212,17 +215,17 @@
         
         <span class="tag">
             
+            <a href="/tags/HomeLab/" style="color: #03a9f4">HomeLab</a>
+        </span>
+        
+        <span class="tag">
+            
             <a href="/tags/%E6%9C%8D%E5%8A%A1%E5%99%A8/" style="color: #00bcd4">服务器</a>
         </span>
         
         <span class="tag">
             
-            <a href="/tags/HomeLab/" style="color: #ffa2c4">HomeLab</a>
-        </span>
-        
-        <span class="tag">
-            
-            <a href="/tags/SSL/" style="color: #03a9f4">SSL</a>
+            <a href="/tags/SSL/" style="color: #ffa2c4">SSL</a>
         </span>
         
     </div>
@@ -261,12 +264,12 @@
         
         <span class="tag">
             
-            <a href="/tags/%E6%9C%8D%E5%8A%A1%E5%99%A8/" style="color: #ff7d73">服务器</a>
+            <a href="/tags/HomeLab/" style="color: #ffa2c4">HomeLab</a>
         </span>
         
         <span class="tag">
             
-            <a href="/tags/HomeLab/" style="color: #00bcd4">HomeLab</a>
+            <a href="/tags/%E6%9C%8D%E5%8A%A1%E5%99%A8/" style="color: #03a9f4">服务器</a>
         </span>
         
         <span class="tag">
@@ -317,12 +320,12 @@
         
         <span class="tag">
             
-            <a href="/tags/%E6%9C%8D%E5%8A%A1%E5%99%A8/" style="color: #ff7d73">服务器</a>
+            <a href="/tags/HomeLab/" style="color: #00bcd4">HomeLab</a>
         </span>
         
         <span class="tag">
             
-            <a href="/tags/HomeLab/" style="color: #ffa2c4">HomeLab</a>
+            <a href="/tags/%E6%9C%8D%E5%8A%A1%E5%99%A8/" style="color: #00a596">服务器</a>
         </span>
         
         <span class="tag">
@@ -355,66 +358,6 @@
             <h1 id="起因"><a href="#起因" class="headerlink" title="起因"></a>起因</h1><p>在Authentik的折腾中由于我们没有https导致passkey无法使用</p>
 <p>并且想使用passkey必须要可用的证书 Chrome提示什么不安全的连接即使有https也是无法使用的</p>
 <p>所以我们需要给.lan域名签一个证书并信任他</p>
-<h1 id="开始折腾"><a href="#开始折腾" class="headerlink" title="开始折腾"></a>开始折腾</h1><p>妈的傻逼ChatGPT 让我给*.lan域名去签名</p>
-<p>根本用不了</p>
-<p>这里要注意的点就是域名只能签诸如*.k8s.lan这样的通配符</p>
-<p>以下命令在Master节点上执行就好</p>
-<pre><code class="Bash">openssl genpkey -algorithm RSA -out private.key
-openssl req -new -key private.key -out csr.csr
-</code></pre>
-<p>新建一个san.cnf文件 写上如下内容</p>
-<pre><code class="CNF">[req]
-req_extensions = v3_req
-distinguished_name = req_distinguished_name
-
-[req_distinguished_name]
-
-[v3_req]
-subjectAltName = @alt_names
-
-[alt_names]
-DNS.1 = *.k8s.lan
-DNS.2 = www.example.com
-</code></pre>
-<p>然后保存继续输入</p>
-<pre><code class="Bash">openssl x509 -req -in csr.csr -signkey private.key -out certificate.crt -extfile san.cnf -extensions v3_req -days 3650
-</code></pre>
-<p>将生成一张有效期10年 给*.k8s.lan使用的证书</p>
-<p>然后scp把certificate.crt这个证书拷贝下来 并且添加到受信任的根证书签发机构</p>
-<p>然后把证书添加到Secret</p>
-<p>这里要注意的是，Secret必须与Ingress配置处于同一个命名空间 否则Controller认不到</p>
-<pre><code class="Bash">kubectl create secret tls authentik-tls-secret --key private.key --cert certificate.crt -n authentik
-</code></pre>
-<p>然后Ingress配置如下</p>
-<pre><code class="YAML">apiVersion: networking.k8s.io/v1
-kind: Ingress
-metadata:
-  name: authentik-tls-ingress
-  namespace: authentik
-  annotations:
-    nginx.ingress.kubernetes.io/ssl-passthrough: &#39;true&#39;
-    nginx.ingress.kubernetes.io/ssl-redirect: &#39;true&#39;
-spec:
-  tls:
-    - hosts:
-        - authentik.k8s.lan
-      secretName: wildcard-lan-secret
-  rules:
-    - host: authentik.k8s.lan
-      http:
-        paths:
-          - path: /
-            pathType: Prefix
-            backend:
-              service:
-                name: authentik-server
-                port:
-                  number: 9000
-</code></pre>
-<p>apply这个yml</p>
-<p>不出意外就能以Https访问authhentik.k8s.lan了</p>
-<p><img src="https://s2.loli.net/2025/10/10/wOmxUKjr9W5oZtd.png" alt="ea53d3b3-a441-4918-850b-660cd46ce283.png"></p>
-
             
         </div>
     </div>
@@ -428,7 +371,7 @@ spec:
         
         <span class="tag">
             
-            <a href="/tags/HomeLab/" style="color: #00bcd4">HomeLab</a>
+            <a href="/tags/HomeLab/" style="color: #03a9f4">HomeLab</a>
         </span>
         
     </div>
@@ -511,12 +454,12 @@ spec:
         
         <span class="tag">
             
-            <a href="/tags/%E6%9C%8D%E5%8A%A1%E5%99%A8/" style="color: #00bcd4">服务器</a>
+            <a href="/tags/HomeLab/" style="color: #03a9f4">HomeLab</a>
         </span>
         
         <span class="tag">
             
-            <a href="/tags/HomeLab/" style="color: #03a9f4">HomeLab</a>
+            <a href="/tags/%E6%9C%8D%E5%8A%A1%E5%99%A8/" style="color: #00bcd4">服务器</a>
         </span>
         
     </div>
@@ -559,22 +502,22 @@ spec:
         
         <span class="tag">
             
-            <a href="/tags/%E9%80%86%E5%90%91/" style="color: #ff7d73">逆向</a>
+            <a href="/tags/%E9%80%86%E5%90%91/" style="color: #00bcd4">逆向</a>
         </span>
         
         <span class="tag">
             
-            <a href="/tags/%E9%9F%B3%E6%B8%B8/" style="color: #ffa2c4">音游</a>
+            <a href="/tags/%E9%9F%B3%E6%B8%B8/" style="color: #03a9f4">音游</a>
         </span>
         
         <span class="tag">
             
-            <a href="/tags/Chunithm/" style="color: #00a596">Chunithm</a>
+            <a href="/tags/Chunithm/" style="color: #ff7d73">Chunithm</a>
         </span>
         
         <span class="tag">
             
-            <a href="/tags/IDA/" style="color: #ffa2c4">IDA</a>
+            <a href="/tags/IDA/" style="color: #00a596">IDA</a>
         </span>
         
     </div>
@@ -621,17 +564,17 @@ spec:
         
         <span class="tag">
             
-            <a href="/tags/R730/" style="color: #00bcd4">R730</a>
+            <a href="/tags/%E6%9C%8D%E5%8A%A1%E5%99%A8/" style="color: #00bcd4">服务器</a>
         </span>
         
         <span class="tag">
             
-            <a href="/tags/%E6%9C%8D%E5%8A%A1%E5%99%A8/" style="color: #ff7d73">服务器</a>
+            <a href="/tags/R730/" style="color: #03a9f4">R730</a>
         </span>
         
         <span class="tag">
             
-            <a href="/tags/%E6%95%B0%E6%8D%AE%E5%A4%87%E4%BB%BD/" style="color: #00a596">数据备份</a>
+            <a href="/tags/%E6%95%B0%E6%8D%AE%E5%A4%87%E4%BB%BD/" style="color: #00bcd4">数据备份</a>
         </span>
         
     </div>
@@ -671,7 +614,7 @@ spec:
         
         <span class="tag">
             
-            <a href="/tags/%E5%BC%80%E5%8F%91/" style="color: #ffa2c4">开发</a>
+            <a href="/tags/%E5%BC%80%E5%8F%91/" style="color: #00a596">开发</a>
         </span>
         
     </div>
@@ -715,12 +658,12 @@ spec:
         
         <span class="tag">
             
-            <a href="/tags/%E9%80%86%E5%90%91/" style="color: #00bcd4">逆向</a>
+            <a href="/tags/%E9%80%86%E5%90%91/" style="color: #00a596">逆向</a>
         </span>
         
         <span class="tag">
             
-            <a href="/tags/%E9%9F%B3%E6%B8%B8/" style="color: #ff7d73">音游</a>
+            <a href="/tags/%E9%9F%B3%E6%B8%B8/" style="color: #00bcd4">音游</a>
         </span>
         
     </div>

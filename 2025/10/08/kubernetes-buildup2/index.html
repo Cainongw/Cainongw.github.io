@@ -175,21 +175,21 @@
             
             <span class="tag">
                 
-                <a href="/tags/%E6%9C%8D%E5%8A%A1%E5%99%A8/" style="color: #00a596">
-                    服务器
-                </a>
-            </span>
-            
-            <span class="tag">
-                
-                <a href="/tags/HomeLab/" style="color: #ffa2c4">
+                <a href="/tags/HomeLab/" style="color: #00bcd4">
                     HomeLab
                 </a>
             </span>
             
             <span class="tag">
                 
-                <a href="/tags/%E5%AE%B9%E5%99%A8%E5%8C%96/" style="color: #03a9f4">
+                <a href="/tags/%E6%9C%8D%E5%8A%A1%E5%99%A8/" style="color: #ffa2c4">
+                    服务器
+                </a>
+            </span>
+            
+            <span class="tag">
+                
+                <a href="/tags/%E5%AE%B9%E5%99%A8%E5%8C%96/" style="color: #ff7d73">
                     容器化
                 </a>
             </span>
@@ -310,6 +310,10 @@ spec:
 <pre><code class="Bash">helm repo add longhorn https://charts.longhorn.io
 helm repo update
 helm install longhorn longhorn/longhorn --namespace longhorn-system --create-namespace --version 1.10.0
+</code></pre>
+<p>然后为了解锁完全体的Longhorn 也就是多节点读写 需要安装nfs tools</p>
+<p>需要在所有节点上执行</p>
+<pre><code class="Bash">sudo apt-get install -y nfs-common
 </code></pre>
 <h1 id="Dashboard"><a href="#Dashboard" class="headerlink" title="Dashboard"></a>Dashboard</h1><p>我觉得最好用的应该是国产的Kuboard</p>
 <p>他这里推荐用另一台宿主机的docker跑</p>

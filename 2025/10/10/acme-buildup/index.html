@@ -175,21 +175,21 @@
             
             <span class="tag">
                 
-                <a href="/tags/%E6%9C%8D%E5%8A%A1%E5%99%A8/" style="color: #00a596">
-                    服务器
-                </a>
-            </span>
-            
-            <span class="tag">
-                
-                <a href="/tags/HomeLab/" style="color: #00bcd4">
+                <a href="/tags/HomeLab/" style="color: #00a596">
                     HomeLab
                 </a>
             </span>
             
             <span class="tag">
                 
-                <a href="/tags/SSL/" style="color: #ff7d73">
+                <a href="/tags/%E6%9C%8D%E5%8A%A1%E5%99%A8/" style="color: #ff7d73">
+                    服务器
+                </a>
+            </span>
+            
+            <span class="tag">
+                
+                <a href="/tags/SSL/" style="color: #00a596">
                     SSL
                 </a>
             </span>
@@ -200,6 +200,9 @@
     
     <div class="content" v-pre>
         <p>我们已经解决了K8s内集群的证书 现在需要解决我们直接跑在虚拟机上的一些服务的证书签名了</p>
+<p>之前是自己签名 现在发现可以用根证书+ACME统一签名</p>
+<p>因为是根证书 实际上可以在Ingress里设置任何一个域名（即使他已经存在）</p>
+<p>甚至可以把baidu换成google（</p>
 <span id="more"></span> 
 
 <h1 id="方案选择"><a href="#方案选择" class="headerlink" title="方案选择"></a>方案选择</h1><h2 id="Caddy"><a href="#Caddy" class="headerlink" title="Caddy"></a>Caddy</h2><p>我们可以使用Caddy的tls internal去简单的给局域网的服务设置反代</p>
@@ -513,6 +516,64 @@ metadata:
 </code></pre>
 <p>然后不出意外的话就可以在局域网内给证书签名了 值得一提的是申请证书的设备也要信任我们的根证书才可以</p>
 <p><img src="https://s2.loli.net/2025/10/12/Bq89wvnAUNzGrQu.png" alt="1a7dc71693a84a6df5025c77055ad11b.png"></p>
+<h3 id="Certmanager"><a href="#Certmanager" class="headerlink" title="Certmanager"></a>Certmanager</h3><p>在K8s集群内最好的方式应该还是用Certmanager去负责Ingress的自签名，创建好Issuer之后只需要在Ingress配置里加个标签 Certmanager就会自动帮我们完成http挑战+证书申请+部署</p>
+<p>还是很方便的</p>
+<p>在Master节点上执行</p>
+<pre><code class="Bash">helm install   cert-manager oci://quay.io/jetstack/charts/cert-manager   --version v1.19.0   --namespace cert-manager   --create-namespace   --set crds.enabled=true
+</code></pre>
+<p>然后创建一个Cluster Issuer</p>
+<pre><code class="YAML">apiVersion: cert-manager.io/v1
+kind: ClusterIssuer
+metadata:
+  name: step-ca
+spec:
+  acme:
+    server: https://ca.k8s.lan/acme/acme/directory  #ACME服务器地址
+    email: admin@k8s.lan
+spec:
+  acme:
+    privateKeySecretRef:
+      name: my-acme-account-key
+    server: https://ca.k8s.lan/acme/acme/directory
+    solvers:
+      - http01:
+          ingress:
+            class: nginx-ingress  # Ingress类名 负责http挑战
+</code></pre>
+<p>还没完 因为我们是自己创的证书 所以我们需要让Certmanager也信任根证书才行</p>
+<p>简单来说就是把root cert挂载到Certmanager的/etc/ssl/certs/里</p>
+<p>还没完 挂了之后重启Pod还是不认 我们还需要添加环境变量SSL_CERT_FILE=/etc/ssl/certs/root_ca.crt</p>
+<p>以上都完成之后就可以创建一个Ingress试试了</p>
+<pre><code class="YAML">apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    cert-manager.io/cluster-issuer: my-acme-issuer # 这里要改
+  labels:
+    app: longhorn-ui
+  name: longhorn-ui
+  namespace: longhorn-system
+spec:
+  ingressClassName: nginx-ingress
+  rules:
+    - host: longhorn.k8s.lan
+      http:
+        paths:
+          - backend:
+              service:
+                name: longhorn-ui
+                port:
+                  number: 8000
+            path: /
+            pathType: Prefix
+  tls:
+    - hosts:
+        - longhorn.k8s.lan  # 这里改成你需要的域名
+      secretName: longhorn-tls-secret  # SSL的Secret 名称随意
+</code></pre>
+<p>只需要添加cert-manager.io/cluster-issuer这一行 他就会自动完成证书申请+挑战+证书部署</p>
+<p>还是很强大的</p>
+<p>至此局域网内的证书基本就完善了 应该没啥要折腾的了</p>
 
     </div>
     

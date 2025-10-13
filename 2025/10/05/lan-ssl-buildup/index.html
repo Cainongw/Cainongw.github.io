@@ -175,7 +175,7 @@
             
             <span class="tag">
                 
-                <a href="/tags/HomeLab/" style="color: #ffa2c4">
+                <a href="/tags/HomeLab/" style="color: #00a596">
                     HomeLab
                 </a>
             </span>
@@ -188,6 +188,8 @@
         <h1 id="起因"><a href="#起因" class="headerlink" title="起因"></a>起因</h1><p>在Authentik的折腾中由于我们没有https导致passkey无法使用</p>
 <p>并且想使用passkey必须要可用的证书 Chrome提示什么不安全的连接即使有https也是无法使用的</p>
 <p>所以我们需要给.lan域名签一个证书并信任他</p>
+<span id="more"></span> 
+
 <h1 id="开始折腾"><a href="#开始折腾" class="headerlink" title="开始折腾"></a>开始折腾</h1><p>妈的傻逼ChatGPT 让我给*.lan域名去签名</p>
 <p>根本用不了</p>
 <p>这里要注意的点就是域名只能签诸如*.k8s.lan这样的通配符</p>
@@ -247,6 +249,7 @@ spec:
 <p>apply这个yml</p>
 <p>不出意外就能以Https访问authhentik.k8s.lan了</p>
 <p><img src="https://s2.loli.net/2025/10/10/wOmxUKjr9W5oZtd.png" alt="ea53d3b3-a441-4918-850b-660cd46ce283.png"></p>
+<p>后续更新：自建ACME之后只需要信任根证书 这个方法已经弃用了（（</p>
 
     </div>
     
