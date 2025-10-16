@@ -175,21 +175,21 @@
             
             <span class="tag">
                 
-                <a href="/tags/HomeLab/" style="color: #00a596">
-                    HomeLab
-                </a>
-            </span>
-            
-            <span class="tag">
-                
-                <a href="/tags/%E6%9C%8D%E5%8A%A1%E5%99%A8/" style="color: #ff7d73">
+                <a href="/tags/%E6%9C%8D%E5%8A%A1%E5%99%A8/" style="color: #03a9f4">
                     服务器
                 </a>
             </span>
             
             <span class="tag">
                 
-                <a href="/tags/SSL/" style="color: #00a596">
+                <a href="/tags/HomeLab/" style="color: #ffa2c4">
+                    HomeLab
+                </a>
+            </span>
+            
+            <span class="tag">
+                
+                <a href="/tags/SSL/" style="color: #00bcd4">
                     SSL
                 </a>
             </span>
@@ -574,6 +574,43 @@ spec:
 <p>只需要添加cert-manager.io/cluster-issuer这一行 他就会自动完成证书申请+挑战+证书部署</p>
 <p>还是很强大的</p>
 <p>至此局域网内的证书基本就完善了 应该没啥要折腾的了</p>
+<h1 id="后续一个小更新："><a href="#后续一个小更新：" class="headerlink" title="后续一个小更新："></a>后续一个小更新：</h1><p>step-ca默认证书有效期只有24小时 有点太短了其实</p>
+<p>我们去修改一下他的configmap</p>
+<pre><code class="JSON">&#123;
+    &quot;root&quot;: &quot;/home/step/certs/root_ca.crt&quot;,
+    &quot;crt&quot;: &quot;/home/step/certs/intermediate_ca.crt&quot;,
+    &quot;key&quot;: &quot;/home/step/secrets/intermediate_ca_key&quot;,
+    &quot;address&quot;: &quot;:9000&quot;,
+    &quot;dnsNames&quot;: [
+        &quot;step-ca-server.step-ca.svc.cluster.local&quot;,
+        &quot;ca.k8s.lan&quot;
+    ],
+    &quot;logger&quot;: &#123;
+        &quot;format&quot;: &quot;text&quot;
+    &#125;,
+    &quot;db&quot;: &#123;
+        &quot;type&quot;: &quot;badger&quot;,
+        &quot;dataSource&quot;: &quot;/home/step/db&quot;
+    &#125;,
+    &quot;authority&quot;: &#123;
+        &quot;provisioners&quot;: [
+            &#123;
+                &quot;type&quot;: &quot;ACME&quot;,
+                &quot;name&quot;: &quot;acme&quot;,
+                &quot;forceCN&quot;: true,
+                &quot;claims&quot;: &#123;
+                  &quot;minTLSCertDuration&quot;: &quot;1h&quot;,
+                  &quot;maxTLSCertDuration&quot;: &quot;8760h&quot;,
+                  &quot;defaultTLSCertDuration&quot;: &quot;168h&quot;
+                &#125;
+            &#125;
+        ]
+    &#125;
+&#125;
+</code></pre>
+<p>这样的话默认有效期就是7天 足够了</p>
+<p>当然你把”defaultTLSCertDuration”改成比如87600h有效期直接10年 也是可以的</p>
+<p>但各种服务定期能续签才能说明ACME工作正常 不然啥时候炸了你都不知道（</p>
 
     </div>
     

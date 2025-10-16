@@ -3,7 +3,7 @@
 <html lang="zh">
 <head>
     <meta charset="utf-8" />
-    <title>记一次局域网内.lan域名的证书自签名并挂载到Ingress | Cainong&#39;s Blog</title>
+    <title>记一次Harbor在K8s上的搭建 | Cainong&#39;s Blog</title>
     <meta name="author" content="Cainong" />
     <meta name="description" content="" />
     <meta name="keywords" content="" />
@@ -156,14 +156,14 @@
         <div id="main" :class="loading ? 'into-enter-from': 'into-enter-active'">
             <div class="article">
     <div>
-        <h1>记一次局域网内.lan域名的证书自签名并挂载到Ingress</h1>
+        <h1>记一次Harbor在K8s上的搭建</h1>
     </div>
     <div class="info">
         <span class="date">
             <span class="icon">
                 <i class="fa-solid fa-calendar fa-fw"></i>
             </span>
-            2025/10/5
+            2025/10/14
         </span>
         
         
@@ -175,7 +175,7 @@
             
             <span class="tag">
                 
-                <a href="/tags/HomeLab/" style="color: #ffa2c4">
+                <a href="/tags/HomeLab/" style="color: #ff7d73">
                     HomeLab
                 </a>
             </span>
@@ -187,76 +187,86 @@
                 </a>
             </span>
             
+            <span class="tag">
+                
+                <a href="/tags/%E9%95%9C%E5%83%8F%E4%BB%93%E5%BA%93/" style="color: #ffa2c4">
+                    镜像仓库
+                </a>
+            </span>
+            
+            <span class="tag">
+                
+                <a href="/tags/Docker/" style="color: #03a9f4">
+                    Docker
+                </a>
+            </span>
+            
         </span>
         
     </div>
     
     <div class="content" v-pre>
-        <h1 id="起因"><a href="#起因" class="headerlink" title="起因"></a>起因</h1><p>在Authentik的折腾中由于我们没有https导致passkey无法使用</p>
-<p>并且想使用passkey必须要可用的证书 Chrome提示什么不安全的连接即使有https也是无法使用的</p>
-<p>所以我们需要给.lan域名签一个证书并信任他</p>
+        <h1 id="起因"><a href="#起因" class="headerlink" title="起因"></a>起因</h1><p>我之前一直让K8s的Node直接走软路由代理</p>
+<p>那包能用的 但一直这样也不是个办法 我别的设备（比如我自己电脑上的WSL）现在都还下不来Docker镜像</p>
+<p><del>傻逼微软的HyperVisior跟史一样 时不时给我电脑蓝一下</del></p>
+<p>然后我需要迁移以前的Docker镜像到集群中 最好是能找个地方暂存一下我的镜像</p>
+<p>顺便作为镜像加速站 这是最好的</p>
+<p>目前在强大和易部署之间比较平衡的应该就是Harbor</p>
 <span id="more"></span> 
 
-<h1 id="开始折腾"><a href="#开始折腾" class="headerlink" title="开始折腾"></a>开始折腾</h1><p>妈的傻逼ChatGPT 让我给*.lan域名去签名</p>
-<p>根本用不了</p>
-<p>这里要注意的点就是域名只能签诸如*.k8s.lan这样的通配符</p>
-<p>以下命令在Master节点上执行就好</p>
-<pre><code class="Bash">openssl genpkey -algorithm RSA -out private.key
-openssl req -new -key private.key -out csr.csr
+<h1 id="开始折腾"><a href="#开始折腾" class="headerlink" title="开始折腾"></a>开始折腾</h1><p>我觉得应该不难吧（</p>
+<p>参考到了一篇Blog 在<a target="_blank" rel="noopener" href="https://todoit.tech/k8s/harbor/#%E4%BF%AE%E6%94%B9%E5%8F%AF%E9%85%8D%E7%BD%AE%E9%A1%B9">这里</a></p>
+<p>先添加他的仓库</p>
+<pre><code class="Bash">helm repo add harbor https://helm.goharbor.io
 </code></pre>
-<p>新建一个san.cnf文件 写上如下内容</p>
-<pre><code class="CNF">[req]
-req_extensions = v3_req
-distinguished_name = req_distinguished_name
-
-[req_distinguished_name]
-
-[v3_req]
-subjectAltName = @alt_names
-
-[alt_names]
-DNS.1 = *.k8s.lan
-DNS.2 = www.example.com
+<p>然后修改一下他的Value文件 主要是改域名</p>
+<p>然后安装</p>
+<pre><code class="Bash">kubectl create ns harbor
+helm install harbor harbor/harbor -n harbor -f values.yaml
 </code></pre>
-<p>然后保存继续输入</p>
-<pre><code class="Bash">openssl x509 -req -in csr.csr -signkey private.key -out certificate.crt -extfile san.cnf -extensions v3_req -days 3650
+<p>卧槽成了？一切顺利（</p>
+<p>然后我们去给Ingress加一行</p>
+<pre><code class="YAML">annotations:
+    cert-manager.io/cluster-issuer: my-acme-issuer 
 </code></pre>
-<p>将生成一张有效期10年 给*.k8s.lan使用的证书</p>
-<p>然后scp把certificate.crt这个证书拷贝下来 并且添加到受信任的根证书签发机构</p>
-<p>然后把证书添加到Secret</p>
-<p>这里要注意的是，Secret必须与Ingress配置处于同一个命名空间 否则Controller认不到</p>
-<pre><code class="Bash">kubectl create secret tls authentik-tls-secret --key private.key --cert certificate.crt -n authentik
+<p>让Certmanager自动申请证书</p>
+<p>完事了？就这？就这？</p>
+<p>然后的话如果没有改Values的话</p>
+<p>默认账号密码是admin Harbor12345</p>
+<p>完事之后就可以测试一下是否正常了</p>
+<p>找个别的设备 我这里直接Windows了</p>
+<p>打开命令行，先登录</p>
+<pre><code class="Powershell">docker login -u admin -p Harbor12345 harbor.k8s.lan
 </code></pre>
-<p>然后Ingress配置如下</p>
-<pre><code class="YAML">apiVersion: networking.k8s.io/v1
-kind: Ingress
-metadata:
-  name: authentik-tls-ingress
-  namespace: authentik
-  annotations:
-    nginx.ingress.kubernetes.io/ssl-passthrough: &#39;true&#39;
-    nginx.ingress.kubernetes.io/ssl-redirect: &#39;true&#39;
-spec:
-  tls:
-    - hosts:
-        - authentik.k8s.lan
-      secretName: wildcard-lan-secret
-  rules:
-    - host: authentik.k8s.lan
-      http:
-        paths:
-          - path: /
-            pathType: Prefix
-            backend:
-              service:
-                name: authentik-server
-                port:
-                  number: 9000
+<p>然后随便pull一个镜像，我们尝试push到自己的镜像仓库上面</p>
+<pre><code class="Powershell">docker pull listenzz/gohttpserver:latest
+docker tag listenzz/gohttpserver:latest harbor.k8s.lan/library/gohttpserver:latest
+docker push harbor.k8s.lan/library/gohttpserver:latest
 </code></pre>
-<p>apply这个yml</p>
-<p>不出意外就能以Https访问authhentik.k8s.lan了</p>
-<p><img src="https://s2.loli.net/2025/10/10/wOmxUKjr9W5oZtd.png" alt="ea53d3b3-a441-4918-850b-660cd46ce283.png"></p>
-<p>后续更新：自建ACME之后只需要信任根证书 这个方法已经弃用了（（</p>
+<p><img src="https://s2.loli.net/2025/10/16/5QzTjkM7oR2GdaW.png" alt="919034f5-eb76-4fbc-89e7-5816800f6812.png"></p>
+<p>没问题了</p>
+<h1 id="Docker镜像仓库的配置"><a href="#Docker镜像仓库的配置" class="headerlink" title="Docker镜像仓库的配置"></a>Docker镜像仓库的配置</h1><p>然后的话去设置添加下DockerHub作为上游仓库</p>
+<p><img src="https://s2.loli.net/2025/10/16/zvIoSxWq4iC7kKc.png" alt="1a6e73f5-fa68-4bab-9925-14ea7f1f1339.png"></p>
+<p><del>Windows的HDR又出问题了</del></p>
+<p>访问ID是你dockerhub的用户名 访问密码是你申请的Token 可以省略的</p>
+<p>再新建一个项目 打开镜像代理</p>
+<p><img src="https://s2.loli.net/2025/10/16/S4s1QniyMHedGL6.png" alt="1326f7e0-43ea-40cf-a115-86227c0ab717.png"></p>
+<p>接下来我们尝试从镜像仓库pull一个本地没有的镜像</p>
+<pre><code class="Powershell">PS C:\Users\Cainong&gt; docker pull harbor.k8s.lan/proxy/library/nginx:latest
+latest: Pulling from proxy/library/nginx
+8c7716127147: Pull complete
+250b90fb2b9a: Pull complete
+5d8ea9f4c626: Pull complete
+58d144c4badd: Pull complete
+b459da543435: Pull complete
+8da8ed3552af: Pull complete
+54e822d8ee0c: Pull complete
+Digest: sha256:3b7732505933ca591ce4a6d860cb713ad96a3176b82f7979a8dfa9973486a0d6
+Status: Downloaded newer image for harbor.k8s.lan/proxy/library/nginx:latest
+harbor.k8s.lan/proxy/library/nginx:latest
+</code></pre>
+<p>Harbor会缓存Nginx的镜像到本地 下次下载会快很多</p>
+<p>没问题了 就酱把（</p>
 
     </div>
     

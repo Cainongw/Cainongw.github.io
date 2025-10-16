@@ -3,7 +3,7 @@
 <html lang="zh">
 <head>
     <meta charset="utf-8" />
-    <title>记一次局域网内.lan域名的证书自签名并挂载到Ingress | Cainong&#39;s Blog</title>
+    <title>Cainong&#39;s Blog</title>
     <meta name="author" content="Cainong" />
     <meta name="description" content="" />
     <meta name="keywords" content="" />
@@ -42,9 +42,7 @@
 
 
 
-
-
-
+<script src="/js/lib/home.js"></script>
 
 <link rel="stylesheet" href="/css/main.css" />
 
@@ -154,117 +152,134 @@
 </transition>
 
         <div id="main" :class="loading ? 'into-enter-from': 'into-enter-active'">
-            <div class="article">
-    <div>
-        <h1>记一次局域网内.lan域名的证书自签名并挂载到Ingress</h1>
+            <div id="home-head">
+    <div
+        id="home-background"
+        ref="homeBackground"
+        data-images="/images/background.jpg"
+    ></div>
+    <div id="home-info" @click="homeClick">
+        <span class="loop"></span>
+        <span class="loop"></span>
+        <span class="loop"></span>
+        <span class="loop"></span>
+        <span class="info">
+            <div class="wrap">
+                <h1>Cainong&#39;s Blog</h1>
+                <h3></h3>
+                <h5></h5>
+            </div>
+        </span>
     </div>
-    <div class="info">
+</div>
+<div
+    id="home-posts-wrap"
+    ref="homePostsWrap"
+    true
+>
+    <div id="home-posts">
+        
+
+<div class="post">
+    <a href="/2022/04/30/lazer-build-install/">
+        <h2 class="post-title">iOS上osu!lazer的手动构建与自签安装</h2>
+    </a>
+    <div class="category-and-date">
+        
         <span class="date">
             <span class="icon">
                 <i class="fa-solid fa-calendar fa-fw"></i>
             </span>
-            2025/10/5
+            2022/4/30
         </span>
         
         
-        <span class="tags">
-            <span class="icon">
-                <i class="fa-solid fa-tags fa-fw"></i>
-            </span>
+    </div>
+    <div class="description">
+        <div class="content" v-pre>
             
+            <h1 id="起因"><a href="#起因" class="headerlink" title="起因"></a>起因</h1><p>在不知道多久之前，我注意到<code>lazer</code>有<code>iOS</code>版本的时候，我就满怀期待的冲向了<code>osu</code>官网</p>
+<p>哦~~是<code>TestFlight</code></p>
+<p>结果 一点进去</p>
             
-            <span class="tag">
-                
-                <a href="/tags/HomeLab/" style="color: #ffa2c4">
-                    HomeLab
-                </a>
-            </span>
+        </div>
+    </div>
+    <div class="post-tags">
+        
+        <span class="icon">
+            <i class="fa-solid fa-tags fa-fw"></i>
+        </span>
+        
+        
+        
+        <span class="tag">
             
-            <span class="tag">
-                
-                <a href="/tags/K8s/" style="color: #00bcd4">
-                    K8s
-                </a>
-            </span>
+            <a href="/tags/iOS/" style="color: #ffa2c4">iOS</a>
+        </span>
+        
+        <span class="tag">
             
+            <a href="/tags/osu-lazer/" style="color: #03a9f4">osu!lazer</a>
+        </span>
+        
+        <span class="tag">
+            
+            <a href="/tags/%E6%89%8B%E5%8A%A8%E6%9E%84%E5%BB%BA/" style="color: #00a596">手动构建</a>
+        </span>
+        
+        <span class="tag">
+            
+            <a href="/tags/%E8%87%AA%E7%AD%BE%E5%AE%89%E8%A3%85/" style="color: #ff7d73">自签安装</a>
         </span>
         
     </div>
+    <a href="/2022/04/30/lazer-build-install/" class="go-post">阅读全文</a>
+</div>
+
+
+        <div class="page-current">
     
-    <div class="content" v-pre>
-        <h1 id="起因"><a href="#起因" class="headerlink" title="起因"></a>起因</h1><p>在Authentik的折腾中由于我们没有https导致passkey无法使用</p>
-<p>并且想使用passkey必须要可用的证书 Chrome提示什么不安全的连接即使有https也是无法使用的</p>
-<p>所以我们需要给.lan域名签一个证书并信任他</p>
-<span id="more"></span> 
-
-<h1 id="开始折腾"><a href="#开始折腾" class="headerlink" title="开始折腾"></a>开始折腾</h1><p>妈的傻逼ChatGPT 让我给*.lan域名去签名</p>
-<p>根本用不了</p>
-<p>这里要注意的点就是域名只能签诸如*.k8s.lan这样的通配符</p>
-<p>以下命令在Master节点上执行就好</p>
-<pre><code class="Bash">openssl genpkey -algorithm RSA -out private.key
-openssl req -new -key private.key -out csr.csr
-</code></pre>
-<p>新建一个san.cnf文件 写上如下内容</p>
-<pre><code class="CNF">[req]
-req_extensions = v3_req
-distinguished_name = req_distinguished_name
-
-[req_distinguished_name]
-
-[v3_req]
-subjectAltName = @alt_names
-
-[alt_names]
-DNS.1 = *.k8s.lan
-DNS.2 = www.example.com
-</code></pre>
-<p>然后保存继续输入</p>
-<pre><code class="Bash">openssl x509 -req -in csr.csr -signkey private.key -out certificate.crt -extfile san.cnf -extensions v3_req -days 3650
-</code></pre>
-<p>将生成一张有效期10年 给*.k8s.lan使用的证书</p>
-<p>然后scp把certificate.crt这个证书拷贝下来 并且添加到受信任的根证书签发机构</p>
-<p>然后把证书添加到Secret</p>
-<p>这里要注意的是，Secret必须与Ingress配置处于同一个命名空间 否则Controller认不到</p>
-<pre><code class="Bash">kubectl create secret tls authentik-tls-secret --key private.key --cert certificate.crt -n authentik
-</code></pre>
-<p>然后Ingress配置如下</p>
-<pre><code class="YAML">apiVersion: networking.k8s.io/v1
-kind: Ingress
-metadata:
-  name: authentik-tls-ingress
-  namespace: authentik
-  annotations:
-    nginx.ingress.kubernetes.io/ssl-passthrough: &#39;true&#39;
-    nginx.ingress.kubernetes.io/ssl-redirect: &#39;true&#39;
-spec:
-  tls:
-    - hosts:
-        - authentik.k8s.lan
-      secretName: wildcard-lan-secret
-  rules:
-    - host: authentik.k8s.lan
-      http:
-        paths:
-          - path: /
-            pathType: Prefix
-            backend:
-              service:
-                name: authentik-server
-                port:
-                  number: 9000
-</code></pre>
-<p>apply这个yml</p>
-<p>不出意外就能以Https访问authhentik.k8s.lan了</p>
-<p><img src="https://s2.loli.net/2025/10/10/wOmxUKjr9W5oZtd.png" alt="ea53d3b3-a441-4918-850b-660cd46ce283.png"></p>
-<p>后续更新：自建ACME之后只需要信任根证书 这个方法已经弃用了（（</p>
+    <a class="page-num" href="/page/2/">
+        <i class="fa-solid fa-caret-left fa-fw"></i>
+    </a>
+    <a class="page-num" href="/">1</a>
+    <span class="page-omit">...</span>
+    
+    <span class="current">3</span>
+    
+    
+    
+    
+</div>
 
     </div>
     
-    
-    
-    
-    
-    
+    <div id="home-card">
+        <div id="card-style">
+    <div id="card-div">
+        <div class="avatar">
+            <img src="/images/avatar.png" alt="avatar" />
+        </div>
+        <div class="name">Cainong</div>
+        <div class="description">
+            <p>这里是Cainong的blog<br>用来记录自己瞎折腾的东西</p>
+
+        </div>
+        
+        
+        <div class="friend-links">
+            <strong>友情链接</strong>
+            
+            <div class="friend-link">
+                <a target="_blank" rel="noopener" href="https://young-lord.github.io/">LY</a>
+            </div>
+            
+        </div>
+        
+    </div>
+</div>
+
+    </div>
     
 </div>
 
@@ -296,12 +311,6 @@ spec:
         
     </div>
     <script src="/js/main.js"></script>
-    
-    
-
-
-
-
     
 </body>
 </html>

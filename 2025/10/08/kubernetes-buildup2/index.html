@@ -175,21 +175,21 @@
             
             <span class="tag">
                 
-                <a href="/tags/HomeLab/" style="color: #00bcd4">
-                    HomeLab
-                </a>
-            </span>
-            
-            <span class="tag">
-                
-                <a href="/tags/%E6%9C%8D%E5%8A%A1%E5%99%A8/" style="color: #ffa2c4">
+                <a href="/tags/%E6%9C%8D%E5%8A%A1%E5%99%A8/" style="color: #03a9f4">
                     服务器
                 </a>
             </span>
             
             <span class="tag">
                 
-                <a href="/tags/%E5%AE%B9%E5%99%A8%E5%8C%96/" style="color: #ff7d73">
+                <a href="/tags/HomeLab/" style="color: #00a596">
+                    HomeLab
+                </a>
+            </span>
+            
+            <span class="tag">
+                
+                <a href="/tags/%E5%AE%B9%E5%99%A8%E5%8C%96/" style="color: #00bcd4">
                     容器化
                 </a>
             </span>
@@ -323,6 +323,38 @@ helm install longhorn longhorn/longhorn --namespace longhorn-system --create-nam
 <p>如果你已经部署了Longhorn和上面的服务 Authentik应该没啥问题 直接能跑</p>
 <p>按照文档跑就好</p>
 <p><a target="_blank" rel="noopener" href="https://docs.goauthentik.io/install-config/install/kubernetes/">https://docs.goauthentik.io/install-config/install/kubernetes/</a></p>
+<h2 id="AquaDX"><a href="#AquaDX" class="headerlink" title="AquaDX"></a>AquaDX</h2><p>这个就不能重新搭建了 之前用了好久的游戏数据都在里面</p>
+<p>我们看到Github上面有提到如果想反向代理的话有一些指南：</p>
+<pre><code>AquaDX 使用哪些端口？
+80：ALL.Net，游戏端点
+8443：计费
+22345：Aime
+我怎样才能在反向代理后面托管它？
+以下是一些提示：
+
+ALL.Net 和游戏端点可以代理
+计费端点可以通过代理进行，但需要额外的步骤：启用弃用的TLS_RSA_*密码并使用自签名ib.naominet.jpTLS 证书 - 或者干脆禁用它
+不要代理 Aime 端点：它是 TCP 流量，而不是 HTTP
+不要压缩流量：如果可以的话，按原样进行代理
+不要使用 CDN 代理：例如 Cloudflare
+使用您的公共 IP 或主机名allnet.server.host进行设置application.properties
+您可以更改内部端点端口（aqua &lt;-&gt; 代理），但暴露的外部端口需要与默认端口相同（代理 &lt;-&gt; 游戏）
+</code></pre>
+<p>说白了就是：</p>
+<p>80可以代理</p>
+<p>8443有点麻烦</p>
+<p>22345不推荐代理</p>
+<p>那还说啥 我们直接给他分配一个LoadBalance得了</p>
+<pre><code class="YAML">
+</code></pre>
+<p>这个简单 问题是数据怎么迁移呢</p>
+<p>一开始我想的是在原机子上打包docker</p>
+<p>但我傻逼了对不起 挂载的卷不会打包进镜像</p>
+<p>那我们只能手动打包数据然后用initPod手动解压进PVC里</p>
+<p>然后还有一个关键问题：</p>
+<p>之前为了实现让别人访问 我用的是ZeroTier去组虚拟局域网</p>
+<p>这玩意工作在二层 需要修改host主机的tun配置</p>
+<p>在K8s里肯定是不允许的 我也不敢试 等下把我集群搞炸了</p>
 
     </div>
     
