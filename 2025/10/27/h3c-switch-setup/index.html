@@ -3,7 +3,7 @@
 <html lang="zh">
 <head>
     <meta charset="utf-8" />
-    <title>记一次局域网内.lan域名的证书自签名并挂载到Ingress | Cainong&#39;s Blog</title>
+    <title>记一次H3C S5800三层交换机的配置 | Cainong&#39;s Blog</title>
     <meta name="author" content="Cainong" />
     <meta name="description" content="" />
     <meta name="keywords" content="" />
@@ -156,14 +156,14 @@
         <div id="main" :class="loading ? 'into-enter-from': 'into-enter-active'">
             <div class="article">
     <div>
-        <h1>记一次局域网内.lan域名的证书自签名并挂载到Ingress</h1>
+        <h1>记一次H3C S5800三层交换机的配置</h1>
     </div>
     <div class="info">
         <span class="date">
             <span class="icon">
                 <i class="fa-solid fa-calendar fa-fw"></i>
             </span>
-            2025/10/5
+            2025/10/27
         </span>
         
         
@@ -175,15 +175,15 @@
             
             <span class="tag">
                 
-                <a href="/tags/HomeLab/" style="color: #00a596">
-                    HomeLab
+                <a href="/tags/%E4%BA%A4%E6%8D%A2%E6%9C%BA/" style="color: #ffa2c4">
+                    交换机
                 </a>
             </span>
             
             <span class="tag">
                 
-                <a href="/tags/K8s/" style="color: #ffa2c4">
-                    K8s
+                <a href="/tags/%E7%BD%91%E5%B7%A5/" style="color: #00bcd4">
+                    网工
                 </a>
             </span>
             
@@ -192,71 +192,52 @@
     </div>
     
     <div class="content" v-pre>
-        <h1 id="起因"><a href="#起因" class="headerlink" title="起因"></a>起因</h1><p>在Authentik的折腾中由于我们没有https导致passkey无法使用</p>
-<p>并且想使用passkey必须要可用的证书 Chrome提示什么不安全的连接即使有https也是无法使用的</p>
-<p>所以我们需要给.lan域名签一个证书并信任他</p>
+        <h1 id="起因"><a href="#起因" class="headerlink" title="起因"></a>起因</h1><p>前段时间刮台风，我原来的路由器被水淹了</p>
+<p>把路由器拿起来水都从缝隙漏出来了</p>
+<p>所以索性换路由器了 因为我家两条宽带 所以选择用iKuai去分流</p>
+<p>然后咸鱼收了一台H3C S5800作为核心交换机</p>
+<p>十年前的玩意了 居然有4万兆 16千兆 才300块钱</p>
+<p>光猫接到iKuai的直通网口，一条万兆接口接到交换机</p>
+<p>路由器不是重点，重点是交换机的配置</p>
 <span id="more"></span> 
 
-<h1 id="开始折腾"><a href="#开始折腾" class="headerlink" title="开始折腾"></a>开始折腾</h1><p>妈的傻逼ChatGPT 让我给*.lan域名去签名</p>
-<p>根本用不了</p>
-<p>这里要注意的点就是域名只能签诸如*.k8s.lan这样的通配符</p>
-<p>以下命令在Master节点上执行就好</p>
-<pre><code class="Bash">openssl genpkey -algorithm RSA -out private.key
-openssl req -new -key private.key -out csr.csr
+<h1 id="开始折腾"><a href="#开始折腾" class="headerlink" title="开始折腾"></a>开始折腾</h1><p>不得不说GPT在这一块就是一坨了 给的命令全是错的</p>
+<p>首先的话买一条console线插上去</p>
+<p>然后开启SSH 我可不想坐在热的要死的机房用笔记本敲命令</p>
+<pre><code class="我也不知道这算什么文本类型">&lt;H3C&gt; system-view
+[H3C] ip http enable
+[H3C] ip https enable
+[H3C]public-key local create rsa
+[H3C] ip ssh enable
 </code></pre>
-<p>新建一个san.cnf文件 写上如下内容</p>
-<pre><code class="CNF">[req]
-req_extensions = v3_req
-distinguished_name = req_distinguished_name
-
-[req_distinguished_name]
-
-[v3_req]
-subjectAltName = @alt_names
-
-[alt_names]
-DNS.1 = *.k8s.lan
-DNS.2 = www.example.com
+<p>上述命令生成SSH密钥并开启http的web管理</p>
+<p>我们还没有配置vlan 默认的所有端口都连在vlan 1上</p>
+<pre><code>[H3C] interface vlan-interface 1
+[H3C-VLAN-interface1] ip address 192.168.0.200 255.255.255.0
+[H3C-VLAN-interface1] quit
 </code></pre>
-<p>然后保存继续输入</p>
-<pre><code class="Bash">openssl x509 -req -in csr.csr -signkey private.key -out certificate.crt -extfile san.cnf -extensions v3_req -days 3650
+<p>这里定义了交换机的地址为192.168.0.200/24</p>
+<p>我与日常使用的网段是分开的 而且只有我的电脑能访问这个管理网段</p>
+<pre><code>[H3C] local-user abc
+[H3C-luser-abc] password simple 123456
+[H3C-luser-abc] service-type web
+[H3C-luser-abc] service-type ssh
+[H3C-luser-abc] authorization-attribute level 3
+[H3C-luser-abc] quit
 </code></pre>
-<p>将生成一张有效期10年 给*.k8s.lan使用的证书</p>
-<p>然后scp把certificate.crt这个证书拷贝下来 并且添加到受信任的根证书签发机构</p>
-<p>然后把证书添加到Secret</p>
-<p>这里要注意的是，Secret必须与Ingress配置处于同一个命名空间 否则Controller认不到</p>
-<pre><code class="Bash">kubectl create secret tls authentik-tls-secret --key private.key --cert certificate.crt -n authentik
+<p>创建一个名为abc的用户 密码是123456 请改成自己的名且复杂点</p>
+<pre><code>[H3C]user-interface vty 0 4
+[H3C-ui-vty0-4]authentication-mode scheme
+[H3C-ui-vty0-4]protocol inbound ssh
+[H3C-ui-vty0-4]quit
 </code></pre>
-<p>然后Ingress配置如下</p>
-<pre><code class="YAML">apiVersion: networking.k8s.io/v1
-kind: Ingress
-metadata:
-  name: authentik-tls-ingress
-  namespace: authentik
-  annotations:
-    nginx.ingress.kubernetes.io/ssl-passthrough: &#39;true&#39;
-    nginx.ingress.kubernetes.io/ssl-redirect: &#39;true&#39;
-spec:
-  tls:
-    - hosts:
-        - authentik.k8s.lan
-      secretName: wildcard-lan-secret
-  rules:
-    - host: authentik.k8s.lan
-      http:
-        paths:
-          - path: /
-            pathType: Prefix
-            backend:
-              service:
-                name: authentik-server
-                port:
-                  number: 9000
+<p>然后设置abc的登录方式为password并开启ssh</p>
+<pre><code>[H3C]ssh user abc service-type stelnet authentication-type password
 </code></pre>
-<p>apply这个yml</p>
-<p>不出意外就能以Https访问authhentik.k8s.lan了</p>
-<p><img src="https://s2.loli.net/2025/10/10/wOmxUKjr9W5oZtd.png" alt="ea53d3b3-a441-4918-850b-660cd46ce283.png"></p>
-<p>后续更新：自建ACME之后只需要信任根证书 这个方法已经弃用了（（</p>
+<p>然后用能访问192.168.0.200/24的设备连接SSH 密码就是你之前设置的</p>
+<p><img src="https://s2.loli.net/2025/10/28/eJM3wAoT1Wz8Bky.png" alt="MobaXterm_aHUFOV5cwo.png"></p>
+<p><img src="https://s2.loli.net/2025/10/28/n6VyOq1AjbeSfUJ.png" alt="chrome_nr3D2Ur33C.png"></p>
+<p>完事</p>
 
     </div>
     

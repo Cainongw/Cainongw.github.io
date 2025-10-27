@@ -1,3 +1,4 @@
+https://cainongw.github.io/2025/10/27/h3c-switch-setup/
 https://cainongw.github.io/2025/10/25/waf-buildup/
 https://cainongw.github.io/2025/10/04/authentik-buildup/
 https://cainongw.github.io/2025/10/08/kubernetes-buildup2/
@@ -17,8 +18,8 @@ https://cainongw.github.io/2025/06/22/melonloader-develop/
 https://cainongw.github.io/google6b52dcfa1626dd1c.html
 https://cainongw.github.io/2023/07/01/truenas-raidz/
 https://cainongw.github.io/2023/07/28/shanghai-trip/
-https://cainongw.github.io/2025/06/08/sinmai-reverse/
 https://cainongw.github.io/2023/02/26/sovits3-colab/
+https://cainongw.github.io/2025/06/08/sinmai-reverse/
 https://cainongw.github.io/2023/02/26/sovits3-local/
 https://cainongw.github.io/2023/05/01/diffsinger/
 https://cainongw.github.io/2023/04/30/homelab-r730/
@@ -37,6 +38,8 @@ https://cainongw.github.io/tags/IDA/
 https://cainongw.github.io/tags/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/
 https://cainongw.github.io/tags/Ai/
 https://cainongw.github.io/tags/diff/
+https://cainongw.github.io/tags/%E4%BA%A4%E6%8D%A2%E6%9C%BA/
+https://cainongw.github.io/tags/%E7%BD%91%E5%B7%A5/
 https://cainongw.github.io/tags/K8s/
 https://cainongw.github.io/tags/%E9%95%9C%E5%83%8F%E4%BB%93%E5%BA%93/
 https://cainongw.github.io/tags/Docker/
