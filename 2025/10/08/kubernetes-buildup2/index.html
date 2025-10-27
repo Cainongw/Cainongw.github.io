@@ -175,21 +175,21 @@
             
             <span class="tag">
                 
-                <a href="/tags/HomeLab/" style="color: #ffa2c4">
+                <a href="/tags/HomeLab/" style="color: #ff7d73">
                     HomeLab
                 </a>
             </span>
             
             <span class="tag">
                 
-                <a href="/tags/%E6%9C%8D%E5%8A%A1%E5%99%A8/" style="color: #ff7d73">
+                <a href="/tags/%E6%9C%8D%E5%8A%A1%E5%99%A8/" style="color: #ffa2c4">
                     服务器
                 </a>
             </span>
             
             <span class="tag">
                 
-                <a href="/tags/%E5%AE%B9%E5%99%A8%E5%8C%96/" style="color: #00bcd4">
+                <a href="/tags/%E5%AE%B9%E5%99%A8%E5%8C%96/" style="color: #ff7d73">
                     容器化
                 </a>
             </span>
@@ -345,8 +345,6 @@ ALL.Net 和游戏端点可以代理
 <p>8443有点麻烦</p>
 <p>22345不推荐代理</p>
 <p>那还说啥 我们直接给他分配一个LoadBalance得了</p>
-<pre><code class="YAML">
-</code></pre>
 <p>这个简单 问题是数据怎么迁移呢</p>
 <p>一开始我想的是在原机子上打包docker</p>
 <p>但我傻逼了对不起 挂载的卷不会打包进镜像</p>
@@ -355,6 +353,23 @@ ALL.Net 和游戏端点可以代理
 <p>之前为了实现让别人访问 我用的是ZeroTier去组虚拟局域网</p>
 <p>这玩意工作在二层 需要修改host主机的tun配置</p>
 <p>在K8s里肯定是不允许的 我也不敢试 等下把我集群搞炸了</p>
+<p>想了下，我们还是可以用三层的组网方案</p>
+<p>ZeroTier主要是给sdvx联机用，因为SDVX的联机是局域网广播 三层是不转发的</p>
+<p>扯远了</p>
+<h2 id="Openlist"><a href="#Openlist" class="headerlink" title="Openlist"></a>Openlist</h2><p>这个手写一下Development就好，我为什么单独拿出来说呢</p>
+<p>因为我发现在用Ingress反代之后，我的Restic传不上去文件了</p>
+<p><img src="https://s2.loli.net/2025/10/25/ZhQSdVnF2vqKe4A.png" alt="chrome_4uaXe8sHGI.png"></p>
+<p>我一开始以为是百度又整了什么新幺蛾子，直到我把OpenList直接用LoadBalanceIP暴露出来之后发现又没问题了</p>
+<p>一看Openlist日志也没报错</p>
+<p><img src="https://s2.loli.net/2025/10/25/TXwMPYrRsSxNcVO.png" alt="chrome_lCpCbW0HKm.png"></p>
+<p>也就是说是Ingress的锅</p>
+<p><img src="https://s2.loli.net/2025/10/25/xsNw4JPioWcfMBO.png" alt="chrome_p3Tqn3QgUC.png"></p>
+<p>我们直接让他无限制Bodysize就好</p>
+<pre><code class="YAML">metadata:
+  name: openlist
+  annotations:
+    nginx.ingress.kubernetes.io/proxy-body-size: &quot;0&quot; 
+</code></pre>
 
     </div>
     

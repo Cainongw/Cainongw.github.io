@@ -175,14 +175,14 @@
             
             <span class="tag">
                 
-                <a href="/tags/HomeLab/" style="color: #00a596">
+                <a href="/tags/HomeLab/" style="color: #ff7d73">
                     HomeLab
                 </a>
             </span>
             
             <span class="tag">
                 
-                <a href="/tags/%E6%9C%8D%E5%8A%A1%E5%99%A8/" style="color: #00bcd4">
+                <a href="/tags/%E6%9C%8D%E5%8A%A1%E5%99%A8/" style="color: #ffa2c4">
                     服务器
                 </a>
             </span>
@@ -271,12 +271,72 @@ helm install safeline --namespace safeline \
 <p>其实都可以</p>
 <p>文档那里有个最佳实践就是直接把WAF注入Ingress 但那个不适用于我</p>
 <p>因为我的Ingress还需要管理*.lan局域网的域名</p>
-<p>啊可以新建一个Ingress类 那太麻烦了我懒</p>
+<p><del>啊可以新建一个Ingress类 那太麻烦了我懒</del></p>
 <p>直接把*.example.com指向WAF 然后路由转发把443转发到公网除80 443以外的端口</p>
 <p>这样的话流量路径就是</p>
 <pre><code>外部-&gt;路由器-&gt;Ingress LoadbalanceIP-&gt;WAF-&gt;内部服务
 </code></pre>
 <p>配置好Ingress的X-Forward IP转发，并信任内网网段，雷池是可以获取到真实IP并透传到后端的</p>
+<p>2025.10.26更新：</p>
+<h1 id="我是大傻逼"><a href="#我是大傻逼" class="headerlink" title="我是大傻逼"></a>我是大傻逼</h1><p>我洗澡的时候突然想到，Nginx反代识别客户端实际访问域名的方式是识别Header里面的Host内容来匹配实际应该访问的地址</p>
+<p>也就是说nginx不能在三层上识别访问的地址 这意味着什么呢</p>
+<p>这意味着如果把WAF和内网服务挂在同一个ingress上又不设置安全规则的话，别人完全可以通过伪造Header来绕过WAF直接访问我的.lan域名</p>
+<p>我手边没有VPS，但是我们可以设置一个代理来测试一下：</p>
+<pre><code class="Bash">export http_proxy=&quot;http://10.0.0.233:7890&quot;
+export https_proxy=&quot;http://10.0.0.233:7890&quot;
+curl -vk -H &quot;Host: xxx.k8s.lan&quot; https://我的公网地址/
+</code></pre>
+<pre><code>* Uses proxy env variable https_proxy == &#39;http://10.0.0.233:7890&#39;
+*   Trying 10.0.0.233:7890...
+* CONNECT tunnel: HTTP/1.1 negotiated
+* allocate connect buffer
+* Establish HTTP proxy tunnel to 公网地址
+&gt; CONNECT 公网地址 HTTP/1.1
+&gt; Host: 公网地址
+&gt; User-Agent: curl/8.12.0
+&gt; Proxy-Connection: Keep-Alive
+&gt;
+&lt; HTTP/1.1 200 Connection established
+&lt;
+* CONNECT phase completed
+* CONNECT tunnel established, response 200
+* ALPN: curl offers http/1.1
+* TLSv1.3 (OUT), TLS handshake, Client hello (1):
+* TLSv1.3 (IN), TLS handshake, Server hello (2):
+* TLSv1.3 (IN), TLS handshake, Encrypted Extensions (8):
+* TLSv1.3 (IN), TLS handshake, Certificate (11):
+* TLSv1.3 (IN), TLS handshake, CERT verify (15):
+* TLSv1.3 (IN), TLS handshake, Finished (20):
+* TLSv1.3 (OUT), TLS change cipher, Change cipher spec (1):
+* TLSv1.3 (OUT), TLS handshake, Finished (20):
+* SSL connection using TLSv1.3 / TLS_AES_256_GCM_SHA384 / X25519 / RSASSA-PSS
+* ALPN: server accepted http/1.1
+* Server certificate:
+*  subject: O=Acme Co; CN=Kubernetes Ingress Controller Fake Certificate
+*  start date: Oct 22 01:48:21 2025 GMT
+*  expire date: Oct 22 01:48:21 2026 GMT
+*  issuer: O=Acme Co; CN=Kubernetes Ingress Controller Fake Certificate
+*  SSL certificate verify result: self-signed certificate (18), continuing anyway.
+*   Certificate level 0: Public key type RSA (2048/112 Bits/secBits), signed using sha256WithRSAEncryption
+* Connected to 10.0.0.233 (10.0.0.233) port 7890
+* using HTTP/1.x
+&gt; GET / HTTP/1.1
+&gt; Host: xxx.k8s.lan
+&gt; User-Agent: curl/8.12.0
+&gt; Accept: */*
+&gt;
+* Request completely sent off
+* TLSv1.3 (IN), TLS handshake, Newsession Ticket (4):
+* TLSv1.3 (IN), TLS handshake, Newsession Ticket (4):
+&lt; HTTP/1.1 200 OK
+&lt; Date: Sat, 25 Oct 2025 21:59:00 GMT
+&lt; Content-Type: text/html&gt;
+后面是网页内容
+</code></pre>
+<p>我他妈马上把端口转发关了然后给自己两个大臂兜</p>
+<p>不管怎么说，这车算是翻了 我决定还是用最佳实践</p>
+<p>其实的话直接把tengine加一个443端口然后用LoadBalanceIP暴露出去 转发全部指向tengine就好了</p>
+<p>我是大傻逼 不要学</p>
 <h2 id="WAF的配置"><a href="#WAF的配置" class="headerlink" title="WAF的配置"></a>WAF的配置</h2><p>首先我们先配置统一登陆</p>
 <p>去Authentik创建一个新的Provider 类型就是OIDC 然后来雷池这里添加</p>
 <p><img src="https://s2.loli.net/2025/10/25/Rf4Zj6M8X9gSVJW.png" alt="chrome_9n0sqTOy86.png"></p>

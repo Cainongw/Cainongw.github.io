@@ -278,10 +278,16 @@ helm upgrade --install authentik authentik/authentik -f values.yaml
 <p><img src="https://s2.loli.net/2025/10/16/ryOSg8wdUjB3ax5.jpg" alt="chrome_E09JKK5uME.jpg"></p>
 <p>嗯~~舒服了</p>
 <h2 id="服务的挂载"><a href="#服务的挂载" class="headerlink" title="服务的挂载"></a>服务的挂载</h2><p>理论来说支持单点登陆的服务有很多 Gitlab vCenter Openlist</p>
+<p>实际上的话只要支持OIDC或者SAML 都是很好配置的</p>
 <h3 id="OpenList"><a href="#OpenList" class="headerlink" title="OpenList"></a>OpenList</h3><p>我们先用Openlist做演示 因为他很简陋（ 但又能用</p>
 <p>主要还是参考他的官方文档 其实都有说</p>
 <p><img src="https://s2.loli.net/2025/10/16/8TGAu4gkWKOb39m.png" alt="chrome_74XbvB3uJ8.png"></p>
 <p>然后退出登录</p>
+<p>这时候登陆界面多了一个单点登录的按钮</p>
+<p><img src="https://s2.loli.net/2025/10/25/ZCmR16Uyi4cSLTn.png" alt="chrome_DZ6uKRVBqb.png"></p>
+<p>点一下就可以拉起Authentik 完美</p>
+<h3 id="vCenter"><a href="#vCenter" class="headerlink" title="vCenter"></a>vCenter</h3><p>我受不了vCenter每次登录都要输入administrator@后面一长串东西了 我还老是忘记</p>
+<p>盘他</p>
 
     </div>
     
