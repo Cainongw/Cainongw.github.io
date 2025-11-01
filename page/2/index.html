@@ -181,6 +181,93 @@
         
 
 <div class="post">
+    <a href="/2025/10/05/lan-ssl-buildup/">
+        <h2 class="post-title">记一次局域网内.lan域名的证书自签名并挂载到Ingress</h2>
+    </a>
+    <div class="category-and-date">
+        
+        <span class="date">
+            <span class="icon">
+                <i class="fa-solid fa-calendar fa-fw"></i>
+            </span>
+            2025/10/5
+        </span>
+        
+        
+    </div>
+    <div class="description">
+        <div class="content" v-pre>
+            
+            <h1 id="起因"><a href="#起因" class="headerlink" title="起因"></a>起因</h1><p>在Authentik的折腾中由于我们没有https导致passkey无法使用</p>
+<p>并且想使用passkey必须要可用的证书 Chrome提示什么不安全的连接即使有https也是无法使用的</p>
+<p>所以我们需要给.lan域名签一个证书并信任他</p>
+            
+        </div>
+    </div>
+    <div class="post-tags">
+        
+        <span class="icon">
+            <i class="fa-solid fa-tags fa-fw"></i>
+        </span>
+        
+        
+        
+        <span class="tag">
+            
+            <a href="/tags/HomeLab/" style="color: #00a596">HomeLab</a>
+        </span>
+        
+        <span class="tag">
+            
+            <a href="/tags/K8s/" style="color: #03a9f4">K8s</a>
+        </span>
+        
+    </div>
+    <a href="/2025/10/05/lan-ssl-buildup/" class="go-post">阅读全文</a>
+</div>
+
+<div class="post">
+    <a href="/2025/10/04/authentik-buildup/">
+        <h2 class="post-title">基于authentik的局域网单点登录与通行密钥的配置与部署</h2>
+    </a>
+    <div class="category-and-date">
+        
+        <span class="date">
+            <span class="icon">
+                <i class="fa-solid fa-calendar fa-fw"></i>
+            </span>
+            2025/10/4
+        </span>
+        
+        
+    </div>
+    <div class="description">
+        <div class="content" v-pre>
+            
+            <h1 id="起因"><a href="#起因" class="headerlink" title="起因"></a>起因</h1><p>Passkey(通行密钥)作为一种新的身份验证方式近几年开始慢慢流行起来了</p>
+<p>该说不说 真的很好用</p>
+<p>其安全且方便，理论来说Passkey的安全性是高于传统的2FA的（尤其是有生物认证的情况下）</p>
+<p>但是目前只有一些大厂 比如Google Github 或者一些虚拟货币平台支持</p>
+<p>国内几乎没有厂商支持 为数不多支持的微信还要求你用非+86的手机注册才可以用</p>
+<p>我就在想，我局域网一些设备用的是弱密码 首先这不安全 其次这导致我需要记住几个不同的密码</p>
+<p>有点麻烦 何况很多时候Chrome的密码补全是不工作的</p>
+<p>有时候我root都输完了Chrome才提示让我填入密码 那我手都输完了</p>
+<p>我就在想，可不可以将局域网里面的一些服务比如ESXi vCenter TrueNAS。甚至是Windows远程桌面 SSH</p>
+<p>用反代 让他们强行支持Passkey</p>
+<p>况且前段时间我暴露的RDP服务老是被爆破 即使不是3389端口 我用了几万后的端口也会被扫到</p>
+<p>所以我需要一个局域网内的身份验证服务</p>
+            
+        </div>
+    </div>
+    <div class="post-tags">
+        
+        
+        
+    </div>
+    <a href="/2025/10/04/authentik-buildup/" class="go-post">阅读全文</a>
+</div>
+
+<div class="post">
     <a href="/2025/10/04/network-enhancing/">
         <h2 class="post-title">记一次基于OpenWRT+Nginx反代的局域网服务小改造</h2>
     </a>
@@ -215,12 +302,12 @@
         
         <span class="tag">
             
-            <a href="/tags/HomeLab/" style="color: #ff7d73">HomeLab</a>
+            <a href="/tags/HomeLab/" style="color: #ffa2c4">HomeLab</a>
         </span>
         
         <span class="tag">
             
-            <a href="/tags/%E6%9C%8D%E5%8A%A1%E5%99%A8/" style="color: #00bcd4">服务器</a>
+            <a href="/tags/%E6%9C%8D%E5%8A%A1%E5%99%A8/" style="color: #ff7d73">服务器</a>
         </span>
         
     </div>
@@ -263,22 +350,22 @@
         
         <span class="tag">
             
-            <a href="/tags/%E9%80%86%E5%90%91/" style="color: #ff7d73">逆向</a>
+            <a href="/tags/%E9%80%86%E5%90%91/" style="color: #03a9f4">逆向</a>
         </span>
         
         <span class="tag">
             
-            <a href="/tags/%E9%9F%B3%E6%B8%B8/" style="color: #00a596">音游</a>
+            <a href="/tags/%E9%9F%B3%E6%B8%B8/" style="color: #ffa2c4">音游</a>
         </span>
         
         <span class="tag">
             
-            <a href="/tags/Chunithm/" style="color: #03a9f4">Chunithm</a>
+            <a href="/tags/Chunithm/" style="color: #00bcd4">Chunithm</a>
         </span>
         
         <span class="tag">
             
-            <a href="/tags/IDA/" style="color: #00bcd4">IDA</a>
+            <a href="/tags/IDA/" style="color: #00a596">IDA</a>
         </span>
         
     </div>
@@ -325,17 +412,17 @@
         
         <span class="tag">
             
-            <a href="/tags/%E6%9C%8D%E5%8A%A1%E5%99%A8/" style="color: #00a596">服务器</a>
+            <a href="/tags/%E6%9C%8D%E5%8A%A1%E5%99%A8/" style="color: #ff7d73">服务器</a>
         </span>
         
         <span class="tag">
             
-            <a href="/tags/R730/" style="color: #00bcd4">R730</a>
+            <a href="/tags/R730/" style="color: #03a9f4">R730</a>
         </span>
         
         <span class="tag">
             
-            <a href="/tags/%E6%95%B0%E6%8D%AE%E5%A4%87%E4%BB%BD/" style="color: #ffa2c4">数据备份</a>
+            <a href="/tags/%E6%95%B0%E6%8D%AE%E5%A4%87%E4%BB%BD/" style="color: #ff7d73">数据备份</a>
         </span>
         
     </div>
@@ -419,12 +506,12 @@
         
         <span class="tag">
             
-            <a href="/tags/%E9%80%86%E5%90%91/" style="color: #ffa2c4">逆向</a>
+            <a href="/tags/%E9%80%86%E5%90%91/" style="color: #00a596">逆向</a>
         </span>
         
         <span class="tag">
             
-            <a href="/tags/%E9%9F%B3%E6%B8%B8/" style="color: #03a9f4">音游</a>
+            <a href="/tags/%E9%9F%B3%E6%B8%B8/" style="color: #00bcd4">音游</a>
         </span>
         
     </div>
@@ -469,12 +556,12 @@
         
         <span class="tag">
             
-            <a href="/tags/HomeLab/" style="color: #00bcd4">HomeLab</a>
+            <a href="/tags/HomeLab/" style="color: #00a596">HomeLab</a>
         </span>
         
         <span class="tag">
             
-            <a href="/tags/%E6%9C%8D%E5%8A%A1%E5%99%A8/" style="color: #03a9f4">服务器</a>
+            <a href="/tags/%E6%9C%8D%E5%8A%A1%E5%99%A8/" style="color: #ff7d73">服务器</a>
         </span>
         
         <span class="tag">
@@ -525,12 +612,12 @@
         
         <span class="tag">
             
-            <a href="/tags/Python/" style="color: #00bcd4">Python</a>
+            <a href="/tags/Python/" style="color: #00a596">Python</a>
         </span>
         
         <span class="tag">
             
-            <a href="/tags/%E5%9B%BE%E5%83%8F%E5%A4%84%E7%90%86/" style="color: #ffa2c4">图像处理</a>
+            <a href="/tags/%E5%9B%BE%E5%83%8F%E5%A4%84%E7%90%86/" style="color: #ff7d73">图像处理</a>
         </span>
         
     </div>
@@ -575,130 +662,21 @@
         
         <span class="tag">
             
-            <a href="/tags/%E6%97%85%E6%B8%B8/" style="color: #ffa2c4">旅游</a>
+            <a href="/tags/%E6%97%85%E6%B8%B8/" style="color: #00bcd4">旅游</a>
         </span>
         
         <span class="tag">
             
-            <a href="/tags/vlog/" style="color: #03a9f4">vlog</a>
+            <a href="/tags/vlog/" style="color: #ff7d73">vlog</a>
         </span>
         
         <span class="tag">
             
-            <a href="/tags/bw/" style="color: #ff7d73">bw</a>
+            <a href="/tags/bw/" style="color: #ffa2c4">bw</a>
         </span>
         
     </div>
     <a href="/2023/07/28/shanghai-trip/" class="go-post">阅读全文</a>
-</div>
-
-<div class="post">
-    <a href="/2023/07/01/truenas-raidz/">
-        <h2 class="post-title">记一次TrueNas Mirror转RaidZ R730折腾实录（2）</h2>
-    </a>
-    <div class="category-and-date">
-        
-        <span class="date">
-            <span class="icon">
-                <i class="fa-solid fa-calendar fa-fw"></i>
-            </span>
-            2023/7/1
-        </span>
-        
-        
-    </div>
-    <div class="description">
-        <div class="content" v-pre>
-            
-            <h1 id="起因"><a href="#起因" class="headerlink" title="起因"></a>起因</h1><p>正如我在（1）说的一样，我存了点片，ISCSi挂载了几个硬盘</p>
-<p>于是我的4T Mirror阵列就快红了</p>
-<h1 id="开始折腾"><a href="#开始折腾" class="headerlink" title="开始折腾"></a>开始折腾</h1><p>先说方法：</p>
-<p><del>那就是没有方法</del></p>
-<p>ZFS属于写时复制文件系统，他的存储池类型在创建时就已经固定了</p>
-<p>说人话就是，没法直接改</p>
-<p>那我想扩容原有的池，咋办捏？</p>
-            
-        </div>
-    </div>
-    <div class="post-tags">
-        
-        <span class="icon">
-            <i class="fa-solid fa-tags fa-fw"></i>
-        </span>
-        
-        
-        
-        <span class="tag">
-            
-            <a href="/tags/HomeLab/" style="color: #03a9f4">HomeLab</a>
-        </span>
-        
-        <span class="tag">
-            
-            <a href="/tags/%E6%9C%8D%E5%8A%A1%E5%99%A8/" style="color: #00bcd4">服务器</a>
-        </span>
-        
-        <span class="tag">
-            
-            <a href="/tags/%E6%88%B4%E5%B0%94/" style="color: #ff7d73">戴尔</a>
-        </span>
-        
-    </div>
-    <a href="/2023/07/01/truenas-raidz/" class="go-post">阅读全文</a>
-</div>
-
-<div class="post">
-    <a href="/2023/05/01/diffsinger/">
-        <h2 class="post-title">把自己变成初音未来！Diffsinger折腾记录</h2>
-    </a>
-    <div class="category-and-date">
-        
-        <span class="date">
-            <span class="icon">
-                <i class="fa-solid fa-calendar fa-fw"></i>
-            </span>
-            2023/5/1
-        </span>
-        
-        
-    </div>
-    <div class="description">
-        <div class="content" v-pre>
-            
-            <h1 id="起因："><a href="#起因：" class="headerlink" title="起因："></a>起因：</h1><p>又是東雪蓮！B站上的Diffsinger Ai東雪蓮让我发现了Diffsinger这个项目</p>
-<p>众所周知，東雪蓮作为罕见，当然是不唱中文歌的</p>
-<p>而Diffsinger默认词典又需要大量的中文干声素材</p>
-<p>所以我猜测B站上那个视频用的是语音数据</p>
-<p>因为不是干声，也就不会有广阔的音域和转音</p>
-<p>那么那个视频里的电也就合情合理了</p>
-            
-        </div>
-    </div>
-    <div class="post-tags">
-        
-        <span class="icon">
-            <i class="fa-solid fa-tags fa-fw"></i>
-        </span>
-        
-        
-        
-        <span class="tag">
-            
-            <a href="/tags/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/" style="color: #00bcd4">机器学习</a>
-        </span>
-        
-        <span class="tag">
-            
-            <a href="/tags/Ai/" style="color: #03a9f4">Ai</a>
-        </span>
-        
-        <span class="tag">
-            
-            <a href="/tags/diff/" style="color: #ffa2c4">diff</a>
-        </span>
-        
-    </div>
-    <a href="/2023/05/01/diffsinger/" class="go-post">阅读全文</a>
 </div>
 
 

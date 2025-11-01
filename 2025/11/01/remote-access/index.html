@@ -1,0 +1,713 @@
+
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="utf-8" />
+    <title>论远程零信任访问的搭建 | Cainong&#39;s Blog</title>
+    <meta name="author" content="Cainong" />
+    <meta name="description" content="" />
+    <meta name="keywords" content="" />
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"
+    />
+    <link rel="icon" href="/images/avatar.png" />
+    <link rel="preconnect" href="https://s4.zstatic.net" />
+<script src="https://s4.zstatic.net/ajax/libs/vue/3.3.7/vue.global.prod.min.js"></script>
+<link rel="stylesheet" href="https://s4.zstatic.net/ajax/libs/font-awesome/6.4.2/css/all.min.css" />
+<link rel="preconnect" href="https://fonts.googleapis.cn" />
+<link rel="preconnect" href="https://fonts.gstatic.cn" crossorigin />
+<link
+    rel="stylesheet"
+    href="https://fonts.googleapis.cn/css2?family=Fira+Code:wght@400;500;600;700&family=Lexend:wght@400;500;600;700;800;900&family=Noto+Sans+SC:wght@400;500;600;700;800;900&display=swap"
+/>
+<script> const mixins = {}; </script>
+
+<script src="https://polyfill.alicdn.com/v3/polyfill.min.js?features=default"></script>
+
+
+<script src="https://s4.zstatic.net/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="https://s4.zstatic.net/ajax/libs/highlightjs-line-numbers.js/2.8.0/highlightjs-line-numbers.min.js"></script>
+<link
+    rel="stylesheet"
+    href="https://s4.zstatic.net/ajax/libs/highlight.js/11.9.0/styles/github.min.css"
+/>
+<script src="/js/lib/highlight.js"></script>
+
+
+
+<script src="/js/lib/preview.js"></script>
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/css/main.css" />
+
+<meta name="generator" content="Hexo 5.4.2"></head>
+<body>
+    <div id="layout">
+        <transition name="fade">
+            <div id="loading" v-show="loading">
+                <div id="loading-circle">
+                    <h2>LOADING</h2>
+                    <p>加载过慢请开启缓存 浏览器默认开启</p>
+                    <img src="/images/loading.gif" />
+                </div>
+            </div>
+        </transition>
+        <div id="menu" :class="{ hidden: hiddenMenu, 'menu-color': menuColor}">
+    <nav id="desktop-menu">
+        <a class="title" href="/">
+            <span>CAINONG&#39;S BLOG</span>
+        </a>
+        
+        <a href="/">
+            <i class="fa-solid fa-house fa-fw"></i>
+            <span>&ensp;Home</span>
+        </a>
+        
+        <a href="/about">
+            <i class="fa-solid fa-id-card fa-fw"></i>
+            <span>&ensp;About</span>
+        </a>
+        
+        <a href="/archives">
+            <i class="fa-solid fa-box-archive fa-fw"></i>
+            <span>&ensp;Archives</span>
+        </a>
+        
+        <a href="/categories">
+            <i class="fa-solid fa-bookmark fa-fw"></i>
+            <span>&ensp;Categories</span>
+        </a>
+        
+        <a href="/tags">
+            <i class="fa-solid fa-tags fa-fw"></i>
+            <span>&ensp;Tags</span>
+        </a>
+        
+    </nav>
+    <nav id="mobile-menu">
+        <div class="title" @click="showMenuItems = !showMenuItems">
+            <i class="fa-solid fa-bars fa-fw"></i>
+            <span>&emsp;CAINONG&#39;S BLOG</span>
+        </div>
+        <transition name="slide">
+            <div class="items" v-show="showMenuItems">
+                
+                <a href="/">
+                    <div class="item">
+                        <div style="min-width: 20px; max-width: 50px; width: 10%">
+                            <i class="fa-solid fa-house fa-fw"></i>
+                        </div>
+                        <div style="min-width: 100px; max-width: 150%; width: 20%">Home</div>
+                    </div>
+                </a>
+                
+                <a href="/about">
+                    <div class="item">
+                        <div style="min-width: 20px; max-width: 50px; width: 10%">
+                            <i class="fa-solid fa-id-card fa-fw"></i>
+                        </div>
+                        <div style="min-width: 100px; max-width: 150%; width: 20%">About</div>
+                    </div>
+                </a>
+                
+                <a href="/archives">
+                    <div class="item">
+                        <div style="min-width: 20px; max-width: 50px; width: 10%">
+                            <i class="fa-solid fa-box-archive fa-fw"></i>
+                        </div>
+                        <div style="min-width: 100px; max-width: 150%; width: 20%">Archives</div>
+                    </div>
+                </a>
+                
+                <a href="/categories">
+                    <div class="item">
+                        <div style="min-width: 20px; max-width: 50px; width: 10%">
+                            <i class="fa-solid fa-bookmark fa-fw"></i>
+                        </div>
+                        <div style="min-width: 100px; max-width: 150%; width: 20%">Categories</div>
+                    </div>
+                </a>
+                
+                <a href="/tags">
+                    <div class="item">
+                        <div style="min-width: 20px; max-width: 50px; width: 10%">
+                            <i class="fa-solid fa-tags fa-fw"></i>
+                        </div>
+                        <div style="min-width: 100px; max-width: 150%; width: 20%">Tags</div>
+                    </div>
+                </a>
+                
+            </div>
+        </transition>
+    </nav>
+</div>
+<transition name="fade">
+    <div id="menu-curtain" @click="showMenuItems = !showMenuItems" v-show="showMenuItems"></div>
+</transition>
+
+        <div id="main" :class="loading ? 'into-enter-from': 'into-enter-active'">
+            <div class="article">
+    <div>
+        <h1>论远程零信任访问的搭建</h1>
+    </div>
+    <div class="info">
+        <span class="date">
+            <span class="icon">
+                <i class="fa-solid fa-calendar fa-fw"></i>
+            </span>
+            2025/11/1
+        </span>
+        
+        
+        <span class="tags">
+            <span class="icon">
+                <i class="fa-solid fa-tags fa-fw"></i>
+            </span>
+            
+            
+            <span class="tag">
+                
+                <a href="/tags/HomeLab/" style="color: #ff7d73">
+                    HomeLab
+                </a>
+            </span>
+            
+            <span class="tag">
+                
+                <a href="/tags/WireGuard/" style="color: #00a596">
+                    WireGuard
+                </a>
+            </span>
+            
+            <span class="tag">
+                
+                <a href="/tags/%E8%99%9A%E6%8B%9F%E7%BD%91%E8%B7%AF/" style="color: #ffa2c4">
+                    虚拟网路
+                </a>
+            </span>
+            
+        </span>
+        
+    </div>
+    
+    <div class="content" v-pre>
+        <h1 id="起因"><a href="#起因" class="headerlink" title="起因"></a>起因</h1><p>在迁移AquaDX到K8s集群中的时候，我需要给别人远程访问的权限</p>
+<p>我的服务器是不公开的 我并不打算公开出去给所有人用</p>
+<p>之前用的ZeroTier因为几个原因我决定废弃了：</p>
+<ul>
+<li>他把路由选项从控制面板中删除了，改为要付费的</li>
+<li>他要修改宿主机的tun配置来实现二层上的网络代理，这在K8s中肯定不是不允许的</li>
+<li>打洞策略太迷 即使能UPnP直连或者IPv6直连有时候他还是中转</li>
+</ul>
+<span id="more"></span> 
+
+<p>第一点导致我没法用来代理整个网络了，以前我把他装在OpenWrt上，这样我可以连接上网络之后访问我整个局域网，现在没了</p>
+<p>第二点则是他的硬伤，或许我们有方法让他不修改tun，但显然没必要</p>
+<p>我们可以选择性能更高的三层网络方案，基于WireGuard的一大堆都可以</p>
+<p>我看到了Github上的这个：<a target="_blank" rel="noopener" href="https://github.com/HarvsG/WireGuardMeshes/blob/main/readme.md">https://github.com/HarvsG/WireGuardMeshes/blob/main/readme.md</a></p>
+<p><img src="https://s2.loli.net/2025/11/01/5eDEgbcFzxdIstW.png" alt="Code_qMmZJDTt8C.png"></p>
+<p>可以看到最成熟的应该是NetBird和Tailscale</p>
+<p>我在之前是使用过Tailscale的，也确实很成熟</p>
+<p>Tailscale也完全支持通过Sidecar的方式管理容器的流量</p>
+<p>NetBird也不差，但是它不支持别的平台</p>
+<p>有没有最夯的方式呢</p>
+<h1 id="自建Tailscale"><a href="#自建Tailscale" class="headerlink" title="自建Tailscale"></a>自建Tailscale</h1><p>我其实想过自建Netbird，但我一打开Netbird那网站和Tailscale也差不多嘛</p>
+<p>上面那个图的HeadScale其实就是Tailscale控制平面的开源实现</p>
+<p>TailScale客户端是开源的，控制端则闭源 和Zerotier一样</p>
+<p>事实上的话我们可以自己搭建中继节点，然后用Tailscale官方的功能就完全足够了</p>
+<p>但是都要自己搭了我干嘛不把控制平面也自己弄了呢（）顺便解锁一些收费才能用的功能</p>
+<p>也能同时解决打不了洞难中转的问题</p>
+<p>其实的话不难，Headscale麻烦的是那个config</p>
+<pre><code class="YAML">---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations: &#123;&#125;
+  labels:
+    app: headscale
+    k8s.kuboard.cn/name: headscale
+  name: headscale
+  namespace: headscale
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: headscale
+      labels:
+        app: headscale
+    spec:
+      containers:
+        - command:
+            - headscale
+            - serve
+          image: &#39;docker.io/headscale/headscale:stable&#39;
+          imagePullPolicy: IfNotPresent
+          name: headscale
+          ports:
+            - containerPort: 8080
+              name: web
+              protocol: TCP
+            - containerPort: 9090
+              name: metrics
+              protocol: TCP
+            - containerPort: 50443
+              name: grpc
+              protocol: TCP
+          volumeMounts:
+            - mountPath: /var/lib/headscale
+              name: headscale-data
+            - mountPath: /var/run/headscale
+              name: headscale-data
+            - mountPath: /etc/headscale
+              name: config
+              readOnly: true
+      volumes:
+        - name: headscale-data
+          persistentVolumeClaim:
+            claimName: headscale-data
+        - configMap:
+            defaultMode: 420
+            items:
+              - key: server-config.yaml
+                path: config.yml
+            name: server-config.yaml
+          name: config
+---
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    metallb.io/ip-allocated-from-pool: default-address-pool
+  labels:
+    app: headscale
+    k8s.kuboard.cn/name: headscale
+  name: headscale
+  namespace: headscale
+spec:
+  allocateLoadBalancerNodePorts: true
+  clusterIP: 10.110.187.183
+  clusterIPs:
+    - 10.110.187.183
+  externalTrafficPolicy: Cluster
+  internalTrafficPolicy: Cluster
+  ipFamilies:
+    - IPv4
+  ipFamilyPolicy: SingleStack
+  ports:
+    - name: web
+      nodePort: 30667
+      port: 8080
+      protocol: TCP
+      targetPort: 8080
+    - name: metrics
+      nodePort: 32383
+      port: 9090
+      protocol: TCP
+      targetPort: 9090
+    - name: grpc
+      nodePort: 32594
+      port: 50443
+      protocol: TCP
+      targetPort: 50443
+  selector:
+    app: headscale
+  sessionAffinity: None
+  type: LoadBalancer
+status:
+  loadBalancer:
+    ingress:
+      - ip: 10.0.100.11
+        ipMode: VIP
+</code></pre>
+<p>然后的话是config</p>
+<pre><code class="YAML">server_url: http://127.0.0.1:8080
+
+listen_addr: 0.0.0.0:8080
+metrics_listen_addr: 0.0.0.0:9090
+grpc_listen_addr: 0.0.0.0:50443
+grpc_allow_insecure: true
+
+noise:
+  private_key_path: /var/lib/headscale/noise_private.key
+
+prefixes:
+  v4: 100.64.0.0/10
+  v6: fd7a:115c:a1e0::/48
+  allocation: sequential
+
+derp:
+  server:
+    enabled: false
+  urls:
+    - https://controlplane.tailscale.com/derpmap/default
+  auto_update_enabled: true
+  update_frequency: 3h
+
+disable_check_updates: false
+ephemeral_node_inactivity_timeout: 30m
+
+database:
+  type: sqlite
+  sqlite:
+    path: /var/lib/headscale/db.sqlite
+    write_ahead_log: true
+    wal_autocheckpoint: 1000
+
+acme_url: https://acme-v02.api.letsencrypt.org/directory
+tls_letsencrypt_cache_dir: /var/lib/headscale/cache
+tls_cert_path: &quot;&quot;
+tls_key_path: &quot;&quot;
+
+log:
+  level: info
+  format: text
+
+policy:
+  mode: file
+  path: &quot;&quot;
+
+dns:
+  magic_dns: true
+  base_domain: headscale.lan
+  override_local_dns: true
+  nameservers:
+    global:
+      - 1.1.1.1
+      - 8.8.8.8
+  split: &#123;&#125;
+  search_domains: []
+  extra_records: []
+
+unix_socket: /var/run/headscale/headscale.sock
+unix_socket_permission: &quot;0770&quot;
+
+logtail:
+  enabled: false
+
+randomize_client_port: false
+</code></pre>
+<p>不出意外就没问题了，但是Headscale没有GUI，搭起来之后我们得用CLI访问</p>
+<p>这行吗 这肯定不行啊</p>
+<p>我们可以参考Headscale的官方界面选一个GUI</p>
+<p><a target="_blank" rel="noopener" href="https://headscale.net/stable/ref/integration/web-ui/">https://headscale.net/stable/ref/integration/web-ui/</a></p>
+<p>我选了一下有四个</p>
+<p><a target="_blank" rel="noopener" href="https://github.com/simcu/headscale-ui">https://github.com/simcu/headscale-ui</a></p>
+<p><a target="_blank" rel="noopener" href="https://github.com/tale/headplane">https://github.com/tale/headplane</a></p>
+<p><a target="_blank" rel="noopener" href="https://github.com/GoodiesHQ/headscale-admin">https://github.com/GoodiesHQ/headscale-admin</a></p>
+<p><a target="_blank" rel="noopener" href="https://github.com/rickli-cloud/headscale-console">https://github.com/rickli-cloud/headscale-console</a></p>
+<p>根据自己对UI的喜好选一个就好</p>
+<p>最后我根据Star数和更新频率决定选择headplane</p>
+<p>他的UI也是仿造的Tailscale <del>把人饭碗抢光光了</del></p>
+<p>也好，熟悉Tailscale可以直接上手</p>
+<p>去看一下这玩意还支持反代,SSO,SSH key 完美</p>
+<p>看了一下为了Headplane能管理，最好的方式是把他们跑在一起</p>
+<p>我一开始想的是给他们挂在同一个Development下 使用两个工作容器</p>
+<p>其实没必要，分开也是完全可以的</p>
+<p><del>因为我把headscale和headplane看混好几次</del></p>
+<p>这他妈也太像了吧</p>
+<p>为了便于区分，之后Headscale简称Scale，Headplane简称Plane</p>
+<p><img src="https://s2.loli.net/2025/11/02/IvdpfYiELzsVhBG.png" alt="chrome_HxIF1PpUZy.png"></p>
+<p>不管怎么说，我们先把他<del>分开部署</del></p>
+<p>请把Plane和Scale放在同一个Development中，详情看后面就知道了😄</p>
+<pre><code class="YAML">---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    k8s.kuboard.cn/name: plane
+  name: plane
+  namespace: headscale
+spec:
+  progressDeadlineSeconds: 600
+  replicas: 1
+  revisionHistoryLimit: 2
+  selector:
+    matchLabels:
+      k8s.kuboard.cn/name: plane
+  template:
+    metadata:
+      labels:
+        k8s.kuboard.cn/name: plane
+    spec:
+      containers:
+        - image: &#39;ghcr.io/tale/headplane:latest&#39;
+          imagePullPolicy: IfNotPresent
+          name: headplane
+          ports:
+            - containerPort: 3000
+              name: web
+              protocol: TCP
+          volumeMounts:
+            - mountPath: /etc/headplane
+              name: config
+            - mountPath: /var/lib/headplane
+              name: data
+            - mountPath: /etc/headscale
+              name: scale-config
+              readOnly: true
+      volumes:
+        - configMap:
+            items:
+              - key: config.yml
+                path: config.yaml
+            name: plane-config
+          name: config
+        - name: data
+          persistentVolumeClaim:
+            claimName: headplane-data
+        - configMap:
+            items:
+              - key: server-config.yaml
+                path: config.yaml
+            name: server-config.yaml
+          name: scale-config
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  annotations: &#123;&#125;
+  labels:
+    k8s.kuboard.cn/name: plane
+  name: plane
+  namespace: headscale
+  ports:
+    - name: web
+      port: 3000
+      protocol: TCP
+      targetPort: 3000
+  selector:
+    k8s.kuboard.cn/name: plane
+  sessionAffinity: None
+  type: ClusterIP
+
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations: &#123;&#125;
+  labels:
+    k8s.kuboard.cn/name: plane
+  name: plane
+  namespace: headscale
+spec:
+  ingressClassName: nginx-ingress
+  rules:
+    - host: headplane.k8s.lan
+      http:
+        paths:
+          - backend:
+              service:
+                name: plane
+                port:
+                  number: 3000
+            path: /
+            pathType: Prefix
+</code></pre>
+<p>然后还有Config</p>
+<pre><code class="YAML">    server:
+      host: &quot;0.0.0.0&quot;
+      port: 3000
+      cookie_secret: &quot;$(openssl rand -hex 16)一个在这里&quot;
+      cookie_secure: false # 不改的话不是https不会发送Cookie
+      data_path: &quot;/var/lib/headplane&quot;
+    headscale:
+      url: &quot;http://headscale.headscale.svc.cluster.local&quot;
+      config_path: &quot;/etc/headscale/config.yaml&quot;
+      config_strict: true
+    integration:
+      agent:
+        enabled: false
+        pre_authkey: &quot;&lt;your-preauth-key&gt;&quot;
+      docker:
+        enabled: false
+        container_label: &quot;me.tale.headplane.target=headscale&quot;
+        socket: &quot;unix:///var/run/docker.sock&quot;
+      kubernetes:
+        enabled: true
+        validate_manifest: true
+        pod_name: &quot;headscale&quot;
+
+      proc:
+        enabled: false
+</code></pre>
+<p>我这里把OIDC段删了，我们先跑起来再去配置</p>
+<p>然后就报错了</p>
+<p><img src="https://s2.loli.net/2025/11/02/LOFCWGRD5E4Mr3X.png" alt="chrome_o0shplXi5G.png"></p>
+<p>傻逼了 因为我们设置了kubernetes integration</p>
+<p>简单来说就是可以让Plane自动发现集群中的Scale服务，自动通信</p>
+<p>我们现在需要设置一下Service Account，默认的default是没有任何权限的</p>
+<p>我们需要让plane可以查看访问同命名空间下的pod</p>
+<pre><code class="YAML">---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: headplane
+  namespace: headscale
+
+---
+
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: headplane-role
+  namespace: headscale
+rules:
+  - apiGroups: [&quot;&quot;]
+    resources: [&quot;pods&quot;]
+    verbs: [&quot;get&quot;, &quot;list&quot;, &quot;watch&quot;]
+
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: headplane-role
+  namespace: headscale
+rules:
+  - apiGroups: [&quot;&quot;]
+    resources: [&quot;pods&quot;]
+    verbs: [&quot;get&quot;, &quot;list&quot;, &quot;watch&quot;]
+</code></pre>
+<p>然后修改一下Plane让他使用这个ServiceAccount</p>
+<p><img src="https://s2.loli.net/2025/11/02/O4QmLHWnUSVN5r1.png" alt="chrome_yEXT2ASdGI.png"></p>
+<p>重启一下</p>
+<p><img src="https://s2.loli.net/2025/11/02/sw7lI4WQEbSxBXf.png" alt="chrome_aWvroyqhBG.png"></p>
+<p>尼玛。</p>
+<p><img src="https://s2.loli.net/2025/11/02/jlIXZLkwfWeuyO9.png" alt="chrome_7tRqUk9g66.png"></p>
+<p>我想到Pod名字是随机的，我们在Config里填的</p>
+<pre><code class="YAML">kubernetes:
+        enabled: true
+        validate_manifest: true
+        pod_name: &quot;headscale&quot;
+</code></pre>
+<p>他其实还有一行注释在上面：</p>
+<pre><code class="YAML">kubernetes:
+        enabled: true
+        validate_manifest: true
+    # This should be the name of the Pod running Headscale and Headplane.
+    # If this isn&#39;t static you should be using the Kubernetes Downward API
+    # to set this value (refer to docs/Integrated-Mode.md for more info).
+        pod_name: &quot;headscale&quot;
+</code></pre>
+<p>我去看看他的文档先：</p>
+<p><img src="https://s2.loli.net/2025/11/02/Qm4SBUtG5A6aElN.png" alt="chrome_cVrkDNWzro.png"></p>
+<p><img src="https://s2.loli.net/2025/11/02/ItpQnLYlAgoXh8P.png" alt="chrome_4tnEd6YmDo.png"></p>
+<p><img src="https://s2.loli.net/2025/11/02/srluU2JYx1FH9iK.png" alt="chrome_aOqefgYEOX.png"></p>
+<p>？你这个文档在哪呢</p>
+<p>反正说白了就是，Pod名字是会变动的，我们可以用Downward API去解决这个问题</p>
+<p>等一下 席巴了 通过这个注入podname需要同一个development</p>
+<p><img src="https://s2.loli.net/2025/11/02/F6d7mjWso1eLrOP.png" alt="chrome_bdyAWlASSu.png"></p>
+<p>我真是草了</p>
+<p>其实也不用说非得注入，我们可以把Scale改成StatefulSet，这样他的名字就是固定的了</p>
+<p>其实的话integration是可以false的，我们在上面已经通过集群内域名实现Plane对Scale的访问了</p>
+<p>但我已经折腾到这了 给他一起配上吧</p>
+<p>把Plane也放到同一个development里作为另一个工作容器</p>
+<p>等一下啊 configmap是只读的</p>
+<p>那怎么让Plane修改config</p>
+<p><img src="https://s2.loli.net/2025/11/02/jlIXZLkwfWeuyO9.png" alt="chrome_7tRqUk9g66.png"></p>
+<p>我真红了 我写到这已经边折腾边写3小时了 直接用Tailscale的话Sidecar都跑起来收工了</p>
+<p>卧槽我们跑起来还要跑Sidecar呢</p>
+<p><img src="https://s2.loli.net/2025/11/02/nd6xJpajgDCeQLB.png" alt="chrome_f2YiWJ9496.png"></p>
+<p>没话说了 折腾到这我已经有点沉默了 我们先不管integration 先看看能不能用</p>
+<p><img src="https://s2.loli.net/2025/11/02/rvkwf62smRMuxLI.png" alt="chrome_VmyRTHeNjl.png"></p>
+<p><img src="https://s2.loli.net/2025/11/02/MF8d1VW3wfZGzXh.png" alt="chrome_0ezfV0GyRt.png"></p>
+<p>欸等一下</p>
+<p>给自己折腾傻了，Plane的默认界面是/admin</p>
+<p><img src="https://s2.loli.net/2025/11/02/yB6qmjIJ3TQPOYV.png" alt="chrome_W6NFyj0mmt.png"></p>
+<p>白浪费一个小时去来回调，先用Service访问不香吗（</p>
+<p>那我们进headscale容器生成一个key先</p>
+<p>这headscale容易默认啥shell都没有</p>
+<p>我们还得去master节点exec一下</p>
+<p><img src="https://s2.loli.net/2025/11/02/iGLxQljmndTeZWC.png" alt="MobaXterm_HhxL4xJ142.png"></p>
+<p>忘记指定命名空间了 真玩傻了</p>
+<pre><code class="Bash">kubectl exec -n headscale -it headscale-59bd5c7d65-8j5k6 -- headscale apikeys create
+</code></pre>
+<p>然后就可以进到管理界面了</p>
+<p>那就剩一个小问题</p>
+<p><img src="https://s2.loli.net/2025/11/02/X4Qzqh2LCbvop9M.png" alt="chrome_D5PlYdJGjl.png"></p>
+<p>我们得把Configmap拷贝到PVC中并允许多节点同时读写</p>
+<p>我选择用一个init pod自动拷贝，这样就能解决问题了</p>
+<p><img src="https://s2.loli.net/2025/11/02/1Z48ud2ktQwjlas.png" alt="chrome_tK9Qo4sPEJ.png"></p>
+<p><img src="https://s2.loli.net/2025/11/02/KOW3iGhZdHwfmcR.png" alt="chrome_hO3RyeKrJP.png"></p>
+<p>然后就在这时候</p>
+<p><img src="https://s2.loli.net/2025/11/02/GORbTtVIuZsz6vU.png" alt="MobaXterm_Uma9Js4Akw.png"></p>
+<p><img src="https://s2.loli.net/2025/11/02/LJ5Gc7TuWYeOq2s.png" alt="Lens_H0cPn9el6f.png"></p>
+<p>卧槽Worker炸了</p>
+<p>真是坎坎又坷坷啊</p>
+<p>我一看 普罗米修斯在我的Worker里给人类偷取火种去了</p>
+<p><img src="https://s2.loli.net/2025/11/02/zL5nGkWvi7fmNJc.png" alt="MobaXterm_yXuv6WzAlj.png"></p>
+<p>西巴了搞个wg组网搞一晚上</p>
+<p>我先把Grafana监控套件全删了</p>
+<p>这个是题外话 修好之后就可以正常使用headplane了</p>
+<p><img src="https://s2.loli.net/2025/11/02/LGckObRigW4qXym.png" alt="chrome_h8OGPj5A47.png"></p>
+<p>写了500多行了 终于完事了</p>
+<p>那我们就顺便配置下OIDC吧</p>
+<p>只需要在Plane的下面加上这些就好了</p>
+<pre><code class="YAML">oidc:
+  issuer: &quot;https://example.com/application/o/headplane-oidc/&quot;
+  client_id: &quot;secret&quot;
+  client_secret: &quot;secret&quot;
+  scope: &quot;openid email profile&quot;
+  disable_api_key_login: true
+  token_endpoint_auth_method: &quot;client_secret_post&quot;
+  headscale_api_key: &quot;api key&quot;
+  redirect_uri: &quot;https://example.com/admin/oidc/callback&quot;
+</code></pre>
+<h1 id="SideCar的使用"><a href="#SideCar的使用" class="headerlink" title="SideCar的使用"></a>SideCar的使用</h1><p>ohshit还有这个呢</p>
+<p>写不动了 明天先</p>
+
+    </div>
+    
+    
+    
+    
+    
+    
+    
+</div>
+
+            <footer id="footer">
+    <div id="footer-wrap">
+        <div>
+            &copy;
+            221 - 2025 Cainong&#39;s Blog
+            <span id="footer-icon">
+                <i class="fa-solid fa-font-awesome fa-fw"></i>
+            </span>
+            &commat;Cainong
+        </div>
+        <div>
+            Based on the <a target="_blank" rel="noopener" href="https://hexo.io">Hexo Engine</a> &amp;
+            <a target="_blank" rel="noopener" href="https://github.com/theme-particlex/hexo-theme-particlex">ParticleX Theme</a>
+        </div>
+        
+    </div>
+</footer>
+
+        </div>
+        
+        <transition name="fade">
+            <div id="preview" ref="preview" v-show="previewShow">
+                <img id="preview-content" ref="previewContent" />
+            </div>
+        </transition>
+        
+    </div>
+    <script src="/js/main.js"></script>
+    
+    
+
+
+
+
+    
+</body>
+</html>

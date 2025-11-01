@@ -181,6 +181,114 @@
         
 
 <div class="post">
+    <a href="/2025/11/01/kubernetes-loadbalance/">
+        <h2 class="post-title">Kubernetes的负载均衡与自动调度</h2>
+    </a>
+    <div class="category-and-date">
+        
+        <span class="date">
+            <span class="icon">
+                <i class="fa-solid fa-calendar fa-fw"></i>
+            </span>
+            2025/11/1
+        </span>
+        
+        
+    </div>
+    <div class="description">
+        <div class="content" v-pre>
+            
+            <h1 id="起因"><a href="#起因" class="headerlink" title="起因"></a>起因</h1><p>在折腾wg 零信任访问的时候，由于Worker02 CPU100%之后导致好多服务探针超时</p>
+<p>然后引发出了一大堆问题</p>
+<p>秃头修了一个多小时总算是好了</p>
+<p>这引发出几个值得思考的问题</p>
+            
+        </div>
+    </div>
+    <div class="post-tags">
+        
+        <span class="icon">
+            <i class="fa-solid fa-tags fa-fw"></i>
+        </span>
+        
+        
+        
+        <span class="tag">
+            
+            <a href="/tags/HomeLab/" style="color: #00bcd4">HomeLab</a>
+        </span>
+        
+        <span class="tag">
+            
+            <a href="/tags/%E5%AE%B9%E5%99%A8%E5%8C%96/" style="color: #00a596">容器化</a>
+        </span>
+        
+        <span class="tag">
+            
+            <a href="/tags/Kubernetes/" style="color: #00bcd4">Kubernetes</a>
+        </span>
+        
+    </div>
+    <a href="/2025/11/01/kubernetes-loadbalance/" class="go-post">阅读全文</a>
+</div>
+
+<div class="post">
+    <a href="/2025/11/01/remote-access/">
+        <h2 class="post-title">论远程零信任访问的搭建</h2>
+    </a>
+    <div class="category-and-date">
+        
+        <span class="date">
+            <span class="icon">
+                <i class="fa-solid fa-calendar fa-fw"></i>
+            </span>
+            2025/11/1
+        </span>
+        
+        
+    </div>
+    <div class="description">
+        <div class="content" v-pre>
+            
+            <h1 id="起因"><a href="#起因" class="headerlink" title="起因"></a>起因</h1><p>在迁移AquaDX到K8s集群中的时候，我需要给别人远程访问的权限</p>
+<p>我的服务器是不公开的 我并不打算公开出去给所有人用</p>
+<p>之前用的ZeroTier因为几个原因我决定废弃了：</p>
+<ul>
+<li>他把路由选项从控制面板中删除了，改为要付费的</li>
+<li>他要修改宿主机的tun配置来实现二层上的网络代理，这在K8s中肯定不是不允许的</li>
+<li>打洞策略太迷 即使能UPnP直连或者IPv6直连有时候他还是中转</li>
+</ul>
+            
+        </div>
+    </div>
+    <div class="post-tags">
+        
+        <span class="icon">
+            <i class="fa-solid fa-tags fa-fw"></i>
+        </span>
+        
+        
+        
+        <span class="tag">
+            
+            <a href="/tags/HomeLab/" style="color: #03a9f4">HomeLab</a>
+        </span>
+        
+        <span class="tag">
+            
+            <a href="/tags/WireGuard/" style="color: #ffa2c4">WireGuard</a>
+        </span>
+        
+        <span class="tag">
+            
+            <a href="/tags/%E8%99%9A%E6%8B%9F%E7%BD%91%E8%B7%AF/" style="color: #ff7d73">虚拟网路</a>
+        </span>
+        
+    </div>
+    <a href="/2025/11/01/remote-access/" class="go-post">阅读全文</a>
+</div>
+
+<div class="post">
     <a href="/2025/10/27/h3c-switch-setup/">
         <h2 class="post-title">记一次H3C S5800三层交换机的配置</h2>
     </a>
@@ -223,7 +331,7 @@
         
         <span class="tag">
             
-            <a href="/tags/%E7%BD%91%E5%B7%A5/" style="color: #03a9f4">网工</a>
+            <a href="/tags/%E7%BD%91%E5%B7%A5/" style="color: #ffa2c4">网工</a>
         </span>
         
     </div>
@@ -267,12 +375,12 @@
         
         <span class="tag">
             
-            <a href="/tags/HomeLab/" style="color: #ffa2c4">HomeLab</a>
+            <a href="/tags/HomeLab/" style="color: #00a596">HomeLab</a>
         </span>
         
         <span class="tag">
             
-            <a href="/tags/%E6%9C%8D%E5%8A%A1%E5%99%A8/" style="color: #00a596">服务器</a>
+            <a href="/tags/%E6%9C%8D%E5%8A%A1%E5%99%A8/" style="color: #00bcd4">服务器</a>
         </span>
         
     </div>
@@ -389,12 +497,12 @@
         
         <span class="tag">
             
-            <a href="/tags/K8s/" style="color: #ff7d73">K8s</a>
+            <a href="/tags/K8s/" style="color: #00a596">K8s</a>
         </span>
         
         <span class="tag">
             
-            <a href="/tags/%E9%95%9C%E5%83%8F%E4%BB%93%E5%BA%93/" style="color: #03a9f4">镜像仓库</a>
+            <a href="/tags/%E9%95%9C%E5%83%8F%E4%BB%93%E5%BA%93/" style="color: #ff7d73">镜像仓库</a>
         </span>
         
         <span class="tag">
@@ -441,17 +549,17 @@
         
         <span class="tag">
             
-            <a href="/tags/HomeLab/" style="color: #00a596">HomeLab</a>
+            <a href="/tags/HomeLab/" style="color: #00bcd4">HomeLab</a>
         </span>
         
         <span class="tag">
             
-            <a href="/tags/%E6%9C%8D%E5%8A%A1%E5%99%A8/" style="color: #00bcd4">服务器</a>
+            <a href="/tags/%E6%9C%8D%E5%8A%A1%E5%99%A8/" style="color: #00a596">服务器</a>
         </span>
         
         <span class="tag">
             
-            <a href="/tags/SSL/" style="color: #ff7d73">SSL</a>
+            <a href="/tags/SSL/" style="color: #00bcd4">SSL</a>
         </span>
         
     </div>
@@ -490,12 +598,12 @@
         
         <span class="tag">
             
-            <a href="/tags/HomeLab/" style="color: #00bcd4">HomeLab</a>
+            <a href="/tags/HomeLab/" style="color: #ff7d73">HomeLab</a>
         </span>
         
         <span class="tag">
             
-            <a href="/tags/%E6%9C%8D%E5%8A%A1%E5%99%A8/" style="color: #ffa2c4">服务器</a>
+            <a href="/tags/%E6%9C%8D%E5%8A%A1%E5%99%A8/" style="color: #00bcd4">服务器</a>
         </span>
         
         <span class="tag">
@@ -546,12 +654,12 @@
         
         <span class="tag">
             
-            <a href="/tags/HomeLab/" style="color: #03a9f4">HomeLab</a>
+            <a href="/tags/HomeLab/" style="color: #ff7d73">HomeLab</a>
         </span>
         
         <span class="tag">
             
-            <a href="/tags/%E6%9C%8D%E5%8A%A1%E5%99%A8/" style="color: #00a596">服务器</a>
+            <a href="/tags/%E6%9C%8D%E5%8A%A1%E5%99%A8/" style="color: #00bcd4">服务器</a>
         </span>
         
         <span class="tag">
@@ -561,93 +669,6 @@
         
     </div>
     <a href="/2025/10/05/kubernetes-buildup/" class="go-post">阅读全文</a>
-</div>
-
-<div class="post">
-    <a href="/2025/10/05/lan-ssl-buildup/">
-        <h2 class="post-title">记一次局域网内.lan域名的证书自签名并挂载到Ingress</h2>
-    </a>
-    <div class="category-and-date">
-        
-        <span class="date">
-            <span class="icon">
-                <i class="fa-solid fa-calendar fa-fw"></i>
-            </span>
-            2025/10/5
-        </span>
-        
-        
-    </div>
-    <div class="description">
-        <div class="content" v-pre>
-            
-            <h1 id="起因"><a href="#起因" class="headerlink" title="起因"></a>起因</h1><p>在Authentik的折腾中由于我们没有https导致passkey无法使用</p>
-<p>并且想使用passkey必须要可用的证书 Chrome提示什么不安全的连接即使有https也是无法使用的</p>
-<p>所以我们需要给.lan域名签一个证书并信任他</p>
-            
-        </div>
-    </div>
-    <div class="post-tags">
-        
-        <span class="icon">
-            <i class="fa-solid fa-tags fa-fw"></i>
-        </span>
-        
-        
-        
-        <span class="tag">
-            
-            <a href="/tags/HomeLab/" style="color: #ffa2c4">HomeLab</a>
-        </span>
-        
-        <span class="tag">
-            
-            <a href="/tags/K8s/" style="color: #00bcd4">K8s</a>
-        </span>
-        
-    </div>
-    <a href="/2025/10/05/lan-ssl-buildup/" class="go-post">阅读全文</a>
-</div>
-
-<div class="post">
-    <a href="/2025/10/04/authentik-buildup/">
-        <h2 class="post-title">基于authentik的局域网单点登录与通行密钥的配置与部署</h2>
-    </a>
-    <div class="category-and-date">
-        
-        <span class="date">
-            <span class="icon">
-                <i class="fa-solid fa-calendar fa-fw"></i>
-            </span>
-            2025/10/4
-        </span>
-        
-        
-    </div>
-    <div class="description">
-        <div class="content" v-pre>
-            
-            <h1 id="起因"><a href="#起因" class="headerlink" title="起因"></a>起因</h1><p>Passkey(通行密钥)作为一种新的身份验证方式近几年开始慢慢流行起来了</p>
-<p>该说不说 真的很好用</p>
-<p>其安全且方便，理论来说Passkey的安全性是高于传统的2FA的（尤其是有生物认证的情况下）</p>
-<p>但是目前只有一些大厂 比如Google Github 或者一些虚拟货币平台支持</p>
-<p>国内几乎没有厂商支持 为数不多支持的微信还要求你用非+86的手机注册才可以用</p>
-<p>我就在想，我局域网一些设备用的是弱密码 首先这不安全 其次这导致我需要记住几个不同的密码</p>
-<p>有点麻烦 何况很多时候Chrome的密码补全是不工作的</p>
-<p>有时候我root都输完了Chrome才提示让我填入密码 那我手都输完了</p>
-<p>我就在想，可不可以将局域网里面的一些服务比如ESXi vCenter TrueNAS。甚至是Windows远程桌面 SSH</p>
-<p>用反代 让他们强行支持Passkey</p>
-<p>况且前段时间我暴露的RDP服务老是被爆破 即使不是3389端口 我用了几万后的端口也会被扫到</p>
-<p>所以我需要一个局域网内的身份验证服务</p>
-            
-        </div>
-    </div>
-    <div class="post-tags">
-        
-        
-        
-    </div>
-    <a href="/2025/10/04/authentik-buildup/" class="go-post">阅读全文</a>
 </div>
 
 
