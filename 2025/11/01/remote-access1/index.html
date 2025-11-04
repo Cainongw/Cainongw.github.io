@@ -3,7 +3,7 @@
 <html lang="zh">
 <head>
     <meta charset="utf-8" />
-    <title>论远程零信任访问的搭建 | Cainong&#39;s Blog</title>
+    <title>论远程零信任访问的搭建(1)Headscale的搭建 | Cainong&#39;s Blog</title>
     <meta name="author" content="Cainong" />
     <meta name="description" content="" />
     <meta name="keywords" content="" />
@@ -156,7 +156,7 @@
         <div id="main" :class="loading ? 'into-enter-from': 'into-enter-active'">
             <div class="article">
     <div>
-        <h1>论远程零信任访问的搭建</h1>
+        <h1>论远程零信任访问的搭建(1)Headscale的搭建</h1>
     </div>
     <div class="info">
         <span class="date">
@@ -182,14 +182,14 @@
             
             <span class="tag">
                 
-                <a href="/tags/WireGuard/" style="color: #00a596">
+                <a href="/tags/WireGuard/" style="color: #03a9f4">
                     WireGuard
                 </a>
             </span>
             
             <span class="tag">
                 
-                <a href="/tags/%E8%99%9A%E6%8B%9F%E7%BD%91%E8%B7%AF/" style="color: #ffa2c4">
+                <a href="/tags/%E8%99%9A%E6%8B%9F%E7%BD%91%E8%B7%AF/" style="color: #00bcd4">
                     虚拟网路
                 </a>
             </span>
@@ -204,22 +204,23 @@
 <p>之前用的ZeroTier因为几个原因我决定废弃了：</p>
 <ul>
 <li>他把路由选项从控制面板中删除了，改为要付费的</li>
-<li>他要修改宿主机的tun配置来实现二层上的网络代理，这在K8s中肯定不是不允许的</li>
+<li>他要修改宿主机的tun配置来实现二层上的网络代理，这在K8s中是不允许的</li>
 <li>打洞策略太迷 即使能UPnP直连或者IPv6直连有时候他还是中转</li>
 </ul>
 <span id="more"></span> 
 
-<p>第一点导致我没法用来代理整个网络了，以前我把他装在OpenWrt上，这样我可以连接上网络之后访问我整个局域网，现在没了</p>
+<p>第一点导致我没法用来代理整个网段了，以前我把他装在OpenWrt上，这样我可以连接上网络之后访问我整个局域网，现在没了</p>
 <p>第二点则是他的硬伤，或许我们有方法让他不修改tun，但显然没必要</p>
 <p>我们可以选择性能更高的三层网络方案，基于WireGuard的一大堆都可以</p>
 <p>我看到了Github上的这个：<a target="_blank" rel="noopener" href="https://github.com/HarvsG/WireGuardMeshes/blob/main/readme.md">https://github.com/HarvsG/WireGuardMeshes/blob/main/readme.md</a></p>
 <p><img src="https://s2.loli.net/2025/11/01/5eDEgbcFzxdIstW.png" alt="Code_qMmZJDTt8C.png"></p>
 <p>可以看到最成熟的应该是NetBird和Tailscale</p>
 <p>我在之前是使用过Tailscale的，也确实很成熟</p>
-<p>Tailscale也完全支持通过Sidecar的方式管理容器的流量</p>
-<p>NetBird也不差，但是它不支持别的平台</p>
-<p>有没有最夯的方式呢</p>
-<h1 id="自建Tailscale"><a href="#自建Tailscale" class="headerlink" title="自建Tailscale"></a>自建Tailscale</h1><p>我其实想过自建Netbird，但我一打开Netbird那网站和Tailscale也差不多嘛</p>
+<p>NetBird也不差</p>
+<p>考虑到我用过Tailscale，我决定还是用他</p>
+<p>但是Tailscale打洞中转延迟非常高，因为国内没有服务器</p>
+<p>那么有没有最夯的方式呢</p>
+<h1 id="自建Headscale"><a href="#自建Headscale" class="headerlink" title="自建Headscale"></a>自建Headscale</h1><p>我其实想过自建Netbird，但我一打开Netbird那网站和Tailscale也差不多嘛</p>
 <p>上面那个图的HeadScale其实就是Tailscale控制平面的开源实现</p>
 <p>TailScale客户端是开源的，控制端则闭源 和Zerotier一样</p>
 <p>事实上的话我们可以自己搭建中继节点，然后用Tailscale官方的功能就完全足够了</p>
@@ -651,6 +652,7 @@ rules:
 <p>写了500多行了 终于完事了</p>
 <p>那我们就顺便配置下OIDC吧</p>
 <p>只需要在Plane的下面加上这些就好了</p>
+<p>Scale同理，这样的话登录的时候就不用去手动输入Machine key，过OIDC就好了</p>
 <pre><code class="YAML">oidc:
   issuer: &quot;https://example.com/application/o/headplane-oidc/&quot;
   client_id: &quot;secret&quot;
@@ -661,8 +663,10 @@ rules:
   headscale_api_key: &quot;api key&quot;
   redirect_uri: &quot;https://example.com/admin/oidc/callback&quot;
 </code></pre>
-<h1 id="SideCar的使用"><a href="#SideCar的使用" class="headerlink" title="SideCar的使用"></a>SideCar的使用</h1><p>ohshit还有这个呢</p>
-<p>写不动了 明天先</p>
+<p>Authentik上的话，别的都和正常创建OIDC一样，最关键的是要选择一个签名证书，并且是RS256加密的</p>
+<p><img src="https://s2.loli.net/2025/11/04/c8r3AX92VWoQUS1.png" alt="chrome_4vfiXv3hhx.png"></p>
+<p>这样的话就可以实现加入网络和管理都用同一套帐号了</p>
+<p>完事 接下来是Sidecar 太长了我决定放到另一篇</p>
 
     </div>
     

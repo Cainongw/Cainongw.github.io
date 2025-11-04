@@ -215,12 +215,7 @@
         
         <span class="tag">
             
-            <a href="/tags/HomeLab/" style="color: #00bcd4">HomeLab</a>
-        </span>
-        
-        <span class="tag">
-            
-            <a href="/tags/%E5%AE%B9%E5%99%A8%E5%8C%96/" style="color: #00a596">容器化</a>
+            <a href="/tags/HomeLab/" style="color: #03a9f4">HomeLab</a>
         </span>
         
         <span class="tag">
@@ -228,13 +223,69 @@
             <a href="/tags/Kubernetes/" style="color: #00bcd4">Kubernetes</a>
         </span>
         
+        <span class="tag">
+            
+            <a href="/tags/%E5%AE%B9%E5%99%A8%E5%8C%96/" style="color: #03a9f4">容器化</a>
+        </span>
+        
     </div>
     <a href="/2025/11/01/kubernetes-loadbalance/" class="go-post">阅读全文</a>
 </div>
 
 <div class="post">
-    <a href="/2025/11/01/remote-access/">
-        <h2 class="post-title">论远程零信任访问的搭建</h2>
+    <a href="/2025/11/01/remote-access2/">
+        <h2 class="post-title">论远程零信任访问的搭建(2)Sidecar容器的使用</h2>
+    </a>
+    <div class="category-and-date">
+        
+        <span class="date">
+            <span class="icon">
+                <i class="fa-solid fa-calendar fa-fw"></i>
+            </span>
+            2025/11/1
+        </span>
+        
+        
+    </div>
+    <div class="description">
+        <div class="content" v-pre>
+            
+            <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>我们终于搭建好了Headscale控制平面和UI，并解决了统一登陆，现在零信任网络已经完全可以使用了</p>
+<p>我们需要完成最后一步：把服务添加进来</p>
+<p>在这里就是我的AquaDX Sidecar容器</p>
+            
+        </div>
+    </div>
+    <div class="post-tags">
+        
+        <span class="icon">
+            <i class="fa-solid fa-tags fa-fw"></i>
+        </span>
+        
+        
+        
+        <span class="tag">
+            
+            <a href="/tags/HomeLab/" style="color: #00a596">HomeLab</a>
+        </span>
+        
+        <span class="tag">
+            
+            <a href="/tags/WireGuard/" style="color: #03a9f4">WireGuard</a>
+        </span>
+        
+        <span class="tag">
+            
+            <a href="/tags/%E8%99%9A%E6%8B%9F%E7%BD%91%E8%B7%AF/" style="color: #00a596">虚拟网路</a>
+        </span>
+        
+    </div>
+    <a href="/2025/11/01/remote-access2/" class="go-post">阅读全文</a>
+</div>
+
+<div class="post">
+    <a href="/2025/11/01/remote-access1/">
+        <h2 class="post-title">论远程零信任访问的搭建(1)Headscale的搭建</h2>
     </a>
     <div class="category-and-date">
         
@@ -255,7 +306,7 @@
 <p>之前用的ZeroTier因为几个原因我决定废弃了：</p>
 <ul>
 <li>他把路由选项从控制面板中删除了，改为要付费的</li>
-<li>他要修改宿主机的tun配置来实现二层上的网络代理，这在K8s中肯定不是不允许的</li>
+<li>他要修改宿主机的tun配置来实现二层上的网络代理，这在K8s中是不允许的</li>
 <li>打洞策略太迷 即使能UPnP直连或者IPv6直连有时候他还是中转</li>
 </ul>
             
@@ -271,7 +322,7 @@
         
         <span class="tag">
             
-            <a href="/tags/HomeLab/" style="color: #03a9f4">HomeLab</a>
+            <a href="/tags/HomeLab/" style="color: #00a596">HomeLab</a>
         </span>
         
         <span class="tag">
@@ -285,7 +336,7 @@
         </span>
         
     </div>
-    <a href="/2025/11/01/remote-access/" class="go-post">阅读全文</a>
+    <a href="/2025/11/01/remote-access1/" class="go-post">阅读全文</a>
 </div>
 
 <div class="post">
@@ -326,12 +377,12 @@
         
         <span class="tag">
             
-            <a href="/tags/%E4%BA%A4%E6%8D%A2%E6%9C%BA/" style="color: #ff7d73">交换机</a>
+            <a href="/tags/%E4%BA%A4%E6%8D%A2%E6%9C%BA/" style="color: #ffa2c4">交换机</a>
         </span>
         
         <span class="tag">
             
-            <a href="/tags/%E7%BD%91%E5%B7%A5/" style="color: #ffa2c4">网工</a>
+            <a href="/tags/%E7%BD%91%E5%B7%A5/" style="color: #03a9f4">网工</a>
         </span>
         
     </div>
@@ -375,12 +426,12 @@
         
         <span class="tag">
             
-            <a href="/tags/HomeLab/" style="color: #00a596">HomeLab</a>
+            <a href="/tags/HomeLab/" style="color: #ffa2c4">HomeLab</a>
         </span>
         
         <span class="tag">
             
-            <a href="/tags/%E6%9C%8D%E5%8A%A1%E5%99%A8/" style="color: #00bcd4">服务器</a>
+            <a href="/tags/%E6%9C%8D%E5%8A%A1%E5%99%A8/" style="color: #ff7d73">服务器</a>
         </span>
         
     </div>
@@ -492,22 +543,22 @@
         
         <span class="tag">
             
-            <a href="/tags/HomeLab/" style="color: #ffa2c4">HomeLab</a>
+            <a href="/tags/HomeLab/" style="color: #ff7d73">HomeLab</a>
         </span>
         
         <span class="tag">
             
-            <a href="/tags/K8s/" style="color: #00a596">K8s</a>
+            <a href="/tags/K8s/" style="color: #00bcd4">K8s</a>
         </span>
         
         <span class="tag">
             
-            <a href="/tags/%E9%95%9C%E5%83%8F%E4%BB%93%E5%BA%93/" style="color: #ff7d73">镜像仓库</a>
+            <a href="/tags/%E9%95%9C%E5%83%8F%E4%BB%93%E5%BA%93/" style="color: #ffa2c4">镜像仓库</a>
         </span>
         
         <span class="tag">
             
-            <a href="/tags/Docker/" style="color: #ffa2c4">Docker</a>
+            <a href="/tags/Docker/" style="color: #ff7d73">Docker</a>
         </span>
         
     </div>
@@ -549,12 +600,12 @@
         
         <span class="tag">
             
-            <a href="/tags/HomeLab/" style="color: #00bcd4">HomeLab</a>
+            <a href="/tags/HomeLab/" style="color: #03a9f4">HomeLab</a>
         </span>
         
         <span class="tag">
             
-            <a href="/tags/%E6%9C%8D%E5%8A%A1%E5%99%A8/" style="color: #00a596">服务器</a>
+            <a href="/tags/%E6%9C%8D%E5%8A%A1%E5%99%A8/" style="color: #ffa2c4">服务器</a>
         </span>
         
         <span class="tag">
@@ -598,68 +649,12 @@
         
         <span class="tag">
             
-            <a href="/tags/HomeLab/" style="color: #ff7d73">HomeLab</a>
+            <a href="/tags/HomeLab/" style="color: #00bcd4">HomeLab</a>
         </span>
         
         <span class="tag">
             
-            <a href="/tags/%E6%9C%8D%E5%8A%A1%E5%99%A8/" style="color: #00bcd4">服务器</a>
-        </span>
-        
-        <span class="tag">
-            
-            <a href="/tags/%E5%AE%B9%E5%99%A8%E5%8C%96/" style="color: #00a596">容器化</a>
-        </span>
-        
-    </div>
-    <a href="/2025/10/08/kubernetes-buildup2/" class="go-post">阅读全文</a>
-</div>
-
-<div class="post">
-    <a href="/2025/10/05/kubernetes-buildup/">
-        <h2 class="post-title">记一次Kubernetes完整集群的搭建</h2>
-    </a>
-    <div class="category-and-date">
-        
-        <span class="date">
-            <span class="icon">
-                <i class="fa-solid fa-calendar fa-fw"></i>
-            </span>
-            2025/10/5
-        </span>
-        
-        
-    </div>
-    <div class="description">
-        <div class="content" v-pre>
-            
-            <h1 id="写在前面"><a href="#写在前面" class="headerlink" title="写在前面"></a>写在前面</h1><p>太好了孩子们 这次基本全都是命令行操作 我不用截图了</p>
-<p>以下几乎全是命令 几乎一张图片没有 如果你想做为参考的话请仔细阅读每一行</p>
-<h1 id="起因"><a href="#起因" class="headerlink" title="起因"></a>起因</h1><p>昨天我在折腾Authentik认证服务的时候 一直在思考用什么反代服务</p>
-<p>常见的可以用Nginx Proxy Manager,Caddy,Traefik</p>
-<p>这里面我觉得比较好用的是Traefik，但是即使是Traefik想要自动申请证书之类的你也需要在docker compose里写一堆lable去定义</p>
-<p>再加上我的服务越来越多 之前都是宝塔和1Panel混着用来管理docker</p>
-<p>这太不健康了</p>
-<p>我认为是时候开始大一统了</p>
-            
-        </div>
-    </div>
-    <div class="post-tags">
-        
-        <span class="icon">
-            <i class="fa-solid fa-tags fa-fw"></i>
-        </span>
-        
-        
-        
-        <span class="tag">
-            
-            <a href="/tags/HomeLab/" style="color: #ff7d73">HomeLab</a>
-        </span>
-        
-        <span class="tag">
-            
-            <a href="/tags/%E6%9C%8D%E5%8A%A1%E5%99%A8/" style="color: #00bcd4">服务器</a>
+            <a href="/tags/%E6%9C%8D%E5%8A%A1%E5%99%A8/" style="color: #03a9f4">服务器</a>
         </span>
         
         <span class="tag">
@@ -668,7 +663,7 @@
         </span>
         
     </div>
-    <a href="/2025/10/05/kubernetes-buildup/" class="go-post">阅读全文</a>
+    <a href="/2025/10/08/kubernetes-buildup2/" class="go-post">阅读全文</a>
 </div>
 
 
