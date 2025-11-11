@@ -3,7 +3,7 @@
 <html lang="zh">
 <head>
     <meta charset="utf-8" />
-    <title>Kubernetes的负载均衡与自动调度 | Cainong&#39;s Blog</title>
+    <title>记一次filebrowser的搭建 | Cainong&#39;s Blog</title>
     <meta name="author" content="Cainong" />
     <meta name="description" content="" />
     <meta name="keywords" content="" />
@@ -156,14 +156,14 @@
         <div id="main" :class="loading ? 'into-enter-from': 'into-enter-active'">
             <div class="article">
     <div>
-        <h1>Kubernetes的负载均衡与自动调度</h1>
+        <h1>记一次filebrowser的搭建</h1>
     </div>
     <div class="info">
         <span class="date">
             <span class="icon">
                 <i class="fa-solid fa-calendar fa-fw"></i>
             </span>
-            2025/11/1
+            2025/11/11
         </span>
         
         
@@ -182,15 +182,8 @@
             
             <span class="tag">
                 
-                <a href="/tags/Kubernetes/" style="color: #ffa2c4">
-                    Kubernetes
-                </a>
-            </span>
-            
-            <span class="tag">
-                
-                <a href="/tags/%E5%AE%B9%E5%99%A8%E5%8C%96/" style="color: #ff7d73">
-                    容器化
+                <a href="/tags/k8S/" style="color: #00bcd4">
+                    k8S
                 </a>
             </span>
             
@@ -199,20 +192,58 @@
     </div>
     
     <div class="content" v-pre>
-        <h1 id="起因"><a href="#起因" class="headerlink" title="起因"></a>起因</h1><p>在折腾wg 零信任访问的时候，由于Worker02 CPU100%之后导致好多服务探针超时</p>
-<p>然后引发出了一大堆问题</p>
-<p>秃头修了一个多小时总算是好了</p>
-<p>这引发出几个值得思考的问题</p>
+        <h1 id="起因"><a href="#起因" class="headerlink" title="起因"></a>起因</h1><p>我以为这个就是写个Deployment然后挂载NFS就得了 本来都不打算写blog的</p>
+<p>结果后面发现折腾了我几个小时才好</p>
+<p>还是有一点坑的 所以就写一下</p>
 <span id="more"></span> 
 
-<p>K8s的Scheduler默认策略是只要Node处于Ready他就会一股脑把Pending的Pod全部丢上去</p>
-<p>这就导致在重启集群的时候会由于某个Node先Ready然后负载过大</p>
-<p>我在debug的时候也发现Pod对Worker02情有独钟，这就是因为重启的时候总是Worker02重启完</p>
-<p>在云服务上，Node很多，K8s在设计之初Node就是能以很快的速度恢复的</p>
-<p>而且Scheduler遵循迅速让服务恢复的原则，这么设计也没问题</p>
-<p>但是在自建裸机集群上这就是灾难了</p>
-<p>因此我们需要一些负载均衡的手段</p>
-<h1 id="方案选择"><a href="#方案选择" class="headerlink" title="方案选择"></a>方案选择</h1><p>写不动了 明天再写</p>
+<h1 id="折腾开始"><a href="#折腾开始" class="headerlink" title="折腾开始"></a>折腾开始</h1><p>我这里用的不是官方版本 而是FileBrowser Quantum</p>
+<p>这个版本多了OIDC等一些功能 更符合我的需求</p>
+<p>首先的话创建Deployment</p>
+<p>要注意的就是要以ROOT权限运行 这样免去一些折腾（</p>
+<p><img src="https://s2.loli.net/2025/11/11/9ubxkJCahVtmPGp.png" alt="chrome_20wgKRAlQ8.png"></p>
+<p>然后的话用NFS挂载NAS的卷</p>
+<p>然后就报错了</p>
+<pre><code>[ERROR] CopyFile failed chmod /folder/195216805-1-16.mp4: operation not permitted 2025/11/10 18:03:59 POST | 500 | 10.244.0.16:60000 | admin | 138ms | &quot;/api/resources?path=%252F195216805-1-16.mp4&amp;source=folder&amp;override=true&quot;
+</code></pre>
+<p>我第一反应是TrueNAS ACL有问题 我就去把root改成完全控制</p>
+<p>还是不行</p>
+<pre><code class="Bash">/home/filebrowser # touch /folder/test /home/filebrowser 
+# chmod 777 /folder/test 
+chmod: /folder/test: Operation not permitted
+</code></pre>
+<p>查了一下是root_squash的问题 要去NFS共享那里改一下</p>
+<p><img src="https://s2.loli.net/2025/11/11/znQavFM692gwbtE.png" alt="chrome_QZMejMNAxc.png"></p>
+<p>然后再次上传文件</p>
+<pre><code>08:36:16 [ERROR] CopyFile failed chmod /folder/11.mp4: operation not permitted 2025/11/10 08:36:16 POST | 500 | 10.244.0.60:49122 | admin | 612ms | &quot;/api/resources?path=11.mp4&amp;source=folder&amp;override=false&quot;
+</code></pre>
+<p>红温）</p>
+<p>然后我就在容器里寻思问题在哪 </p>
+<pre><code class="Bash">/home/filebrowser # touch /folder/test.txt
+ /home/filebrowser # ls -l /folder/test.txt 
+ -r-xr-xr-x 1 root root 0 Nov 10 18:35 /folder/test.txt
+</code></pre>
+<p>-r-xr-xr-x?不可写？</p>
+<p>我想到是ACL让chmod失效的</p>
+<p>我一搜发现这完全是因为我对ACL毫无了解（）</p>
+<p>简单来说，数据集创建的时候会默认无视chmod请求，转而用ACL控制数据集里的所有文件权限</p>
+<p><img src="https://s2.loli.net/2025/11/12/VM1RCLqwTtYc6xZ.png" alt="chrome_Xf6ohP2JOu.png"></p>
+<p>最后在TrueNAS论坛找到了这个</p>
+<p><img src="https://s2.loli.net/2025/11/12/iALeMjhqmPbJIyR.png" alt="chrome_1UglGqbuRF.png"></p>
+<p>啊~我是傻逼</p>
+<p>不管怎么说FileBrowser能用了 最后配置下OIDC 在他的ConfigMap加上就好了</p>
+<pre><code class="YAML">auth:
+  methods:
+    oidc:
+      enabled: true
+      clientId: &quot;xxx&quot;
+      clientSecret: &quot;xxx&quot;  # Use environment variable
+      issuerUrl: &quot;https://excample.com/application/o/file-browser/&quot;
+      scopes: &quot;email openid profile groups&quot;
+      userIdentifier: &quot;preferred_username&quot;
+      createUser: true
+      adminGroup: &quot;authentik Admins&quot;
+</code></pre>
 
     </div>
     

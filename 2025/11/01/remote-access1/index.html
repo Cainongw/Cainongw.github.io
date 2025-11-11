@@ -182,7 +182,7 @@
             
             <span class="tag">
                 
-                <a href="/tags/WireGuard/" style="color: #03a9f4">
+                <a href="/tags/WireGuard/" style="color: #00a596">
                     WireGuard
                 </a>
             </span>
@@ -410,14 +410,14 @@ randomize_client_port: false
 <p>也好，熟悉Tailscale可以直接上手</p>
 <p>去看一下这玩意还支持反代,SSO,SSH key 完美</p>
 <p>看了一下为了Headplane能管理，最好的方式是把他们跑在一起</p>
-<p>我一开始想的是给他们挂在同一个Development下 使用两个工作容器</p>
+<p>我一开始想的是给他们挂在同一个Deployment下 使用两个工作容器</p>
 <p>其实没必要，分开也是完全可以的</p>
 <p><del>因为我把headscale和headplane看混好几次</del></p>
 <p>这他妈也太像了吧</p>
 <p>为了便于区分，之后Headscale简称Scale，Headplane简称Plane</p>
 <p><img src="https://s2.loli.net/2025/11/02/IvdpfYiELzsVhBG.png" alt="chrome_HxIF1PpUZy.png"></p>
 <p>不管怎么说，我们先把他<del>分开部署</del></p>
-<p>请把Plane和Scale放在同一个Development中，详情看后面就知道了😄</p>
+<p>请把Plane和Scale放在同一个Deployment中，详情看后面就知道了😄</p>
 <pre><code class="YAML">---
 apiVersion: apps/v1
 kind: Deployment
@@ -604,13 +604,13 @@ rules:
 <p><img src="https://s2.loli.net/2025/11/02/srluU2JYx1FH9iK.png" alt="chrome_aOqefgYEOX.png"></p>
 <p>？你这个文档在哪呢</p>
 <p>反正说白了就是，Pod名字是会变动的，我们可以用Downward API去解决这个问题</p>
-<p>等一下 席巴了 通过这个注入podname需要同一个development</p>
+<p>等一下 席巴了 通过这个注入podname需要同一个Deployment</p>
 <p><img src="https://s2.loli.net/2025/11/02/F6d7mjWso1eLrOP.png" alt="chrome_bdyAWlASSu.png"></p>
 <p>我真是草了</p>
 <p>其实也不用说非得注入，我们可以把Scale改成StatefulSet，这样他的名字就是固定的了</p>
 <p>其实的话integration是可以false的，我们在上面已经通过集群内域名实现Plane对Scale的访问了</p>
 <p>但我已经折腾到这了 给他一起配上吧</p>
-<p>把Plane也放到同一个development里作为另一个工作容器</p>
+<p>把Plane也放到同一个Deployment里作为另一个工作容器</p>
 <p>等一下啊 configmap是只读的</p>
 <p>那怎么让Plane修改config</p>
 <p><img src="https://s2.loli.net/2025/11/02/jlIXZLkwfWeuyO9.png" alt="chrome_7tRqUk9g66.png"></p>

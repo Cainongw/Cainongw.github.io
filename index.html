@@ -181,8 +181,8 @@
         
 
 <div class="post">
-    <a href="/2025/11/01/kubernetes-loadbalance/">
-        <h2 class="post-title">Kubernetes的负载均衡与自动调度</h2>
+    <a href="/2025/11/11/filebrowser-buildup/">
+        <h2 class="post-title">记一次filebrowser的搭建</h2>
     </a>
     <div class="category-and-date">
         
@@ -190,7 +190,7 @@
             <span class="icon">
                 <i class="fa-solid fa-calendar fa-fw"></i>
             </span>
-            2025/11/1
+            2025/11/11
         </span>
         
         
@@ -198,10 +198,9 @@
     <div class="description">
         <div class="content" v-pre>
             
-            <h1 id="起因"><a href="#起因" class="headerlink" title="起因"></a>起因</h1><p>在折腾wg 零信任访问的时候，由于Worker02 CPU100%之后导致好多服务探针超时</p>
-<p>然后引发出了一大堆问题</p>
-<p>秃头修了一个多小时总算是好了</p>
-<p>这引发出几个值得思考的问题</p>
+            <h1 id="起因"><a href="#起因" class="headerlink" title="起因"></a>起因</h1><p>我以为这个就是写个Deployment然后挂载NFS就得了 本来都不打算写blog的</p>
+<p>结果后面发现折腾了我几个小时才好</p>
+<p>还是有一点坑的 所以就写一下</p>
             
         </div>
     </div>
@@ -215,21 +214,16 @@
         
         <span class="tag">
             
-            <a href="/tags/HomeLab/" style="color: #03a9f4">HomeLab</a>
+            <a href="/tags/HomeLab/" style="color: #00bcd4">HomeLab</a>
         </span>
         
         <span class="tag">
             
-            <a href="/tags/Kubernetes/" style="color: #00bcd4">Kubernetes</a>
-        </span>
-        
-        <span class="tag">
-            
-            <a href="/tags/%E5%AE%B9%E5%99%A8%E5%8C%96/" style="color: #03a9f4">容器化</a>
+            <a href="/tags/k8S/" style="color: #03a9f4">k8S</a>
         </span>
         
     </div>
-    <a href="/2025/11/01/kubernetes-loadbalance/" class="go-post">阅读全文</a>
+    <a href="/2025/11/11/filebrowser-buildup/" class="go-post">阅读全文</a>
 </div>
 
 <div class="post">
@@ -271,7 +265,7 @@
         
         <span class="tag">
             
-            <a href="/tags/WireGuard/" style="color: #03a9f4">WireGuard</a>
+            <a href="/tags/WireGuard/" style="color: #ff7d73">WireGuard</a>
         </span>
         
         <span class="tag">
@@ -322,7 +316,7 @@
         
         <span class="tag">
             
-            <a href="/tags/HomeLab/" style="color: #00a596">HomeLab</a>
+            <a href="/tags/HomeLab/" style="color: #00bcd4">HomeLab</a>
         </span>
         
         <span class="tag">
@@ -332,7 +326,7 @@
         
         <span class="tag">
             
-            <a href="/tags/%E8%99%9A%E6%8B%9F%E7%BD%91%E8%B7%AF/" style="color: #ff7d73">虚拟网路</a>
+            <a href="/tags/%E8%99%9A%E6%8B%9F%E7%BD%91%E8%B7%AF/" style="color: #00bcd4">虚拟网路</a>
         </span>
         
     </div>
@@ -377,12 +371,12 @@
         
         <span class="tag">
             
-            <a href="/tags/%E4%BA%A4%E6%8D%A2%E6%9C%BA/" style="color: #ffa2c4">交换机</a>
+            <a href="/tags/%E4%BA%A4%E6%8D%A2%E6%9C%BA/" style="color: #00a596">交换机</a>
         </span>
         
         <span class="tag">
             
-            <a href="/tags/%E7%BD%91%E5%B7%A5/" style="color: #03a9f4">网工</a>
+            <a href="/tags/%E7%BD%91%E5%B7%A5/" style="color: #ffa2c4">网工</a>
         </span>
         
     </div>
@@ -426,12 +420,12 @@
         
         <span class="tag">
             
-            <a href="/tags/HomeLab/" style="color: #ffa2c4">HomeLab</a>
+            <a href="/tags/HomeLab/" style="color: #03a9f4">HomeLab</a>
         </span>
         
         <span class="tag">
             
-            <a href="/tags/%E6%9C%8D%E5%8A%A1%E5%99%A8/" style="color: #ff7d73">服务器</a>
+            <a href="/tags/%E6%9C%8D%E5%8A%A1%E5%99%A8/" style="color: #ffa2c4">服务器</a>
         </span>
         
     </div>
@@ -548,7 +542,7 @@
         
         <span class="tag">
             
-            <a href="/tags/K8s/" style="color: #00bcd4">K8s</a>
+            <a href="/tags/K8s/" style="color: #00a596">K8s</a>
         </span>
         
         <span class="tag">
@@ -558,7 +552,7 @@
         
         <span class="tag">
             
-            <a href="/tags/Docker/" style="color: #ff7d73">Docker</a>
+            <a href="/tags/Docker/" style="color: #00a596">Docker</a>
         </span>
         
     </div>
@@ -600,17 +594,17 @@
         
         <span class="tag">
             
-            <a href="/tags/HomeLab/" style="color: #03a9f4">HomeLab</a>
+            <a href="/tags/HomeLab/" style="color: #ff7d73">HomeLab</a>
         </span>
         
         <span class="tag">
             
-            <a href="/tags/%E6%9C%8D%E5%8A%A1%E5%99%A8/" style="color: #ffa2c4">服务器</a>
+            <a href="/tags/%E6%9C%8D%E5%8A%A1%E5%99%A8/" style="color: #00a596">服务器</a>
         </span>
         
         <span class="tag">
             
-            <a href="/tags/SSL/" style="color: #00bcd4">SSL</a>
+            <a href="/tags/SSL/" style="color: #ff7d73">SSL</a>
         </span>
         
     </div>
@@ -654,12 +648,12 @@
         
         <span class="tag">
             
-            <a href="/tags/%E6%9C%8D%E5%8A%A1%E5%99%A8/" style="color: #03a9f4">服务器</a>
+            <a href="/tags/%E6%9C%8D%E5%8A%A1%E5%99%A8/" style="color: #ff7d73">服务器</a>
         </span>
         
         <span class="tag">
             
-            <a href="/tags/%E5%AE%B9%E5%99%A8%E5%8C%96/" style="color: #ff7d73">容器化</a>
+            <a href="/tags/%E5%AE%B9%E5%99%A8%E5%8C%96/" style="color: #00a596">容器化</a>
         </span>
         
     </div>
