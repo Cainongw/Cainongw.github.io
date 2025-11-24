@@ -1,0 +1,328 @@
+
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="utf-8" />
+    <title>记一次基于OpenWRT+Nginx反代的局域网服务小改造 | Cainong&#39;s Blog</title>
+    <meta name="author" content="Cainong" />
+    <meta name="description" content="" />
+    <meta name="keywords" content="" />
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"
+    />
+    <link rel="icon" href="/images/avatar.png" />
+    <link rel="preconnect" href="https://s4.zstatic.net" />
+<script src="https://s4.zstatic.net/ajax/libs/vue/3.3.7/vue.global.prod.min.js"></script>
+<link rel="stylesheet" href="https://s4.zstatic.net/ajax/libs/font-awesome/6.4.2/css/all.min.css" />
+<link rel="preconnect" href="https://fonts.googleapis.cn" />
+<link rel="preconnect" href="https://fonts.gstatic.cn" crossorigin />
+<link
+    rel="stylesheet"
+    href="https://fonts.googleapis.cn/css2?family=Fira+Code:wght@400;500;600;700&family=Lexend:wght@400;500;600;700;800;900&family=Noto+Sans+SC:wght@400;500;600;700;800;900&display=swap"
+/>
+<script> const mixins = {}; </script>
+
+<script src="https://polyfill.alicdn.com/v3/polyfill.min.js?features=default"></script>
+
+
+<script src="https://s4.zstatic.net/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="https://s4.zstatic.net/ajax/libs/highlightjs-line-numbers.js/2.8.0/highlightjs-line-numbers.min.js"></script>
+<link
+    rel="stylesheet"
+    href="https://s4.zstatic.net/ajax/libs/highlight.js/11.9.0/styles/github.min.css"
+/>
+<script src="/js/lib/highlight.js"></script>
+
+
+
+<script src="/js/lib/preview.js"></script>
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/css/main.css" />
+
+<meta name="generator" content="Hexo 5.4.2"></head>
+<body>
+    <div id="layout">
+        <transition name="fade">
+            <div id="loading" v-show="loading">
+                <div id="loading-circle">
+                    <h2>LOADING</h2>
+                    <p>加载过慢请开启缓存 浏览器默认开启</p>
+                    <img src="/images/loading.gif" />
+                </div>
+            </div>
+        </transition>
+        <div id="menu" :class="{ hidden: hiddenMenu, 'menu-color': menuColor}">
+    <nav id="desktop-menu">
+        <a class="title" href="/">
+            <span>CAINONG&#39;S BLOG</span>
+        </a>
+        
+        <a href="/">
+            <i class="fa-solid fa-house fa-fw"></i>
+            <span>&ensp;Home</span>
+        </a>
+        
+        <a href="/about">
+            <i class="fa-solid fa-id-card fa-fw"></i>
+            <span>&ensp;About</span>
+        </a>
+        
+        <a href="/archives">
+            <i class="fa-solid fa-box-archive fa-fw"></i>
+            <span>&ensp;Archives</span>
+        </a>
+        
+        <a href="/categories">
+            <i class="fa-solid fa-bookmark fa-fw"></i>
+            <span>&ensp;Categories</span>
+        </a>
+        
+        <a href="/tags">
+            <i class="fa-solid fa-tags fa-fw"></i>
+            <span>&ensp;Tags</span>
+        </a>
+        
+    </nav>
+    <nav id="mobile-menu">
+        <div class="title" @click="showMenuItems = !showMenuItems">
+            <i class="fa-solid fa-bars fa-fw"></i>
+            <span>&emsp;CAINONG&#39;S BLOG</span>
+        </div>
+        <transition name="slide">
+            <div class="items" v-show="showMenuItems">
+                
+                <a href="/">
+                    <div class="item">
+                        <div style="min-width: 20px; max-width: 50px; width: 10%">
+                            <i class="fa-solid fa-house fa-fw"></i>
+                        </div>
+                        <div style="min-width: 100px; max-width: 150%; width: 20%">Home</div>
+                    </div>
+                </a>
+                
+                <a href="/about">
+                    <div class="item">
+                        <div style="min-width: 20px; max-width: 50px; width: 10%">
+                            <i class="fa-solid fa-id-card fa-fw"></i>
+                        </div>
+                        <div style="min-width: 100px; max-width: 150%; width: 20%">About</div>
+                    </div>
+                </a>
+                
+                <a href="/archives">
+                    <div class="item">
+                        <div style="min-width: 20px; max-width: 50px; width: 10%">
+                            <i class="fa-solid fa-box-archive fa-fw"></i>
+                        </div>
+                        <div style="min-width: 100px; max-width: 150%; width: 20%">Archives</div>
+                    </div>
+                </a>
+                
+                <a href="/categories">
+                    <div class="item">
+                        <div style="min-width: 20px; max-width: 50px; width: 10%">
+                            <i class="fa-solid fa-bookmark fa-fw"></i>
+                        </div>
+                        <div style="min-width: 100px; max-width: 150%; width: 20%">Categories</div>
+                    </div>
+                </a>
+                
+                <a href="/tags">
+                    <div class="item">
+                        <div style="min-width: 20px; max-width: 50px; width: 10%">
+                            <i class="fa-solid fa-tags fa-fw"></i>
+                        </div>
+                        <div style="min-width: 100px; max-width: 150%; width: 20%">Tags</div>
+                    </div>
+                </a>
+                
+            </div>
+        </transition>
+    </nav>
+</div>
+<transition name="fade">
+    <div id="menu-curtain" @click="showMenuItems = !showMenuItems" v-show="showMenuItems"></div>
+</transition>
+
+        <div id="main" :class="loading ? 'into-enter-from': 'into-enter-active'">
+            <div class="article">
+    <div>
+        <h1>记一次基于OpenWRT+Nginx反代的局域网服务小改造</h1>
+    </div>
+    <div class="info">
+        <span class="date">
+            <span class="icon">
+                <i class="fa-solid fa-calendar fa-fw"></i>
+            </span>
+            2025/10/4
+        </span>
+        
+        
+        <span class="tags">
+            <span class="icon">
+                <i class="fa-solid fa-tags fa-fw"></i>
+            </span>
+            
+            
+            <span class="tag">
+                
+                <a href="/tags/%E6%9C%8D%E5%8A%A1%E5%99%A8/" style="color: #00bcd4">
+                    服务器
+                </a>
+            </span>
+            
+            <span class="tag">
+                
+                <a href="/tags/HomeLab/" style="color: #03a9f4">
+                    HomeLab
+                </a>
+            </span>
+            
+        </span>
+        
+    </div>
+    
+    <div class="content" v-pre>
+        <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>随着服务器上面跑的东西越来越多，docker跑的服务也越来越多了</p>
+<p>我常访问所以我可以记住每个虚拟机的ip或者docker的端口</p>
+<p>但是每次在浏览器输入都得输入192然后手动补全，有时候甚至得冒号加端口号才可以</p>
+<p>太特么麻烦了</p>
+<span id="more"></span> 
+
+<h1 id="开始"><a href="#开始" class="headerlink" title="开始"></a>开始</h1><p>其实指定域名去指定某个IP很简单，一个DNS服务器就解决了</p>
+<p>比较麻烦一点的是端口号，因为正常的DNS服务只负责解析域名到ip</p>
+<p>指定端口的话就需要用Nginx反代了</p>
+<p>再加上后面我想给一些服务加上单点登录和通行密钥，反代这关肯定是过不去了</p>
+<h1 id="DNS服务器的搭建"><a href="#DNS服务器的搭建" class="headerlink" title="DNS服务器的搭建"></a>DNS服务器的搭建</h1><p>其实这个很简单，我OpenWRT里面iStore装一个SmartDNS，上游服务器设置为网关或者某个国内的DNS，然后域名地址按照</p>
+<pre><code>address /domain.suffix/ip
+</code></pre>
+<p>比如</p>
+<pre><code>address /openwrt.lan/192.168.0.114
+</code></pre>
+<p>填写</p>
+<p>然后设备需要自定义一下DNS服务器为OpenWRT（如果你WRT本身就是主路由那不需要这步）</p>
+<p>值得一提的是如果直接在Chrome里输入.lan结尾的域名他会搜索，因为他不认为.lan是有效域名</p>
+<p>但是后面加个/就可以了</p>
+<h1 id="Nginx反代"><a href="#Nginx反代" class="headerlink" title="Nginx反代"></a>Nginx反代</h1><p>这个其实是稍微麻烦点的点</p>
+<p>我们可以把Nginx跑在OpenWRT上，但那样会遇到一个问题</p>
+<p>就是与WRT原本的web服务uHTTPd冲突</p>
+<p>导致你没有办法再访问luci管理界面</p>
+<p>即使你可以访问 uHTTPd http到https的重定向也会不可用</p>
+<p>我们可以关闭uHTTPd，直接让Nginx接管WRT的web管理界面</p>
+<p>但那样太麻烦了 我懒我也不会</p>
+<p>而且Nginx默认不支持luci</p>
+<p>况且Nginx的话https证书自签还要自己解决</p>
+<p>那还说啥，咱们局域网另外一台设备跑Nginx好了</p>
+<h2 id="Nginx配置"><a href="#Nginx配置" class="headerlink" title="Nginx配置"></a>Nginx配置</h2><p>我整了台最小化安装的ubuntu server</p>
+<p>我不咋会用别的Linux发行版</p>
+<p>然后装了Nginx之后配置一下就好了</p>
+<pre><code class="Nginx">server &#123;
+    listen 80;
+    # listen 443 ssl;
+    server_name backrest.lan; # 你用来访问的域名
+
+    # 如果你有SSL证书，可以在此处配置证书路径，实现HTTPS访问
+    # ssl_certificate /path/to/your/cert.crt;
+    # ssl_certificate_key /path/to/your/private.key;
+
+    location / &#123;
+        # 实际代理的地址
+        proxy_pass https://192.168.0.90:9898;
+        proxy_set_header Host $host;
+        # 传递客户端的真实IP地址
+        proxy_set_header X-Real-IP $remote_addr;
+        # 包含经过所有代理的客户端IP列表
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection &quot;upgrade&quot;;
+    &#125;
+&#125;
+</code></pre>
+<p>配置之后，我们去之前SmartDNS的配置那里将用来访问的域名的ip改为Nginx反代的ip</p>
+<pre><code>address /backrest.lan/192.168.0.233
+</code></pre>
+<p>192.168.0.233即为Nginx反代服务器的地址</p>
+<p>完事了</p>
+<p>后面我为了方便管理，我迁移到了1Panel</p>
+<p>我1Panel的配置文件如下</p>
+<pre><code class="Nginx">server &#123;
+    listen 80 ; 
+    server_name backrest.lan; 
+    index index.php index.html index.htm default.php default.htm default.html; 
+    access_log /www/sites/backrest.lan/log/access.log main; 
+    error_log /www/sites/backrest.lan/log/error.log; 
+    location ~ ^/(\.user.ini|\.htaccess|\.git|\.env|\.svn|\.project|LICENSE|README.md) &#123;
+        return 404; 
+    &#125;
+    location ^~ /.well-known &#123;
+        allow all; 
+        root /usr/share/nginx/html; 
+    &#125;
+    if ( $uri ~ &quot;^/\.well-known/.*\.(php|jsp|py|js|css|lua|ts|go|zip|tar\.gz|rar|7z|sql|bak)$&quot; ) &#123;
+        return 403; 
+    &#125;
+    root /www/sites/backrest.lan/index; 
+    include /www/sites/backrest.lan/proxy/*.conf; 
+&#125;
+</code></pre>
+<h1 id="后记"><a href="#后记" class="headerlink" title="后记"></a>后记</h1><p>其实的话完全可以让Nginx反代所有的服务，在DNS那里可以将所有*.lan结尾的域名全部指向反代服务器</p>
+<p>然后去给服务器设置白名单 比如只接受反代服务器的连接请求</p>
+<p>但那个也不是完全有必要,我们后面有需要的话再改</p>
+
+    </div>
+    
+    
+    
+    
+    
+    
+    
+</div>
+
+            <footer id="footer">
+    <div id="footer-wrap">
+        <div>
+            &copy;
+            221 - 2025 Cainong&#39;s Blog
+            <span id="footer-icon">
+                <i class="fa-solid fa-font-awesome fa-fw"></i>
+            </span>
+            &commat;Cainong
+        </div>
+        <div>
+            Based on the <a target="_blank" rel="noopener" href="https://hexo.io">Hexo Engine</a> &amp;
+            <a target="_blank" rel="noopener" href="https://github.com/theme-particlex/hexo-theme-particlex">ParticleX Theme</a>
+        </div>
+        
+    </div>
+</footer>
+
+        </div>
+        
+        <transition name="fade">
+            <div id="preview" ref="preview" v-show="previewShow">
+                <img id="preview-content" ref="previewContent" />
+            </div>
+        </transition>
+        
+    </div>
+    <script src="/js/main.js"></script>
+    
+    
+
+
+
+
+    
+</body>
+</html>

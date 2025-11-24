@@ -1,0 +1,309 @@
+
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="utf-8" />
+    <title>VoiceMeeter的逆向与破解 | Cainong&#39;s Blog</title>
+    <meta name="author" content="Cainong" />
+    <meta name="description" content="" />
+    <meta name="keywords" content="" />
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"
+    />
+    <link rel="icon" href="/images/avatar.png" />
+    <link rel="preconnect" href="https://s4.zstatic.net" />
+<script src="https://s4.zstatic.net/ajax/libs/vue/3.3.7/vue.global.prod.min.js"></script>
+<link rel="stylesheet" href="https://s4.zstatic.net/ajax/libs/font-awesome/6.4.2/css/all.min.css" />
+<link rel="preconnect" href="https://fonts.googleapis.cn" />
+<link rel="preconnect" href="https://fonts.gstatic.cn" crossorigin />
+<link
+    rel="stylesheet"
+    href="https://fonts.googleapis.cn/css2?family=Fira+Code:wght@400;500;600;700&family=Lexend:wght@400;500;600;700;800;900&family=Noto+Sans+SC:wght@400;500;600;700;800;900&display=swap"
+/>
+<script> const mixins = {}; </script>
+
+<script src="https://polyfill.alicdn.com/v3/polyfill.min.js?features=default"></script>
+
+
+<script src="https://s4.zstatic.net/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="https://s4.zstatic.net/ajax/libs/highlightjs-line-numbers.js/2.8.0/highlightjs-line-numbers.min.js"></script>
+<link
+    rel="stylesheet"
+    href="https://s4.zstatic.net/ajax/libs/highlight.js/11.9.0/styles/github.min.css"
+/>
+<script src="/js/lib/highlight.js"></script>
+
+
+
+<script src="/js/lib/preview.js"></script>
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/css/main.css" />
+
+<meta name="generator" content="Hexo 5.4.2"></head>
+<body>
+    <div id="layout">
+        <transition name="fade">
+            <div id="loading" v-show="loading">
+                <div id="loading-circle">
+                    <h2>LOADING</h2>
+                    <p>加载过慢请开启缓存 浏览器默认开启</p>
+                    <img src="/images/loading.gif" />
+                </div>
+            </div>
+        </transition>
+        <div id="menu" :class="{ hidden: hiddenMenu, 'menu-color': menuColor}">
+    <nav id="desktop-menu">
+        <a class="title" href="/">
+            <span>CAINONG&#39;S BLOG</span>
+        </a>
+        
+        <a href="/">
+            <i class="fa-solid fa-house fa-fw"></i>
+            <span>&ensp;Home</span>
+        </a>
+        
+        <a href="/about">
+            <i class="fa-solid fa-id-card fa-fw"></i>
+            <span>&ensp;About</span>
+        </a>
+        
+        <a href="/archives">
+            <i class="fa-solid fa-box-archive fa-fw"></i>
+            <span>&ensp;Archives</span>
+        </a>
+        
+        <a href="/categories">
+            <i class="fa-solid fa-bookmark fa-fw"></i>
+            <span>&ensp;Categories</span>
+        </a>
+        
+        <a href="/tags">
+            <i class="fa-solid fa-tags fa-fw"></i>
+            <span>&ensp;Tags</span>
+        </a>
+        
+    </nav>
+    <nav id="mobile-menu">
+        <div class="title" @click="showMenuItems = !showMenuItems">
+            <i class="fa-solid fa-bars fa-fw"></i>
+            <span>&emsp;CAINONG&#39;S BLOG</span>
+        </div>
+        <transition name="slide">
+            <div class="items" v-show="showMenuItems">
+                
+                <a href="/">
+                    <div class="item">
+                        <div style="min-width: 20px; max-width: 50px; width: 10%">
+                            <i class="fa-solid fa-house fa-fw"></i>
+                        </div>
+                        <div style="min-width: 100px; max-width: 150%; width: 20%">Home</div>
+                    </div>
+                </a>
+                
+                <a href="/about">
+                    <div class="item">
+                        <div style="min-width: 20px; max-width: 50px; width: 10%">
+                            <i class="fa-solid fa-id-card fa-fw"></i>
+                        </div>
+                        <div style="min-width: 100px; max-width: 150%; width: 20%">About</div>
+                    </div>
+                </a>
+                
+                <a href="/archives">
+                    <div class="item">
+                        <div style="min-width: 20px; max-width: 50px; width: 10%">
+                            <i class="fa-solid fa-box-archive fa-fw"></i>
+                        </div>
+                        <div style="min-width: 100px; max-width: 150%; width: 20%">Archives</div>
+                    </div>
+                </a>
+                
+                <a href="/categories">
+                    <div class="item">
+                        <div style="min-width: 20px; max-width: 50px; width: 10%">
+                            <i class="fa-solid fa-bookmark fa-fw"></i>
+                        </div>
+                        <div style="min-width: 100px; max-width: 150%; width: 20%">Categories</div>
+                    </div>
+                </a>
+                
+                <a href="/tags">
+                    <div class="item">
+                        <div style="min-width: 20px; max-width: 50px; width: 10%">
+                            <i class="fa-solid fa-tags fa-fw"></i>
+                        </div>
+                        <div style="min-width: 100px; max-width: 150%; width: 20%">Tags</div>
+                    </div>
+                </a>
+                
+            </div>
+        </transition>
+    </nav>
+</div>
+<transition name="fade">
+    <div id="menu-curtain" @click="showMenuItems = !showMenuItems" v-show="showMenuItems"></div>
+</transition>
+
+        <div id="main" :class="loading ? 'into-enter-from': 'into-enter-active'">
+            <div class="article">
+    <div>
+        <h1>VoiceMeeter的逆向与破解</h1>
+    </div>
+    <div class="info">
+        <span class="date">
+            <span class="icon">
+                <i class="fa-solid fa-calendar fa-fw"></i>
+            </span>
+            2022/5/7
+        </span>
+        
+        
+        <span class="tags">
+            <span class="icon">
+                <i class="fa-solid fa-tags fa-fw"></i>
+            </span>
+            
+            
+            <span class="tag">
+                
+                <a href="/tags/%E9%80%86%E5%90%91/" style="color: #ffa2c4">
+                    逆向
+                </a>
+            </span>
+            
+            <span class="tag">
+                
+                <a href="/tags/IDA/" style="color: #00a596">
+                    IDA
+                </a>
+            </span>
+            
+            <span class="tag">
+                
+                <a href="/tags/%E7%A0%B4%E8%A7%A3/" style="color: #03a9f4">
+                    破解
+                </a>
+            </span>
+            
+        </span>
+        
+    </div>
+    
+    <div class="content" v-pre>
+        <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>如果您看到了这，您需要知道的：</p>
+<p>我不是专业的逆向人员，一定会有错误，遗漏的地方，您可以联系我指正或交流</p>
+<p>其次，这不是教程，您需要有一定的逆向基础</p>
+<p>疫情期间，由于<del>每天上课摸鱼</del>，大部分时间都和朋友在语音</p>
+<p>我便需要一些整活神器，来在与语音里<del>爆破我的朋友</del></p>
+<p>我想起几年前发现的神器——<a target="_blank" rel="noopener" href="https://vb-audio.com/VoiceMeeter/">VoiceMeter</a></p>
+<span id="more"></span> 
+
+<p>这玩意太强大了，除了基本的混响，可视化地将音频通道显示出来，简直不要太方便</p>
+<p>后来慢慢的我发现<code>VoiceMeter Banana</code>的功能不够用了</p>
+<p>但是<code>Potato</code>是要收费的</p>
+<p>虽然不贵，但是在国内支付<code>VISA</code>卡不是一般的麻烦</p>
+<p>更何况我自己连<code>VISA</code>都没。。。</p>
+<p>那没办法，我就看看我的三脚猫逆向能不能搞定他吧</p>
+<h1 id="分析"><a href="#分析" class="headerlink" title="分析"></a>分析</h1><p>以下基于3.0.2.2版本</p>
+<p>Google出来的教程都是使用的OD</p>
+<p>我懒，反正静态，IDA不香嘛</p>
+<p>那就开干吧</p>
+<p>先看看注册界面</p>
+<p>uhmmm…有个Activate</p>
+<p>直接64位IDA拖进来，分析一通</p>
+<p>一上来就先看看Strings好了</p>
+<p>Activate…嗯？</p>
+<p><img src="https://s2.loli.net/2022/05/07/lETQvHYwF7tPkpr.png" alt="IYAR_H07_LF_4JI@2__FW_N.png"></p>
+<p>直接跳到注册成功字符串的调用</p>
+<p>![_KYF30_RAM`BSQ963H227_L.png](<a target="_blank" rel="noopener" href="https://s2.loli.net/2022/05/07/hT37FJgvPLsXaYE.png">https://s2.loli.net/2022/05/07/hT37FJgvPLsXaYE.png</a>)</p>
+<p>有点明显，甚至不用看伪代码</p>
+<p>那就直接把jnz改成jz:</p>
+<pre><code>00103A3 75 19 ===&gt; 00103A3 74 19
+</code></pre>
+<p><img src="https://s2.loli.net/2022/05/07/GLnZwf4MBkyaJjt.png" alt="_4CD~_C0S586@NLRCE3MD21.png"></p>
+<p>齐活了？</p>
+<p>吗？</p>
+<h1 id="几天后…"><a href="#几天后…" class="headerlink" title="几天后…"></a>几天后…</h1><p>草，这玩意爆激活了，除了激活界面乱输能提示成功以外，别的地方和没激活一点区别也没有</p>
+<p>我看到似乎网上激活后Challenge的字符会变绿，或许那就是关键之处？</p>
+<p>看了下，变绿后Activate按钮会变成绿色的ACTIVATED</p>
+<p>搜下ACTIVATED。。</p>
+<p>寄！搜不到</p>
+<p>那算了，让我们回到伪代码</p>
+<p><img src="https://s2.loli.net/2022/05/21/O4YRh7CmNvnuQeJ.png" alt="2YJ05DL~2OBCHJXP5~N39_O.png"></p>
+<p>我们发现这里与三个函数有关，并且后面的Email和Serial似乎都告诉着我们这俩函数的作用</p>
+<p>唯独有一个<code>sub_14000F530</code></p>
+<p>进入这个函数，我们发现他的返回值不是0i64就是1i64</p>
+<p><img src="https://s2.loli.net/2022/05/21/SFGBVbzauegOdkt.png" alt="__8S5O5C@4Z3~ZO8QWS_OH0.png"></p>
+<p><del>鲁迅先生说过</del>：逆向的精髓在于大胆尝试</p>
+<p>我们大胆猜测，返回1i64就代表激活成功</p>
+<p>返回1i64的条件是这个if中qword_140135950和sub_14000F2D0(a3)这俩玩意同时等于1</p>
+<p>进入sub_14000F2D0。。</p>
+<p><img src="https://s2.loli.net/2022/05/21/tV7IsWBq6CMYbXQ.png" alt="3NFRPZ3J_C__H16_V_VDOF1.png"></p>
+<p>妈的 又臭又长 不看了 直接大胆改了他</p>
+<p>回到汇编，其实跳转的条件就是eax寄存器为1嘛</p>
+<p>那就直接让eax寄存器变成1吧（</p>
+<pre><code>cmp     eax, 1 ===&gt; mov     eax, 1
+</code></pre>
+<p>也就是：</p>
+<pre><code>00EB1E 83 F8 01 ===&gt; 00EB1E B8 01 00 00 00   
+</code></pre>
+<p><img src="https://s2.loli.net/2022/05/21/iPKl5LSDcrONG2d.png" alt="BMU__~XYVLZ_8RNPC_WTQ_5.png"></p>
+<p>齐活了。。吧</p>
+<p>先这样用着，以后有问题再更新</p>
+
+    </div>
+    
+    
+    
+    
+    
+    
+    
+</div>
+
+            <footer id="footer">
+    <div id="footer-wrap">
+        <div>
+            &copy;
+            221 - 2025 Cainong&#39;s Blog
+            <span id="footer-icon">
+                <i class="fa-solid fa-font-awesome fa-fw"></i>
+            </span>
+            &commat;Cainong
+        </div>
+        <div>
+            Based on the <a target="_blank" rel="noopener" href="https://hexo.io">Hexo Engine</a> &amp;
+            <a target="_blank" rel="noopener" href="https://github.com/theme-particlex/hexo-theme-particlex">ParticleX Theme</a>
+        </div>
+        
+    </div>
+</footer>
+
+        </div>
+        
+        <transition name="fade">
+            <div id="preview" ref="preview" v-show="previewShow">
+                <img id="preview-content" ref="previewContent" />
+            </div>
+        </transition>
+        
+    </div>
+    <script src="/js/main.js"></script>
+    
+    
+
+
+
+
+    
+</body>
+</html>

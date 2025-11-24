@@ -1,0 +1,409 @@
+
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="utf-8" />
+    <title>论远程零信任访问的搭建(2)Sidecar容器的使用 | Cainong&#39;s Blog</title>
+    <meta name="author" content="Cainong" />
+    <meta name="description" content="" />
+    <meta name="keywords" content="" />
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"
+    />
+    <link rel="icon" href="/images/avatar.png" />
+    <link rel="preconnect" href="https://s4.zstatic.net" />
+<script src="https://s4.zstatic.net/ajax/libs/vue/3.3.7/vue.global.prod.min.js"></script>
+<link rel="stylesheet" href="https://s4.zstatic.net/ajax/libs/font-awesome/6.4.2/css/all.min.css" />
+<link rel="preconnect" href="https://fonts.googleapis.cn" />
+<link rel="preconnect" href="https://fonts.gstatic.cn" crossorigin />
+<link
+    rel="stylesheet"
+    href="https://fonts.googleapis.cn/css2?family=Fira+Code:wght@400;500;600;700&family=Lexend:wght@400;500;600;700;800;900&family=Noto+Sans+SC:wght@400;500;600;700;800;900&display=swap"
+/>
+<script> const mixins = {}; </script>
+
+<script src="https://polyfill.alicdn.com/v3/polyfill.min.js?features=default"></script>
+
+
+<script src="https://s4.zstatic.net/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="https://s4.zstatic.net/ajax/libs/highlightjs-line-numbers.js/2.8.0/highlightjs-line-numbers.min.js"></script>
+<link
+    rel="stylesheet"
+    href="https://s4.zstatic.net/ajax/libs/highlight.js/11.9.0/styles/github.min.css"
+/>
+<script src="/js/lib/highlight.js"></script>
+
+
+
+<script src="/js/lib/preview.js"></script>
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/css/main.css" />
+
+<meta name="generator" content="Hexo 5.4.2"></head>
+<body>
+    <div id="layout">
+        <transition name="fade">
+            <div id="loading" v-show="loading">
+                <div id="loading-circle">
+                    <h2>LOADING</h2>
+                    <p>加载过慢请开启缓存 浏览器默认开启</p>
+                    <img src="/images/loading.gif" />
+                </div>
+            </div>
+        </transition>
+        <div id="menu" :class="{ hidden: hiddenMenu, 'menu-color': menuColor}">
+    <nav id="desktop-menu">
+        <a class="title" href="/">
+            <span>CAINONG&#39;S BLOG</span>
+        </a>
+        
+        <a href="/">
+            <i class="fa-solid fa-house fa-fw"></i>
+            <span>&ensp;Home</span>
+        </a>
+        
+        <a href="/about">
+            <i class="fa-solid fa-id-card fa-fw"></i>
+            <span>&ensp;About</span>
+        </a>
+        
+        <a href="/archives">
+            <i class="fa-solid fa-box-archive fa-fw"></i>
+            <span>&ensp;Archives</span>
+        </a>
+        
+        <a href="/categories">
+            <i class="fa-solid fa-bookmark fa-fw"></i>
+            <span>&ensp;Categories</span>
+        </a>
+        
+        <a href="/tags">
+            <i class="fa-solid fa-tags fa-fw"></i>
+            <span>&ensp;Tags</span>
+        </a>
+        
+    </nav>
+    <nav id="mobile-menu">
+        <div class="title" @click="showMenuItems = !showMenuItems">
+            <i class="fa-solid fa-bars fa-fw"></i>
+            <span>&emsp;CAINONG&#39;S BLOG</span>
+        </div>
+        <transition name="slide">
+            <div class="items" v-show="showMenuItems">
+                
+                <a href="/">
+                    <div class="item">
+                        <div style="min-width: 20px; max-width: 50px; width: 10%">
+                            <i class="fa-solid fa-house fa-fw"></i>
+                        </div>
+                        <div style="min-width: 100px; max-width: 150%; width: 20%">Home</div>
+                    </div>
+                </a>
+                
+                <a href="/about">
+                    <div class="item">
+                        <div style="min-width: 20px; max-width: 50px; width: 10%">
+                            <i class="fa-solid fa-id-card fa-fw"></i>
+                        </div>
+                        <div style="min-width: 100px; max-width: 150%; width: 20%">About</div>
+                    </div>
+                </a>
+                
+                <a href="/archives">
+                    <div class="item">
+                        <div style="min-width: 20px; max-width: 50px; width: 10%">
+                            <i class="fa-solid fa-box-archive fa-fw"></i>
+                        </div>
+                        <div style="min-width: 100px; max-width: 150%; width: 20%">Archives</div>
+                    </div>
+                </a>
+                
+                <a href="/categories">
+                    <div class="item">
+                        <div style="min-width: 20px; max-width: 50px; width: 10%">
+                            <i class="fa-solid fa-bookmark fa-fw"></i>
+                        </div>
+                        <div style="min-width: 100px; max-width: 150%; width: 20%">Categories</div>
+                    </div>
+                </a>
+                
+                <a href="/tags">
+                    <div class="item">
+                        <div style="min-width: 20px; max-width: 50px; width: 10%">
+                            <i class="fa-solid fa-tags fa-fw"></i>
+                        </div>
+                        <div style="min-width: 100px; max-width: 150%; width: 20%">Tags</div>
+                    </div>
+                </a>
+                
+            </div>
+        </transition>
+    </nav>
+</div>
+<transition name="fade">
+    <div id="menu-curtain" @click="showMenuItems = !showMenuItems" v-show="showMenuItems"></div>
+</transition>
+
+        <div id="main" :class="loading ? 'into-enter-from': 'into-enter-active'">
+            <div class="article">
+    <div>
+        <h1>论远程零信任访问的搭建(2)Sidecar容器的使用</h1>
+    </div>
+    <div class="info">
+        <span class="date">
+            <span class="icon">
+                <i class="fa-solid fa-calendar fa-fw"></i>
+            </span>
+            2025/11/1
+        </span>
+        
+        
+        <span class="tags">
+            <span class="icon">
+                <i class="fa-solid fa-tags fa-fw"></i>
+            </span>
+            
+            
+            <span class="tag">
+                
+                <a href="/tags/HomeLab/" style="color: #00a596">
+                    HomeLab
+                </a>
+            </span>
+            
+            <span class="tag">
+                
+                <a href="/tags/WireGuard/" style="color: #ff7d73">
+                    WireGuard
+                </a>
+            </span>
+            
+            <span class="tag">
+                
+                <a href="/tags/%E8%99%9A%E6%8B%9F%E7%BD%91%E8%B7%AF/" style="color: #00a596">
+                    虚拟网路
+                </a>
+            </span>
+            
+        </span>
+        
+    </div>
+    
+    <div class="content" v-pre>
+        <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>我们终于搭建好了Headscale控制平面和UI，并解决了统一登陆，现在零信任网络已经完全可以使用了</p>
+<p>我们需要完成最后一步：把服务添加进来</p>
+<p>在这里就是我的AquaDX Sidecar容器</p>
+<span id="more"></span> 
+
+<h1 id="SideCar的使用"><a href="#SideCar的使用" class="headerlink" title="SideCar的使用"></a>SideCar的使用</h1><p>如果你不需要自己搭建控制节点的话直接搭Sidecar就好</p>
+<p>TailScale官方提供了Operator的方式自动化去代理容器流量 自动设置之类的</p>
+<p>但我觉得不是很有必要，因为我们暂时有且只有一个要代理</p>
+<p>而且我们也不是很确定Operator是否支持自定义控制节点，等下白折腾不是炸刚了</p>
+<p>后续去看了下，确实是不支持Headscale的，因为他需要Oauth密钥，Headscale并未支持</p>
+<p>Github上有Headscale的Operator，但那个已经三年没更新，作者已经弃坑了</p>
+<p>我自己下下来Make都过不了</p>
+<p><img src="https://s2.loli.net/2025/11/04/vBrEzGjfckIZKT7.png" alt="QQ_T4kcDZvX5b.png"></p>
+<p><del>第一次见啥都没动Make都能空指针</del></p>
+<p>反正不管怎么说，手动搭一个sidecar就好</p>
+<h2 id="Tailscale作为Sidecar启动的配置"><a href="#Tailscale作为Sidecar启动的配置" class="headerlink" title="Tailscale作为Sidecar启动的配置"></a>Tailscale作为Sidecar启动的配置</h2><p>由于Tailscale需要权限创建Secret去持久化自己的状态数据，因此Sidecar关键的在于以下几个点</p>
+<ul>
+<li>绑定TailscalePod更改同命名空间Secret权限的ServiceAccount，他需要Secret去持久化自己的状态数据</li>
+<li>增加NET ADMIN的capabilitiy</li>
+<li>Sidecar环境变量应为TS_USERSPACE=false，否则工作在USERSPACE下不是标准的sidecar做法 <strong>后面踩坑就是因为这个</strong></li>
+<li>为了Aqua能通过自检，要把容器的DNS给MagicDNS解析</li>
+</ul>
+<p>为了统一和方便，以下Tailscale的Sidecar容器简称为Sidecar</p>
+<p>首先实现第一点，给予他ServiceAccount</p>
+<p>Role设置如下：</p>
+<pre><code class="YAML">apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: tailscale
+  namespace: aqua-dx
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: tailscale-role
+  namespace: aqua-dx
+rules:
+- apiGroups: [&quot;&quot;]
+  resources: [&quot;secrets&quot;]
+  verbs: [&quot;get&quot;, &quot;list&quot;, &quot;create&quot;, &quot;update&quot;, &quot;patch&quot;, &quot;delete&quot;]
+- apiGroups: [&quot;&quot;]
+  resources: [&quot;events&quot;]
+  verbs: [&quot;get&quot;, &quot;create&quot;, &quot;patch&quot;]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: tailscale-rolebinding
+  namespace: aqua-dx
+subjects:
+- kind: ServiceAccount
+  name: tailscale
+  namespace: aqua-dx
+roleRef:
+  kind: Role
+  name: tailscale-role
+  apiGroup: rbac.authorization.k8s.io
+</code></pre>
+<p>然后记得增加serviceAccount的绑定</p>
+<pre><code class="YAML">spec:
+  template:
+    spec:
+      serviceAccountName: tailscale
+</code></pre>
+<p>然后给予他Capabilities</p>
+<p><img src="https://s2.loli.net/2025/11/03/PoqudiWBpJhIlN7.png" alt="chrome_HzVtfeomW6.png"></p>
+<p>然后设置DNS</p>
+<p><img src="https://s2.loli.net/2025/11/03/XBvzGNE35KyAwlr.png" alt="chrome_DfVXJcPrRz.png"></p>
+<p>整个容器组优先使用MagicDNS，然后才是coreDNS</p>
+<p>coreDNS一般是固定的，照着填写就好</p>
+<p>然后就翻车了</p>
+<p><img src="https://s2.loli.net/2025/11/03/WgNzpixqkZsfuAQ.png" alt="chrome_N1lzzymyfl.png"></p>
+<p>思考一下，因为我们的Aqua需要解析集群内的地址去访问数据库的Service 同时需要解析MagicDNS去进行80端口的自检</p>
+<p>然后Sidecar需要解析集群内地址去更新自己状态的Secret</p>
+<p>但如果让Sidecar更改dns，Aqua就翻车了</p>
+<p>我们需要自己维护一份DNS给他们用</p>
+<p><del>妈的早知道用Operator了</del></p>
+<p>我在尝试了各种方法之后，我发现</p>
+<p>我的Tailscale一直是在Usernamespace下跑的</p>
+<p>我是大傻逼（</p>
+<p>简而言之，既然需要用Sidecar接管整个容器的网络流量，不仅要给NET_ADMIN权限</p>
+<p>但是不要给他hostNetwork的权限 让这两个容器处于独立的网络空间</p>
+<p>还要让Sidecar的TS_USERSPACE=false</p>
+<p>只有这样Tailscale才会修改两个容器的TUN，只有这样两个容器才真正同属于一个网络空间</p>
+<p>之前Aqua一直通不过自检就是因为这个</p>
+<p>关键配置如下：</p>
+<p><img src="https://s2.loli.net/2025/11/04/rytTeKGczMwNCnJ.png" alt="chrome_XKFbLyh9Ly.png"></p>
+<p><img src="https://s2.loli.net/2025/11/04/46fs9HTl8ScM7Uy.png" alt="chrome_SrMVdw6AqX.png"></p>
+<p>选择ClusterFirst之后不需要添加CoreDNS的IP，等于说我们只需要默认DNS加一个Tailscale的MagicDNS即可</p>
+<p>我们让Tailscale的–accept-dns为false，避免他修改Pod的DNS导致Aqua无法解析数据库的Service域名</p>
+<p>因为我们用MagicDNS，所以Aqua的配置我们可以写虚拟局域网的内部域名</p>
+<p>比如aqua.tailscale.lan 在控制平面可以随便改</p>
+<p><img src="https://s2.loli.net/2025/11/04/OSP6UsHAu4pCmxy.png" alt="chrome_kWEIEwvfVZ.png"></p>
+<p>能通过80端口的自检就是没问题了，这意味着Aqua能用MagicDNS解析到自己</p>
+<p>当然在游戏上也要写相同的域名，否则会ALLS Authentication BAD()</p>
+<h1 id="后记"><a href="#后记" class="headerlink" title="后记"></a>后记</h1><p>这个AquaDX的迁移是我拖了最久的一件事 </p>
+<p><del>主要也是懒</del></p>
+<p>在这过程中还是学到了点东西 也算对Sidecar有了一个较为深入的理解</p>
+<p>其实我可以少走很多弯路，我们可以看一下Tailscale的example</p>
+<p>make proxy之后会输出一个yaml 我这里贴上来</p>
+<pre><code class="YAML">apiVersion: v1
+kind: Pod
+metadata:
+  name: proxy
+spec:
+  serviceAccountName: &quot;tailscale&quot;
+  initContainers:
+    # In order to run as a proxy we need to enable IP Forwarding inside
+    # the container. The `net.ipv4.ip_forward` sysctl is not allowlisted
+    # in Kubelet by default.
+  - name: sysctler
+    image: &quot;ghcr.io/tailscale/tailscale:latest&quot;
+    securityContext:
+      privileged: true
+    command: [&quot;/bin/sh&quot;]
+    args:
+      - -c
+      - sysctl -w net.ipv4.ip_forward=1 net.ipv6.conf.all.forwarding=1
+    resources:
+      requests:
+        cpu: 1m
+        memory: 1Mi
+  containers:
+  - name: tailscale
+    imagePullPolicy: Always
+    image: &quot;ghcr.io/tailscale/tailscale:latest&quot;
+    env:
+    # Store the state in a k8s secret
+    - name: TS_KUBE_SECRET
+      value: &quot;tailscale&quot;
+    - name: TS_USERSPACE
+      value: &quot;false&quot;
+    - name: TS_DEBUG_FIREWALL_MODE
+      value: auto
+    - name: TS_AUTHKEY
+      valueFrom:
+        secretKeyRef:
+          name: tailscale-auth
+          key: TS_AUTHKEY
+          optional: true
+    - name: TS_DEST_IP
+      value: &quot;&quot;
+    - name: TS_AUTH_ONCE
+      value: &quot;true&quot;
+    - name: POD_NAME
+      valueFrom:
+        fieldRef:
+          fieldPath: metadata.name
+    - name: POD_UID
+      valueFrom:
+        fieldRef:
+          fieldPath: metadata.uid
+    securityContext:
+      privileged: true
+</code></pre>
+<p>基本上的话就是privileged: true 要给他root权限 我是把userid设为0了 别的差不多了</p>
+<p>也算是填了一个不大不小的坑</p>
+<p>完事 睡觉</p>
+<p>不过看起来MuNet准备替换Aqua了 看看后续发展怎么样 实在不行我打算自己维护一个服务器了</p>
+<p>之前Artemis迁移折腾我半天 Artemis更新又严格遵循N-1 <del>自己维护得了</del></p>
+
+    </div>
+    
+    
+    
+    
+    
+    
+    
+</div>
+
+            <footer id="footer">
+    <div id="footer-wrap">
+        <div>
+            &copy;
+            221 - 2025 Cainong&#39;s Blog
+            <span id="footer-icon">
+                <i class="fa-solid fa-font-awesome fa-fw"></i>
+            </span>
+            &commat;Cainong
+        </div>
+        <div>
+            Based on the <a target="_blank" rel="noopener" href="https://hexo.io">Hexo Engine</a> &amp;
+            <a target="_blank" rel="noopener" href="https://github.com/theme-particlex/hexo-theme-particlex">ParticleX Theme</a>
+        </div>
+        
+    </div>
+</footer>
+
+        </div>
+        
+        <transition name="fade">
+            <div id="preview" ref="preview" v-show="previewShow">
+                <img id="preview-content" ref="previewContent" />
+            </div>
+        </transition>
+        
+    </div>
+    <script src="/js/main.js"></script>
+    
+    
+
+
+
+
+    
+</body>
+</html>

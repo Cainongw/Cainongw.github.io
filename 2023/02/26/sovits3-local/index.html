@@ -1,0 +1,469 @@
+
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="utf-8" />
+    <title>sovit3折腾实录与教程（1）本地篇 | Cainong&#39;s Blog</title>
+    <meta name="author" content="Cainong" />
+    <meta name="description" content="" />
+    <meta name="keywords" content="" />
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"
+    />
+    <link rel="icon" href="/images/avatar.png" />
+    <link rel="preconnect" href="https://s4.zstatic.net" />
+<script src="https://s4.zstatic.net/ajax/libs/vue/3.3.7/vue.global.prod.min.js"></script>
+<link rel="stylesheet" href="https://s4.zstatic.net/ajax/libs/font-awesome/6.4.2/css/all.min.css" />
+<link rel="preconnect" href="https://fonts.googleapis.cn" />
+<link rel="preconnect" href="https://fonts.gstatic.cn" crossorigin />
+<link
+    rel="stylesheet"
+    href="https://fonts.googleapis.cn/css2?family=Fira+Code:wght@400;500;600;700&family=Lexend:wght@400;500;600;700;800;900&family=Noto+Sans+SC:wght@400;500;600;700;800;900&display=swap"
+/>
+<script> const mixins = {}; </script>
+
+<script src="https://polyfill.alicdn.com/v3/polyfill.min.js?features=default"></script>
+
+
+<script src="https://s4.zstatic.net/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="https://s4.zstatic.net/ajax/libs/highlightjs-line-numbers.js/2.8.0/highlightjs-line-numbers.min.js"></script>
+<link
+    rel="stylesheet"
+    href="https://s4.zstatic.net/ajax/libs/highlight.js/11.9.0/styles/github.min.css"
+/>
+<script src="/js/lib/highlight.js"></script>
+
+
+
+<script src="/js/lib/preview.js"></script>
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/css/main.css" />
+
+<meta name="generator" content="Hexo 5.4.2"></head>
+<body>
+    <div id="layout">
+        <transition name="fade">
+            <div id="loading" v-show="loading">
+                <div id="loading-circle">
+                    <h2>LOADING</h2>
+                    <p>加载过慢请开启缓存 浏览器默认开启</p>
+                    <img src="/images/loading.gif" />
+                </div>
+            </div>
+        </transition>
+        <div id="menu" :class="{ hidden: hiddenMenu, 'menu-color': menuColor}">
+    <nav id="desktop-menu">
+        <a class="title" href="/">
+            <span>CAINONG&#39;S BLOG</span>
+        </a>
+        
+        <a href="/">
+            <i class="fa-solid fa-house fa-fw"></i>
+            <span>&ensp;Home</span>
+        </a>
+        
+        <a href="/about">
+            <i class="fa-solid fa-id-card fa-fw"></i>
+            <span>&ensp;About</span>
+        </a>
+        
+        <a href="/archives">
+            <i class="fa-solid fa-box-archive fa-fw"></i>
+            <span>&ensp;Archives</span>
+        </a>
+        
+        <a href="/categories">
+            <i class="fa-solid fa-bookmark fa-fw"></i>
+            <span>&ensp;Categories</span>
+        </a>
+        
+        <a href="/tags">
+            <i class="fa-solid fa-tags fa-fw"></i>
+            <span>&ensp;Tags</span>
+        </a>
+        
+    </nav>
+    <nav id="mobile-menu">
+        <div class="title" @click="showMenuItems = !showMenuItems">
+            <i class="fa-solid fa-bars fa-fw"></i>
+            <span>&emsp;CAINONG&#39;S BLOG</span>
+        </div>
+        <transition name="slide">
+            <div class="items" v-show="showMenuItems">
+                
+                <a href="/">
+                    <div class="item">
+                        <div style="min-width: 20px; max-width: 50px; width: 10%">
+                            <i class="fa-solid fa-house fa-fw"></i>
+                        </div>
+                        <div style="min-width: 100px; max-width: 150%; width: 20%">Home</div>
+                    </div>
+                </a>
+                
+                <a href="/about">
+                    <div class="item">
+                        <div style="min-width: 20px; max-width: 50px; width: 10%">
+                            <i class="fa-solid fa-id-card fa-fw"></i>
+                        </div>
+                        <div style="min-width: 100px; max-width: 150%; width: 20%">About</div>
+                    </div>
+                </a>
+                
+                <a href="/archives">
+                    <div class="item">
+                        <div style="min-width: 20px; max-width: 50px; width: 10%">
+                            <i class="fa-solid fa-box-archive fa-fw"></i>
+                        </div>
+                        <div style="min-width: 100px; max-width: 150%; width: 20%">Archives</div>
+                    </div>
+                </a>
+                
+                <a href="/categories">
+                    <div class="item">
+                        <div style="min-width: 20px; max-width: 50px; width: 10%">
+                            <i class="fa-solid fa-bookmark fa-fw"></i>
+                        </div>
+                        <div style="min-width: 100px; max-width: 150%; width: 20%">Categories</div>
+                    </div>
+                </a>
+                
+                <a href="/tags">
+                    <div class="item">
+                        <div style="min-width: 20px; max-width: 50px; width: 10%">
+                            <i class="fa-solid fa-tags fa-fw"></i>
+                        </div>
+                        <div style="min-width: 100px; max-width: 150%; width: 20%">Tags</div>
+                    </div>
+                </a>
+                
+            </div>
+        </transition>
+    </nav>
+</div>
+<transition name="fade">
+    <div id="menu-curtain" @click="showMenuItems = !showMenuItems" v-show="showMenuItems"></div>
+</transition>
+
+        <div id="main" :class="loading ? 'into-enter-from': 'into-enter-active'">
+            <div class="article">
+    <div>
+        <h1>sovit3折腾实录与教程（1）本地篇</h1>
+    </div>
+    <div class="info">
+        <span class="date">
+            <span class="icon">
+                <i class="fa-solid fa-calendar fa-fw"></i>
+            </span>
+            2023/2/26
+        </span>
+        
+        
+        <span class="tags">
+            <span class="icon">
+                <i class="fa-solid fa-tags fa-fw"></i>
+            </span>
+            
+            
+            <span class="tag">
+                
+                <a href="/tags/AI/" style="color: #03a9f4">
+                    AI
+                </a>
+            </span>
+            
+            <span class="tag">
+                
+                <a href="/tags/%E8%AF%AD%E9%9F%B3/" style="color: #00a596">
+                    语音
+                </a>
+            </span>
+            
+            <span class="tag">
+                
+                <a href="/tags/Python/" style="color: #ff7d73">
+                    Python
+                </a>
+            </span>
+            
+        </span>
+        
+    </div>
+    
+    <div class="content" v-pre>
+        <p>在此感谢我兄弟@IAW_PRC提供的一些技术支持</p>
+<p>过程实在太长太折磨，再加上本人上学，时间不多，所以这篇东西写的不会像之前那么详细</p>
+<h1 id="免责声明"><a href="#免责声明" class="headerlink" title="免责声明"></a>免责声明</h1><p><strong>在开始阅读前，您需要知道：</strong></p>
+<p><strong>截至目前，Ai一直是版权重灾区，如果阁下因为不正当使用Ai所造成的侵权与纠纷，需要您本人承担，与作者，也就是我无关</strong></p>
+<h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>我是一个sb二次元，天天听日语歌几年没碰华语的那种</p>
+<p>当然不只是因为华语乐坛近几年来确实不行</p>
+<p>更多的是我喜欢非母语带来的那种 有些听不懂的神秘感？</p>
+<p>总之，在刷夜に駆ける的各种翻唱的时候</p>
+<p>AI东雪莲吸引了我的注意</p>
+<span id="more"></span> 
+
+<p>抛开政治色彩不谈，唱的甚至比本人还好听 <del>（ai不夹）</del></p>
+<p>刚好换了新显卡不久，打算折腾一下AI有关的东西</p>
+<h1 id="前期准备"><a href="#前期准备" class="headerlink" title="前期准备"></a>前期准备</h1><p>你要让AI学习一个人的声音，当然得先有他的声音</p>
+<p>如果是Vtuber啥的，把录播下下来自动切片就好</p>
+<p>这里是我兄弟的，我选择了用我兄弟打游戏时候的语音，然后Au里手动裁剪</p>
+<p>因为语音有别人的，只能自己辨认</p>
+<p>用了一个多小时，裁剪出100多条</p>
+<p><img src="https://s2.loli.net/2023/03/01/UJaxHLoSI9ps7mu.png" alt="BUXIB_75O_91D_9ELF0B_97.png"></p>
+<p>这里得说一下，切片当然是越多越好，但是</p>
+<p>质量&gt;数量</p>
+<p>个人认为如果是说话至少得有70条以上的语音吧</p>
+<p>唱歌的话可能要1000条，并且最好有本人唱歌的录音，要不然可能高音上不去低音下不来</p>
+<p>每条在3-4s，不用太长，要求无背景音，无混响，无其他人说话的声音</p>
+<p>如果声音很杂我建议想办法处理一下</p>
+<p>分离人声和背景音我最推荐的就是UVR5</p>
+<p>这个百度一下就有，用起来不难，不细说了</p>
+<h1 id="开始之前的废话"><a href="#开始之前的废话" class="headerlink" title="开始之前的废话"></a>开始之前的废话</h1><p>本人配置：</p>
+<p>CPU：i7-11700K</p>
+<p>MEM：32G 3200MHz XMP</p>
+<p>GPU：RTX3070Ti 8G</p>
+<p>别的不写了，重点其实就在GPU上，有CUDA真的能让你事半功倍</p>
+<p>如果你是A卡用户或者没有CUDA核心的显卡，亦或者很老的卡，那我都强烈建议你去Colab篇</p>
+<p>如果你不想折腾，也只是想试试看，也推荐去Colab</p>
+<p>什么3090 4090 A100的，显存还12G以上的话，那本地肯定快</p>
+<p>这边实测，免费版Colab速度不如我的3070Ti</p>
+<p>同为1000steps，Colab用了大概半小时</p>
+<p>我这本地就十多分钟不到</p>
+<p>A卡似乎RX5000系列RDNA2对于深度学习有奇效，甚至可能超过30系，据说是<code>stable diffusion</code>和<code>vits</code>有加成</p>
+<p>但如果你是A卡用户我能想到的唯一办法就是去<code>Linux</code>，并且使用ROCM版本的Pytorch</p>
+<p>也就是</p>
+<pre><code>pip3 install torch torchvision torchaudio --extra-index-url https://download.pytorch.org/whl/rocm5.2
+</code></pre>
+<p>如果你是A卡装完这个之后请无视掉下面的torch安装</p>
+<h1 id="噩梦开始"><a href="#噩梦开始" class="headerlink" title="噩梦开始"></a>噩梦开始</h1><p>去<a target="_blank" rel="noopener" href="https://github.com/innnky/so-vits-svc">这里</a>Clone一下库文件</p>
+<p>除非你显存&gt;8G，不然我都建议你选32K的分支</p>
+<p>我这里用PyCharm打开，构建一个虚拟环境</p>
+<p>如果你电脑环境比较干净，不用PyCharm啥的也是可以的，因为之前折腾Arcaea的时候环境很杂</p>
+<p>然后把之前你的切片搞个名字，可以是说话人的拼音啥的，放到一个文件夹，并放到这个项目的dataset_raw里，文件架构应该是</p>
+<pre><code>../so-vits-svc-32k/dataset_raw/你说话人的名字/xxx1.wav
+../so-vits-svc-32k/dataset_raw/你说话人的名字/xxx2.wav
+...
+</code></pre>
+<h1 id="环境配置"><a href="#环境配置" class="headerlink" title="环境配置"></a>环境配置</h1><p><strong>给一个忠告：无论是环境还是库，不要追求新的，requirements.txt给啥你就装啥，报错就降一个大版本，比如你装了0.10.0的librosa，报错了，降一个大版本到0.9.2，还不行就降到0.8.1</strong></p>
+<p>好，到了你需要迈过的第一个坎了</p>
+<p>Sovits不像当时NovelAi这么火爆，成本也比NovelAI高，一键启动包什么的，似乎训练出来模型会有别人的味道（？）</p>
+<p>不管怎么说，享受折腾的过程也是种乐趣</p>
+<p>Sovits对环境的要求还是很复杂的</p>
+<p>当然我见识短浅没见过什么更复杂的大工程也是真的</p>
+<p>据说Python版本大于3.10会存在numpy1.19.2无法安装的问题</p>
+<p>我是确实遇上了，不是无法安装而是安装无法使用</p>
+<p><strong>所以我个人建议使用3.9版本的Python</strong></p>
+<p>先打开requirements.txt，把</p>
+<pre><code>torch==1.10.0+cu113
+torchaudio==0.10.0+cu113
+</code></pre>
+<p>这两行删掉</p>
+<p>然后用这串东西下载环境</p>
+<pre><code>pip install -r requirements.txt
+</code></pre>
+<p>如果你用PyCharm打开它会自动读取requirements.txt里的内容让你补全环境</p>
+<p><img src="https://s2.loli.net/2023/03/01/MQFPl6m3KCnWRze.png" alt="K3FSS6_~WD@WRN_CUQ_9962.png"></p>
+<p>我这里补全了大部分，剩下一个失败了：</p>
+<pre><code>numpy==1.19.2
+</code></pre>
+<p>这里就不得不提一下国内源的问题，numpy版本太奇妙或许是，换回原来的源就好</p>
+<p>我这里是</p>
+<pre><code> pip install -i https://pypi.python.org/simple numpy==1.19.2 
+</code></pre>
+<p>这里给大家排个雷，matplotlib在上面应该会自动安装</p>
+<p>如果你是1.19.2的numpy，那会提示</p>
+<pre><code>Matplotlib requires numpy&gt;=1.20; you have 1.19.2
+</code></pre>
+<p>手动把matpotlib降级到3.6.3即可，也就是</p>
+<pre><code>pip uninstall matpotlib
+
+pip install matpotlib==3.6.3
+</code></pre>
+<p>然后是torch的问题，这才是这个项目的核心</p>
+<p>打开你的cmd <del>(草妈的)</del></p>
+<p>输入</p>
+<pre><code>nvidia-smi.exe
+</code></pre>
+<p>看看你的CUDA版本，我这里是12.0</p>
+<p><img src="https://s2.loli.net/2023/02/27/3jduoNDZlnBOTaP.png" alt="J_5D5C3_9V_HE0HJ5J6U_RV.png"></p>
+<p>虽然理论来说Pytorch最高只支持11.7</p>
+<p>但我这没问题</p>
+<p>总之，去下一个和你CUDA版本对应的的Pytorch，如果你像我一样是12.0，那就下11.7版本就好</p>
+<p>我这里是</p>
+<pre><code>pip3 install torch torchvision torchaudio --extra-index-url https://download.pytorch.org/whl/cu117
+</code></pre>
+<p>然后，去<a target="_blank" rel="noopener" href="https://developer.nvidia.com/cuda-toolkit-archive">这里</a>，下载和你cuda版本对应的kit，并安装（要等挺久的，文件也很大）</p>
+<h1 id="开始操作"><a href="#开始操作" class="headerlink" title="开始操作"></a>开始操作</h1><p>然后下载三个预训练模型文件</p>
+<p><a target="_blank" rel="noopener" href="https://github.com/bshall/hubert/releases/download/v0.1/hubert-soft-0d54a1f4.pt">hubert-soft-0d54a1f4.pt</a></p>
+<p>放到hubert目录下</p>
+<p><a target="_blank" rel="noopener" href="https://huggingface.co/innnky/sovits_pretrained/resolve/main/G_0.pth">G_0.pth </a></p>
+<p><a target="_blank" rel="noopener" href="https://huggingface.co/innnky/sovits_pretrained/resolve/main/D_0.pth">D_0.pth</a></p>
+<p>放到logs/32k目录下</p>
+<p>总之，以上都没问题的话，确保你的文件夹已经放在<code>dataset_raw</code>中，并继续</p>
+<h2 id="数据预处理"><a href="#数据预处理" class="headerlink" title="数据预处理"></a>数据预处理</h2><h3 id="1-重采样"><a href="#1-重采样" class="headerlink" title="1.重采样"></a>1.重采样</h3><p>在你的项目文件夹打开终端，并输入</p>
+<pre><code>python resample.py
+</code></pre>
+<p>这一步是把你的wav重采样成32khz</p>
+<p>如果你报错提示缺少librosa，那就来一条</p>
+<pre><code> pip install librosa==0.8.1
+</code></pre>
+<p>试过新版本会报错，所以这个可以</p>
+<h3 id="2-生成配置文件等"><a href="#2-生成配置文件等" class="headerlink" title="2.生成配置文件等"></a>2.生成配置文件等</h3><pre><code>python preprocess_flist_config.py
+</code></pre>
+<h3 id="3-生成hubert与f0"><a href="#3-生成hubert与f0" class="headerlink" title="3.生成hubert与f0"></a>3.生成hubert与f0</h3><pre><code>python preprocess_hubert_f0.py
+</code></pre>
+<p>如果都按照上面的来，这三步基本不会有问题</p>
+<h2 id="调节配置"><a href="#调节配置" class="headerlink" title="调节配置"></a>调节配置</h2><p>一般来说我们贫民的小显存，<code>.../configs/config.json</code>里给的默认12的batch_size，百分百会爆显存</p>
+<p>我8G在后台有点东西的时候给6都会爆显存，并且为了发挥你显卡的最佳性能，batch_size最好是2的倍数</p>
+<p>如果你是30系以上，为了调用Tensor核心，最好能4的倍数</p>
+<p>如果你给4都爆显存还是建议是去Colab了，batch_size太小模型可能会不收敛，出来效果也会有影响</p>
+<p>我这里就给4了</p>
+<p><img src="https://s2.loli.net/2023/02/27/RMYkAHcpuwgaIon.png" alt="83B__QH1NUP_F_@C_Z6F_97.png"></p>
+<h2 id="开始训练"><a href="#开始训练" class="headerlink" title="开始训练"></a>开始训练</h2><p>打开命令行，输入</p>
+<pre><code>python train.py -c configs/config.json -m 32k
+</code></pre>
+<p>如果这个时候报错了，提示缺少TensorBoard，那就</p>
+<pre><code>pip install tensorboard
+</code></pre>
+<p>这个倒是不需要什么版本（目前没见有问题）</p>
+<p>出现如下命令行就代表训练正常进行了</p>
+<p><img src="https://s2.loli.net/2023/02/28/6Z1HTCJ5iNB9XPY.png" alt="_AJ_IEM_H7JS03PW5OI__9S.png"></p>
+<p>默认每1000次保存一个记录点，如果想停止训练按Ctrl+C即可</p>
+<p>下一次训练在输入一样的命令程序会自动读取存档点继续训练</p>
+<h2 id="观察训练过程确定收敛进度"><a href="#观察训练过程确定收敛进度" class="headerlink" title="观察训练过程确定收敛进度"></a>观察训练过程确定收敛进度</h2><p>在训练的时候新开一个命令行，输入</p>
+<pre><code>tensorboard ----logdir logs/32k --port 8080
+</code></pre>
+<p>端口如果占用了可以改</p>
+<p>然后浏览器打开<code>http://localhost:8080/ </code></p>
+<p>点上面<code>scalars</code>，并把<code>learning rate</code>和<code>loss</code>展开，<code>loss</code>翻到第二页</p>
+<p><img src="https://s2.loli.net/2023/02/28/dSqpahzFIyxjiXO.png" alt="___7_O_BMC_W8QPNQ9OJLJ2.png"></p>
+<p>主要看<code>learning_rate</code>和<code>loss</code>最后面三个图表，也就是</p>
+<p><code>g/kl</code> <code> g/mel</code> <code>g/total</code></p>
+<p><code>learning_rate</code>不断下降，且下降幅度放缓</p>
+<p><img src="https://s2.loli.net/2023/02/27/CLikTn2d5F6xEI4.png" alt="O5QRBLY1Z83VCNTCRTIB__A.png"></p>
+<p><code>g/kl</code> <code> g/mel</code> <code>g/total</code>不断下降，且几乎与X轴平行，下降放缓</p>
+<p><img src="https://s2.loli.net/2023/02/27/9heWOVY6duTFMXG.png" alt="0_R__XNIFSE2FM7_8_ZUJ4P.png"></p>
+<p>就代表模型基本收敛了，这个时候再训练下去可能会过拟合，模型会废</p>
+<p>确定收敛了就可以停止训练，并进行下一步了</p>
+<h2 id="推理"><a href="#推理" class="headerlink" title="推理"></a>推理</h2><p>把你要转换的文件放在<code>.../raw/xxx.wav</code></p>
+<p>可以是歌曲的纯人声，可以是说话声音</p>
+<p>然后打开<code>.../inference_main.py</code></p>
+<p>重点改<code>model_path</code>,<code>clean_names</code>,<code>trans</code>,<code>spk_list</code>这几个</p>
+<p><code>model_path</code>改成你训练出最新模型的路径</p>
+<p><strong>注意：推理所需要的是G_开头的模型，而不是D_开头的</strong></p>
+<p><code>clean_names</code>改为你raw文件夹中放的wav的文件名，<strong>无需.wav结尾</strong></p>
+<p><code>trans</code>为变调，根据实际来调，男模型唱女声大概需要-12~-16</p>
+<p><code>spk_lisk</code>为你说话人的名字，可以支持多个，用半角逗号隔开</p>
+<p><img src="https://s2.loli.net/2023/03/01/a95srgbvJqNBUfE.png" alt="18E4__DSN6B@R__D_OE_M6P.png"></p>
+<p>没啥问题就可以开始推理了</p>
+<pre><code>python inference_main.py
+</code></pre>
+<p>如果你推理报错，提示numpy版本太旧，请将pandas降级到1.4.4，也就是</p>
+<pre><code>pip uninstall pandas
+
+pip install pandas==1.4.4
+</code></pre>
+<p>3.8更新：</p>
+<pre><code>ValueError: numpy.ndarray size changed, may indicate binary incompatibility. Expected 88 from C header, got 80 from PyObject
+</code></pre>
+<p><img src="https://s2.loli.net/2023/03/08/PDFbkSNy162OwCG.png" alt="inference_error.png"></p>
+<p>真是tmd神奇，用着用着就推理不了了</p>
+<p>还好是虚拟环境，要是那些直接装在系统上的绝对会裂开</p>
+<p>强烈建议用Conda， <del>去你妈的pip</del></p>
+<p>摸索了一圈，我的解决方法是：降级scikit-image到0.19.3</p>
+<pre><code>pip uninstall scikit-image
+pip install scikit-image==0.19.3
+</code></pre>
+<p>想不到吧tmd，你以为是numpy的问题，其实是scikit-image的锅</p>
+<p>推理的话，歌曲不宜太长，特别是显存小的，很容易爆显存</p>
+<p>建议裁开分开推理</p>
+<p>当然你可以用CPU推理，但会非常非常慢（比GPU慢是肯定的）</p>
+<p>大概一首歌3分钟，CPU就要推3分钟，GPU不爆显存的话就半分钟多</p>
+<p>想要CPU推理的话</p>
+<p>修改<code>inference/infer_tool.py</code>这个文件，在21行后面加一行</p>
+<pre><code>os.environ[&quot;CUDA_VISIBLE_DEVICES&quot;] = &quot;-1&quot;
+</code></pre>
+<p><del>CPU推理我没有实操过，但如果报错了大概是需要装CPU版本的Pytorch吧（不确定，建议Google）</del></p>
+<p>只要有Torch就行，是cuda还是CPU无所谓</p>
+<p>推理结束后，你的成果就在…/results中了</p>
+<p>至此，本地Sovits也就告一段落了</p>
+<h1 id="一些问题解答"><a href="#一些问题解答" class="headerlink" title="一些问题解答"></a>一些问题解答</h1><h2 id="batch-size"><a href="#batch-size" class="headerlink" title="batch_size"></a>batch_size</h2><p>最前面的当属batch_size，网上只告诉你这个越大占显存也越大，却没告诉你batch_size对于模型和成果有着直接影响</p>
+<p>batch_size是指在一次迭代中输入给模型的样本数量。在训练深度学习模型时，通常会将训练数据集分成多个batch，每个batch包含一定数量的样本。模型将会接收每个batch的样本作为输入，计算并更新模型的参数。这个过程称为一个epoch，通常需要多个epoch来训练一个模型。<br>（此回答来自ChatGPT）</p>
+<p>显然，batch_size有一个最佳值可以训练出效果最好的模型</p>
+<p>虽然理论来说，batch_size太大会翻车</p>
+<p>但据我所知，除非你是80G的A100阵列，不然绝大多数情况下应该是达不到翻车的数值的</p>
+<p>所以在不炸显存的情况下，可以暂且理解为batch_size越大越好</p>
+<p>我看到有人问“啊为什么我的loss一直在波动没有收敛迹象的？”</p>
+<p>那多半就是batch_size的锅</p>
+<p>网上那些说batch_size给2 甚至1的那完全是 离大谱</p>
+<p>特别是1，那意味着Ai会随机抽取样本进行学习，每次就一个样本</p>
+<p>那能不能收敛完全就是看脸</p>
+<p>为什么我想放在最前面写这个，正是因为我batch_size给到了4波动依然很大（已经超过10w steps）</p>
+<p>但你要说batch_size太小真的不能用吗 倒也不是</p>
+<p>毕竟样本还是样本，只能说你的模型大概永不会收敛</p>
+<p>总之，显存小去Colab总不是一件坏事，干嘛要折腾自己电脑呢</p>
+<h2 id="Sovits3-0和Sovits4-0"><a href="#Sovits3-0和Sovits4-0" class="headerlink" title="Sovits3.0和Sovits4.0"></a>Sovits3.0和Sovits4.0</h2><p>测试过后发现Sovits4.0无论是训练还是推理显存占用都小了很多</p>
+<p>同样是8G，Sovits4.0我甚至可以开到8的batch_size</p>
+<p>但也有奇怪的情况</p>
+<p>在我这，Sovits4.0在相同的steps下出来的效果远远不如3.0</p>
+<p>在3.0中只需要1000steps就已经有贴近本人声线的感觉了</p>
+<p>而4.0同样1000steps甚至2000steps，出来的结果也会带电</p>
+<p>（以上是实测经历，不代表通用性，因为只是我一个人的实验结果，所以偶然性极大）</p>
+<p>不过放到现在，4.0在有聚类模型的情况下效果还是优于3.0的</p>
+<h1 id="写在最后"><a href="#写在最后" class="headerlink" title="写在最后"></a>写在最后</h1><p>未经允许，禁止转载到国内网站，包括但不限于CSDN等</p>
+
+    </div>
+    
+    
+    
+    
+    
+    
+    
+</div>
+
+            <footer id="footer">
+    <div id="footer-wrap">
+        <div>
+            &copy;
+            221 - 2025 Cainong&#39;s Blog
+            <span id="footer-icon">
+                <i class="fa-solid fa-font-awesome fa-fw"></i>
+            </span>
+            &commat;Cainong
+        </div>
+        <div>
+            Based on the <a target="_blank" rel="noopener" href="https://hexo.io">Hexo Engine</a> &amp;
+            <a target="_blank" rel="noopener" href="https://github.com/theme-particlex/hexo-theme-particlex">ParticleX Theme</a>
+        </div>
+        
+    </div>
+</footer>
+
+        </div>
+        
+        <transition name="fade">
+            <div id="preview" ref="preview" v-show="previewShow">
+                <img id="preview-content" ref="previewContent" />
+            </div>
+        </transition>
+        
+    </div>
+    <script src="/js/main.js"></script>
+    
+    
+
+
+
+
+    
+</body>
+</html>

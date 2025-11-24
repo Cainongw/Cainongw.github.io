@@ -1,0 +1,358 @@
+
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="utf-8" />
+    <title>把自己变成初音未来！Diffsinger折腾记录 | Cainong&#39;s Blog</title>
+    <meta name="author" content="Cainong" />
+    <meta name="description" content="" />
+    <meta name="keywords" content="" />
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"
+    />
+    <link rel="icon" href="/images/avatar.png" />
+    <link rel="preconnect" href="https://s4.zstatic.net" />
+<script src="https://s4.zstatic.net/ajax/libs/vue/3.3.7/vue.global.prod.min.js"></script>
+<link rel="stylesheet" href="https://s4.zstatic.net/ajax/libs/font-awesome/6.4.2/css/all.min.css" />
+<link rel="preconnect" href="https://fonts.googleapis.cn" />
+<link rel="preconnect" href="https://fonts.gstatic.cn" crossorigin />
+<link
+    rel="stylesheet"
+    href="https://fonts.googleapis.cn/css2?family=Fira+Code:wght@400;500;600;700&family=Lexend:wght@400;500;600;700;800;900&family=Noto+Sans+SC:wght@400;500;600;700;800;900&display=swap"
+/>
+<script> const mixins = {}; </script>
+
+<script src="https://polyfill.alicdn.com/v3/polyfill.min.js?features=default"></script>
+
+
+<script src="https://s4.zstatic.net/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="https://s4.zstatic.net/ajax/libs/highlightjs-line-numbers.js/2.8.0/highlightjs-line-numbers.min.js"></script>
+<link
+    rel="stylesheet"
+    href="https://s4.zstatic.net/ajax/libs/highlight.js/11.9.0/styles/github.min.css"
+/>
+<script src="/js/lib/highlight.js"></script>
+
+
+
+<script src="/js/lib/preview.js"></script>
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/css/main.css" />
+
+<meta name="generator" content="Hexo 5.4.2"></head>
+<body>
+    <div id="layout">
+        <transition name="fade">
+            <div id="loading" v-show="loading">
+                <div id="loading-circle">
+                    <h2>LOADING</h2>
+                    <p>加载过慢请开启缓存 浏览器默认开启</p>
+                    <img src="/images/loading.gif" />
+                </div>
+            </div>
+        </transition>
+        <div id="menu" :class="{ hidden: hiddenMenu, 'menu-color': menuColor}">
+    <nav id="desktop-menu">
+        <a class="title" href="/">
+            <span>CAINONG&#39;S BLOG</span>
+        </a>
+        
+        <a href="/">
+            <i class="fa-solid fa-house fa-fw"></i>
+            <span>&ensp;Home</span>
+        </a>
+        
+        <a href="/about">
+            <i class="fa-solid fa-id-card fa-fw"></i>
+            <span>&ensp;About</span>
+        </a>
+        
+        <a href="/archives">
+            <i class="fa-solid fa-box-archive fa-fw"></i>
+            <span>&ensp;Archives</span>
+        </a>
+        
+        <a href="/categories">
+            <i class="fa-solid fa-bookmark fa-fw"></i>
+            <span>&ensp;Categories</span>
+        </a>
+        
+        <a href="/tags">
+            <i class="fa-solid fa-tags fa-fw"></i>
+            <span>&ensp;Tags</span>
+        </a>
+        
+    </nav>
+    <nav id="mobile-menu">
+        <div class="title" @click="showMenuItems = !showMenuItems">
+            <i class="fa-solid fa-bars fa-fw"></i>
+            <span>&emsp;CAINONG&#39;S BLOG</span>
+        </div>
+        <transition name="slide">
+            <div class="items" v-show="showMenuItems">
+                
+                <a href="/">
+                    <div class="item">
+                        <div style="min-width: 20px; max-width: 50px; width: 10%">
+                            <i class="fa-solid fa-house fa-fw"></i>
+                        </div>
+                        <div style="min-width: 100px; max-width: 150%; width: 20%">Home</div>
+                    </div>
+                </a>
+                
+                <a href="/about">
+                    <div class="item">
+                        <div style="min-width: 20px; max-width: 50px; width: 10%">
+                            <i class="fa-solid fa-id-card fa-fw"></i>
+                        </div>
+                        <div style="min-width: 100px; max-width: 150%; width: 20%">About</div>
+                    </div>
+                </a>
+                
+                <a href="/archives">
+                    <div class="item">
+                        <div style="min-width: 20px; max-width: 50px; width: 10%">
+                            <i class="fa-solid fa-box-archive fa-fw"></i>
+                        </div>
+                        <div style="min-width: 100px; max-width: 150%; width: 20%">Archives</div>
+                    </div>
+                </a>
+                
+                <a href="/categories">
+                    <div class="item">
+                        <div style="min-width: 20px; max-width: 50px; width: 10%">
+                            <i class="fa-solid fa-bookmark fa-fw"></i>
+                        </div>
+                        <div style="min-width: 100px; max-width: 150%; width: 20%">Categories</div>
+                    </div>
+                </a>
+                
+                <a href="/tags">
+                    <div class="item">
+                        <div style="min-width: 20px; max-width: 50px; width: 10%">
+                            <i class="fa-solid fa-tags fa-fw"></i>
+                        </div>
+                        <div style="min-width: 100px; max-width: 150%; width: 20%">Tags</div>
+                    </div>
+                </a>
+                
+            </div>
+        </transition>
+    </nav>
+</div>
+<transition name="fade">
+    <div id="menu-curtain" @click="showMenuItems = !showMenuItems" v-show="showMenuItems"></div>
+</transition>
+
+        <div id="main" :class="loading ? 'into-enter-from': 'into-enter-active'">
+            <div class="article">
+    <div>
+        <h1>把自己变成初音未来！Diffsinger折腾记录</h1>
+    </div>
+    <div class="info">
+        <span class="date">
+            <span class="icon">
+                <i class="fa-solid fa-calendar fa-fw"></i>
+            </span>
+            2023/5/1
+        </span>
+        
+        
+        <span class="tags">
+            <span class="icon">
+                <i class="fa-solid fa-tags fa-fw"></i>
+            </span>
+            
+            
+            <span class="tag">
+                
+                <a href="/tags/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/" style="color: #00bcd4">
+                    机器学习
+                </a>
+            </span>
+            
+            <span class="tag">
+                
+                <a href="/tags/Ai/" style="color: #ffa2c4">
+                    Ai
+                </a>
+            </span>
+            
+            <span class="tag">
+                
+                <a href="/tags/diff/" style="color: #03a9f4">
+                    diff
+                </a>
+            </span>
+            
+        </span>
+        
+    </div>
+    
+    <div class="content" v-pre>
+        <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>又是東雪蓮！B站上的Diffsinger Ai東雪蓮让我发现了Diffsinger这个项目</p>
+<p>众所周知，東雪蓮作为罕见，当然是不唱中文歌的</p>
+<p>而Diffsinger默认词典又需要大量的中文干声素材</p>
+<p>所以我猜测B站上那个视频用的是语音数据</p>
+<p>因为不是干声，也就不会有广阔的音域和转音</p>
+<p>那么那个视频里的电也就合情合理了</p>
+<span id="more"></span> 
+
+<p>虽然说SVS类型的Ai应该尽可能接近真人才对（像ACE Studio，SynthesizerV那种）</p>
+<p>但电音却有种VOCALOID的感觉，倒也不是坏事</p>
+<p>一开始我是打算接着用我兄弟的数据集的，但问题来了：</p>
+<p>diff项目需要大量的数据集（该项目建议4-5小时）我兄弟的语音数据仅仅只有20分钟</p>
+<p>有人说：我可以用Sovits Diff-svc把开源数据集（Opencpop那种）换成兄弟的声音啊？</p>
+<p>是，但只要有音色泄露的问题存在出来的声音就不会像本人，况且这样套娃音质是不可控的</p>
+<p>所以我兄弟得等以后了</p>
+<p>那我又想折腾，就只能迫害我自己了</p>
+<h1 id="正片开始"><a href="#正片开始" class="headerlink" title="正片开始"></a>正片开始</h1><p>考虑到听自己唱歌实在太处刑了，所以我决定也先用说话数据试试看</p>
+<p>这里有必要列一下我的麦：Blue Snowball</p>
+<p>虽然不是高端麦克风，但是折腾Ai足矣</p>
+<h1 id="准备数据集"><a href="#准备数据集" class="headerlink" title="准备数据集"></a>准备数据集</h1><p>我认为流程应该是：</p>
+<p>前期录制——匹配响度——降噪——切片——标注</p>
+<h2 id="前期录制"><a href="#前期录制" class="headerlink" title="前期录制"></a>前期录制</h2><p>内容很简单，就是我找各种中文念出来，语速平缓，吐字清晰</p>
+<p>总共大概半个小时</p>
+<h2 id="匹配响度"><a href="#匹配响度" class="headerlink" title="匹配响度"></a>匹配响度</h2><p>这里选择Au，按照DiffSinger的官方教程来</p>
+<h2 id="降噪"><a href="#降噪" class="headerlink" title="降噪"></a>降噪</h2><p><del>去你妈的Au和什么RX9，我单方面宣布UVR是最强的降噪工具</del></p>
+<p>试了一圈，UVR太强了只能说</p>
+<p>Kim_Vocal模型，Vocal Only，直接输出，降噪出来不仅安静人声几乎无失真，真的比Au强太多了</p>
+<h2 id="切片"><a href="#切片" class="headerlink" title="切片"></a>切片</h2><p>按照上面下来就用自动切片机切就好了</p>
+<h2 id="标注"><a href="#标注" class="headerlink" title="标注"></a>标注</h2><p>你以为我会手动标注吗？</p>
+<p>不可能，我们是懒狗炼丹师，所以我选择了阿里巴巴达摩院的Paraformer项目进行自动标注</p>
+<p>一开始其实用的OpenAi的whisper，但那个对于中文的准确性远远不如Paraformer</p>
+<p>也能理解，毕竟Whisper兼顾多种语言，Paraformer则是专精于中文和少量的英语</p>
+<p>之前用的venv，这次为了随时调用，我选择anaconda</p>
+<p>Conda安装教程不多说了，这里说配环境：</p>
+<p>首先我们要给funasr创建一个环境：</p>
+<pre><code class="bash">    conda create -n funasr python=3.7
+</code></pre>
+<p>然后激活环境：</p>
+<pre><code class="bash">    conda activate funasr
+</code></pre>
+<p>于是就可以安装了：</p>
+<pre><code class="bash">    pip install funasr
+</code></pre>
+<p>你也可以</p>
+<pre><code class="bash">    git clone [https://github.com/alibaba/FunASR.git](https://github.com/alibaba/FunASR.git) &amp;&amp; cd FunASR
+</code></pre>
+<pre><code class="bash">    pip install --editable ./
+</code></pre>
+<p>前提是你的电脑里有git</p>
+<p>为了调用模型我们需要 Model Scope</p>
+<pre><code class="bash">
+    pip install &quot;modelscope[audio_asr]&quot; --upgrade -f https://modelscope.oss-cn-beijing.aliyuncs.com/releases/repo.html
+</code></pre>
+<p>这里两步如果报错了大概是需要安装Visual Studio</p>
+<p>你需要在Visual Studio Installer中安装“使用C++的桌面开发”并确保安装详细信息的两项勾选：MSVC生成工具、Windows SDK</p>
+<p>完事安装Torch，可以是CPU也可以是GPU版本</p>
+<p>由于Python版本问题，我们只能装11.6的版本</p>
+<pre><code class="bash">    conda install pytorch torchvision torchaudio pytorch-cuda=11.6 -c pytorch -c nvidia
+</code></pre>
+<p>（这里是GPU版本）</p>
+<p>然后我们调用一下官方Demo：</p>
+<pre><code class="python">    from modelscope.pipelines import pipeline
+    from modelscope.utils.constant import Tasks
+
+    inference_pipeline = pipeline(
+        task=Tasks.auto_speech_recognition,
+        model=&#39;damo/speech_paraformer-large_asr_nat-zh-cn-16k-common-vocab8404-pytorch&#39;)
+
+    rec_result = inference_pipeline(audio_in=&#39;你自己的音频.wav&#39;)
+    print(rec_result)
+</code></pre>
+<p>效果还是可以的，中英语混合而且准确度很高</p>
+<p>我们引用os和pypinyin批量处理并把它们转成对应的拼音保存在.lab里</p>
+<pre><code class="python">    import os
+    from modelscope.pipelines import pipeline
+    from modelscope.utils.constant import Tasks
+    from pypinyin import lazy_pinyin
+
+
+    inference_pipeline = pipeline(
+        task=Tasks.auto_speech_recognition,
+        model=&#39;damo/speech_paraformer-large_asr_nat-zh-cn-16k-common-vocab8404-pytorch&#39;)
+    raw_path = r&quot;源wav的地址&quot;
+    list = os.listdir(raw_path)
+    OUTPUT_PATH = r&quot;.lab输出地址&quot;
+    print(list)
+
+
+    for i in list:
+        path = raw_path + &quot;\\&quot; + i
+        rec_result = inference_pipeline(path)
+        print(rec_result)
+        pinyin = lazy_pinyin(rec_result[&#39;text&#39;])
+        print(pinyin)
+        str = &#39; &#39;.join(pinyin)
+        no_prefix = i.split(&quot;.&quot;)[0]
+        lab = OUTPUT_PATH + &quot;\\&quot; + no_prefix
+        with open(lab + &#39;.lab&#39;,&#39;w&#39;) as f:
+            f.write(str)
+</code></pre>
+<p><del>别骂了别骂了我知道我的代码跟屎一样能用就可以了</del></p>
+<p>用MinLable查看一下是否正确，核对一下</p>
+<p>完事之后就用项目里的notebook一路下一步就好了</p>
+<p>最后他会输出训练的命令，在你项目的根目录运行就好了</p>
+<p>最后我练了3天，22w步</p>
+<p>您猜怎么的？翻车了</p>
+<p>出来我本人的声音是电的，电流声非常明显，处于完全不可用的状态</p>
+<p>看来还是得要干声数据，下次写</p>
+<p><del>咕咕</del></p>
+
+    </div>
+    
+    
+    
+    
+    
+    
+    
+</div>
+
+            <footer id="footer">
+    <div id="footer-wrap">
+        <div>
+            &copy;
+            221 - 2025 Cainong&#39;s Blog
+            <span id="footer-icon">
+                <i class="fa-solid fa-font-awesome fa-fw"></i>
+            </span>
+            &commat;Cainong
+        </div>
+        <div>
+            Based on the <a target="_blank" rel="noopener" href="https://hexo.io">Hexo Engine</a> &amp;
+            <a target="_blank" rel="noopener" href="https://github.com/theme-particlex/hexo-theme-particlex">ParticleX Theme</a>
+        </div>
+        
+    </div>
+</footer>
+
+        </div>
+        
+        <transition name="fade">
+            <div id="preview" ref="preview" v-show="previewShow">
+                <img id="preview-content" ref="previewContent" />
+            </div>
+        </transition>
+        
+    </div>
+    <script src="/js/main.js"></script>
+    
+    
+
+
+
+
+    
+</body>
+</html>

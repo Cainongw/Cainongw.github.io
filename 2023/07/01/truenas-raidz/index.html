@@ -1,0 +1,323 @@
+
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="utf-8" />
+    <title>记一次TrueNas Mirror转RaidZ R730折腾实录（2） | Cainong&#39;s Blog</title>
+    <meta name="author" content="Cainong" />
+    <meta name="description" content="" />
+    <meta name="keywords" content="" />
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"
+    />
+    <link rel="icon" href="/images/avatar.png" />
+    <link rel="preconnect" href="https://s4.zstatic.net" />
+<script src="https://s4.zstatic.net/ajax/libs/vue/3.3.7/vue.global.prod.min.js"></script>
+<link rel="stylesheet" href="https://s4.zstatic.net/ajax/libs/font-awesome/6.4.2/css/all.min.css" />
+<link rel="preconnect" href="https://fonts.googleapis.cn" />
+<link rel="preconnect" href="https://fonts.gstatic.cn" crossorigin />
+<link
+    rel="stylesheet"
+    href="https://fonts.googleapis.cn/css2?family=Fira+Code:wght@400;500;600;700&family=Lexend:wght@400;500;600;700;800;900&family=Noto+Sans+SC:wght@400;500;600;700;800;900&display=swap"
+/>
+<script> const mixins = {}; </script>
+
+<script src="https://polyfill.alicdn.com/v3/polyfill.min.js?features=default"></script>
+
+
+<script src="https://s4.zstatic.net/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="https://s4.zstatic.net/ajax/libs/highlightjs-line-numbers.js/2.8.0/highlightjs-line-numbers.min.js"></script>
+<link
+    rel="stylesheet"
+    href="https://s4.zstatic.net/ajax/libs/highlight.js/11.9.0/styles/github.min.css"
+/>
+<script src="/js/lib/highlight.js"></script>
+
+
+
+<script src="/js/lib/preview.js"></script>
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/css/main.css" />
+
+<meta name="generator" content="Hexo 5.4.2"></head>
+<body>
+    <div id="layout">
+        <transition name="fade">
+            <div id="loading" v-show="loading">
+                <div id="loading-circle">
+                    <h2>LOADING</h2>
+                    <p>加载过慢请开启缓存 浏览器默认开启</p>
+                    <img src="/images/loading.gif" />
+                </div>
+            </div>
+        </transition>
+        <div id="menu" :class="{ hidden: hiddenMenu, 'menu-color': menuColor}">
+    <nav id="desktop-menu">
+        <a class="title" href="/">
+            <span>CAINONG&#39;S BLOG</span>
+        </a>
+        
+        <a href="/">
+            <i class="fa-solid fa-house fa-fw"></i>
+            <span>&ensp;Home</span>
+        </a>
+        
+        <a href="/about">
+            <i class="fa-solid fa-id-card fa-fw"></i>
+            <span>&ensp;About</span>
+        </a>
+        
+        <a href="/archives">
+            <i class="fa-solid fa-box-archive fa-fw"></i>
+            <span>&ensp;Archives</span>
+        </a>
+        
+        <a href="/categories">
+            <i class="fa-solid fa-bookmark fa-fw"></i>
+            <span>&ensp;Categories</span>
+        </a>
+        
+        <a href="/tags">
+            <i class="fa-solid fa-tags fa-fw"></i>
+            <span>&ensp;Tags</span>
+        </a>
+        
+    </nav>
+    <nav id="mobile-menu">
+        <div class="title" @click="showMenuItems = !showMenuItems">
+            <i class="fa-solid fa-bars fa-fw"></i>
+            <span>&emsp;CAINONG&#39;S BLOG</span>
+        </div>
+        <transition name="slide">
+            <div class="items" v-show="showMenuItems">
+                
+                <a href="/">
+                    <div class="item">
+                        <div style="min-width: 20px; max-width: 50px; width: 10%">
+                            <i class="fa-solid fa-house fa-fw"></i>
+                        </div>
+                        <div style="min-width: 100px; max-width: 150%; width: 20%">Home</div>
+                    </div>
+                </a>
+                
+                <a href="/about">
+                    <div class="item">
+                        <div style="min-width: 20px; max-width: 50px; width: 10%">
+                            <i class="fa-solid fa-id-card fa-fw"></i>
+                        </div>
+                        <div style="min-width: 100px; max-width: 150%; width: 20%">About</div>
+                    </div>
+                </a>
+                
+                <a href="/archives">
+                    <div class="item">
+                        <div style="min-width: 20px; max-width: 50px; width: 10%">
+                            <i class="fa-solid fa-box-archive fa-fw"></i>
+                        </div>
+                        <div style="min-width: 100px; max-width: 150%; width: 20%">Archives</div>
+                    </div>
+                </a>
+                
+                <a href="/categories">
+                    <div class="item">
+                        <div style="min-width: 20px; max-width: 50px; width: 10%">
+                            <i class="fa-solid fa-bookmark fa-fw"></i>
+                        </div>
+                        <div style="min-width: 100px; max-width: 150%; width: 20%">Categories</div>
+                    </div>
+                </a>
+                
+                <a href="/tags">
+                    <div class="item">
+                        <div style="min-width: 20px; max-width: 50px; width: 10%">
+                            <i class="fa-solid fa-tags fa-fw"></i>
+                        </div>
+                        <div style="min-width: 100px; max-width: 150%; width: 20%">Tags</div>
+                    </div>
+                </a>
+                
+            </div>
+        </transition>
+    </nav>
+</div>
+<transition name="fade">
+    <div id="menu-curtain" @click="showMenuItems = !showMenuItems" v-show="showMenuItems"></div>
+</transition>
+
+        <div id="main" :class="loading ? 'into-enter-from': 'into-enter-active'">
+            <div class="article">
+    <div>
+        <h1>记一次TrueNas Mirror转RaidZ R730折腾实录（2）</h1>
+    </div>
+    <div class="info">
+        <span class="date">
+            <span class="icon">
+                <i class="fa-solid fa-calendar fa-fw"></i>
+            </span>
+            2023/7/1
+        </span>
+        
+        
+        <span class="tags">
+            <span class="icon">
+                <i class="fa-solid fa-tags fa-fw"></i>
+            </span>
+            
+            
+            <span class="tag">
+                
+                <a href="/tags/%E6%9C%8D%E5%8A%A1%E5%99%A8/" style="color: #ff7d73">
+                    服务器
+                </a>
+            </span>
+            
+            <span class="tag">
+                
+                <a href="/tags/HomeLab/" style="color: #ffa2c4">
+                    HomeLab
+                </a>
+            </span>
+            
+            <span class="tag">
+                
+                <a href="/tags/%E6%88%B4%E5%B0%94/" style="color: #ff7d73">
+                    戴尔
+                </a>
+            </span>
+            
+        </span>
+        
+    </div>
+    
+    <div class="content" v-pre>
+        <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>正如我在（1）说的一样，我存了点片，ISCSi挂载了几个硬盘</p>
+<p>于是我的4T Mirror阵列就快红了</p>
+<h1 id="开始折腾"><a href="#开始折腾" class="headerlink" title="开始折腾"></a>开始折腾</h1><p>先说方法：</p>
+<p><del>那就是没有方法</del></p>
+<p>ZFS属于写时复制文件系统，他的存储池类型在创建时就已经固定了</p>
+<p>说人话就是，没法直接改</p>
+<p>那我想扩容原有的池，咋办捏？</p>
+<span id="more"></span> 
+
+<p>两个方法：</p>
+<p>第一个，Mirror池也好，Raid也一样，拔一块硬盘下来，换更大的插上去，等他重建阵列完事后拔另一块换更大的</p>
+<p>第二个，加一块新的组RaidZ</p>
+<p>我选择了第二种</p>
+<p>于是又到了噩梦开始的时候</p>
+<p>上网搜了一圈，大概的思路就是用一块中转硬盘备份原有的数据，销毁原来的Mirror池，将加入的硬盘和原来的Mirror池中的两块硬盘一起组成RaidZ，并将那个中转硬盘的数据拷贝过来</p>
+<p>看到这里我有种想换DSM的冲动，先不说这么做要的时间，将数据拷贝到另一块硬盘很显然有丢数据的风险，要是那块硬盘坏了直接就可以重开了</p>
+<p>但是又没办法，我始终不放心把自己的数据放在黑群晖上</p>
+<p>那就只能这么折腾了</p>
+<p>得亏我的数据才3个多T，多一点我直接原地去世</p>
+<h1 id="那就开始吧"><a href="#那就开始吧" class="headerlink" title="那就开始吧"></a>那就开始吧</h1><h2 id="更改硬盘配置"><a href="#更改硬盘配置" class="headerlink" title="更改硬盘配置"></a>更改硬盘配置</h2><p>首先，我的配置是原来两块4T组Mirror，一块4T存储虚拟机数据，我需要把虚拟机数据的那块盘腾出来，换到一块新的盘上</p>
+<p>此外，为了中转数据，你还需要一块盘</p>
+<p>也就是说RaidZ理论来说只要3块，但是为了完成这个操作，你实际需要4块盘</p>
+<p><del>换DSM吧</del></p>
+<p>为此我又买了两块戴尔的SAS盘 4T</p>
+<p>-400rmb</p>
+<p>两块SAS插进服务器，进ESXi里，新建数据存储，移动一下虚拟机到新的Datastore</p>
+<p>ESXi的移动方式是先复制再删除，所以不用担心中途关机会丢数据</p>
+<p>我这里删不掉Datastore</p>
+<p>确保所有虚拟机迁移完毕，取消注册所有虚拟机，删除原有的Datastore就好了</p>
+<p>这样就把一块硬盘腾出来了</p>
+<h2 id="开始迁移存储池的数据"><a href="#开始迁移存储池的数据" class="headerlink" title="开始迁移存储池的数据"></a>开始迁移存储池的数据</h2><p>我给TrueNAS创建了一块4T的虚拟硬盘在我的中转盘上</p>
+<p>考虑到我数据不多，没有存满4T，所以我选的精简置备</p>
+<p>在TrueNAS中用那个虚拟硬盘创建一个新的池，叫backup吧</p>
+<p>然后在TrueNAS中给原来的池子main创建一个快照，名称随意，我这里叫trans</p>
+<p><img src="https://s2.loli.net/2023/08/14/r7jD5pCaWkfqHFe.png" alt="UQNLTS5_6KDL_RWI0NIOC9P.png"></p>
+<p><strong>请注意勾选“递归的”</strong></p>
+<p>然后打开TrueNAS的SSH，并用一台不关机的设备连接上去，因为SSH的会话窗口在克隆快照的过程中不能关闭</p>
+<p>在SSH控制台中输入</p>
+<pre><code>zfs send -R pool1@01 | zfs receive -Fdvu pool2
+</code></pre>
+<p>其中pool1为你原存储池，01为上面的快照名字，pool2为你的中转存储池</p>
+<p>举个例子，在我这就是：</p>
+<pre><code>zfs send -R main@trans | zfs receive -Fdvu backup
+</code></pre>
+<p>回车，等待，根据数据大小要一段很漫长的时间</p>
+<p><img src="https://s2.loli.net/2023/08/14/GYMpn4dOLF2cXgN.jpg" alt="IMG_4176.PNG"></p>
+<p>完事之后，导出原有的Mirror池</p>
+<p>报错了他妈的</p>
+<p><img src="https://s2.loli.net/2023/08/14/h2IneDiw7prH1mX.jpg" alt="IMG_4185.PNG"></p>
+<p>我直接进ESXi，编辑里边删除硬盘特么的</p>
+<p>我急了我急了，我破防了</p>
+<p>事实上折腾到这个时候已经不是第一次了，之前用的rsync，结果ISCSi没过来，简直是狗屎</p>
+<p>到这个时候已经折腾了我3天了</p>
+<p>发了点牢骚，但是我想说直接这么玩有数据丢失风险，虽然很暴力</p>
+<p>他这个busy我至今也没搞明白为啥，系统日志和docker早就删了</p>
+<p>然后你可能会在网页或者访问/mnt的时候遇到这个报错</p>
+<p><img src="https://s2.loli.net/2023/08/14/s2RuWQvUeJPIldG.jpg" alt="IMG_4183.PNG"></p>
+<p>放心你数据没丢，只是没挂载上</p>
+<p>控制台输入</p>
+<pre><code>zfs mount -a
+</code></pre>
+<p>然后打开smb共享啥的，看下文件的hash值有无问题，没问题就把3块硬盘重建zfs池</p>
+<p>我还是叫main</p>
+<p>然后之前的命令反过来</p>
+<pre><code>zfs send -R backup@trans | zfs receive -Fdvu main
+</code></pre>
+<p>等待，完成后再次使用</p>
+<pre><code>zfs mount -a
+</code></pre>
+<p>挂载迁移的数据，完事了</p>
+<h1 id="末尾"><a href="#末尾" class="headerlink" title="末尾"></a>末尾</h1><p>我不得不吐槽我自己用TrueNAS真不是个明智的决定，ZFS好处是快照的时候不会直接全量备份</p>
+<p>快照会随着文件的更改而增大</p>
+<p>可是问题是至今我用了几个月了我一次快照没用过。。。</p>
+<p>然后折腾过程中各种报错，解决方法也很玄学暴力，都是直接进ESXi里删硬盘。。</p>
+
+    </div>
+    
+    
+    
+    
+    
+    
+    
+</div>
+
+            <footer id="footer">
+    <div id="footer-wrap">
+        <div>
+            &copy;
+            221 - 2025 Cainong&#39;s Blog
+            <span id="footer-icon">
+                <i class="fa-solid fa-font-awesome fa-fw"></i>
+            </span>
+            &commat;Cainong
+        </div>
+        <div>
+            Based on the <a target="_blank" rel="noopener" href="https://hexo.io">Hexo Engine</a> &amp;
+            <a target="_blank" rel="noopener" href="https://github.com/theme-particlex/hexo-theme-particlex">ParticleX Theme</a>
+        </div>
+        
+    </div>
+</footer>
+
+        </div>
+        
+        <transition name="fade">
+            <div id="preview" ref="preview" v-show="previewShow">
+                <img id="preview-content" ref="previewContent" />
+            </div>
+        </transition>
+        
+    </div>
+    <script src="/js/main.js"></script>
+    
+    
+
+
+
+
+    
+</body>
+</html>

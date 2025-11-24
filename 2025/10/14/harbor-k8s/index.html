@@ -1,0 +1,324 @@
+
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="utf-8" />
+    <title>记一次Harbor在K8s上的搭建 | Cainong&#39;s Blog</title>
+    <meta name="author" content="Cainong" />
+    <meta name="description" content="" />
+    <meta name="keywords" content="" />
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"
+    />
+    <link rel="icon" href="/images/avatar.png" />
+    <link rel="preconnect" href="https://s4.zstatic.net" />
+<script src="https://s4.zstatic.net/ajax/libs/vue/3.3.7/vue.global.prod.min.js"></script>
+<link rel="stylesheet" href="https://s4.zstatic.net/ajax/libs/font-awesome/6.4.2/css/all.min.css" />
+<link rel="preconnect" href="https://fonts.googleapis.cn" />
+<link rel="preconnect" href="https://fonts.gstatic.cn" crossorigin />
+<link
+    rel="stylesheet"
+    href="https://fonts.googleapis.cn/css2?family=Fira+Code:wght@400;500;600;700&family=Lexend:wght@400;500;600;700;800;900&family=Noto+Sans+SC:wght@400;500;600;700;800;900&display=swap"
+/>
+<script> const mixins = {}; </script>
+
+<script src="https://polyfill.alicdn.com/v3/polyfill.min.js?features=default"></script>
+
+
+<script src="https://s4.zstatic.net/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="https://s4.zstatic.net/ajax/libs/highlightjs-line-numbers.js/2.8.0/highlightjs-line-numbers.min.js"></script>
+<link
+    rel="stylesheet"
+    href="https://s4.zstatic.net/ajax/libs/highlight.js/11.9.0/styles/github.min.css"
+/>
+<script src="/js/lib/highlight.js"></script>
+
+
+
+<script src="/js/lib/preview.js"></script>
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/css/main.css" />
+
+<meta name="generator" content="Hexo 5.4.2"></head>
+<body>
+    <div id="layout">
+        <transition name="fade">
+            <div id="loading" v-show="loading">
+                <div id="loading-circle">
+                    <h2>LOADING</h2>
+                    <p>加载过慢请开启缓存 浏览器默认开启</p>
+                    <img src="/images/loading.gif" />
+                </div>
+            </div>
+        </transition>
+        <div id="menu" :class="{ hidden: hiddenMenu, 'menu-color': menuColor}">
+    <nav id="desktop-menu">
+        <a class="title" href="/">
+            <span>CAINONG&#39;S BLOG</span>
+        </a>
+        
+        <a href="/">
+            <i class="fa-solid fa-house fa-fw"></i>
+            <span>&ensp;Home</span>
+        </a>
+        
+        <a href="/about">
+            <i class="fa-solid fa-id-card fa-fw"></i>
+            <span>&ensp;About</span>
+        </a>
+        
+        <a href="/archives">
+            <i class="fa-solid fa-box-archive fa-fw"></i>
+            <span>&ensp;Archives</span>
+        </a>
+        
+        <a href="/categories">
+            <i class="fa-solid fa-bookmark fa-fw"></i>
+            <span>&ensp;Categories</span>
+        </a>
+        
+        <a href="/tags">
+            <i class="fa-solid fa-tags fa-fw"></i>
+            <span>&ensp;Tags</span>
+        </a>
+        
+    </nav>
+    <nav id="mobile-menu">
+        <div class="title" @click="showMenuItems = !showMenuItems">
+            <i class="fa-solid fa-bars fa-fw"></i>
+            <span>&emsp;CAINONG&#39;S BLOG</span>
+        </div>
+        <transition name="slide">
+            <div class="items" v-show="showMenuItems">
+                
+                <a href="/">
+                    <div class="item">
+                        <div style="min-width: 20px; max-width: 50px; width: 10%">
+                            <i class="fa-solid fa-house fa-fw"></i>
+                        </div>
+                        <div style="min-width: 100px; max-width: 150%; width: 20%">Home</div>
+                    </div>
+                </a>
+                
+                <a href="/about">
+                    <div class="item">
+                        <div style="min-width: 20px; max-width: 50px; width: 10%">
+                            <i class="fa-solid fa-id-card fa-fw"></i>
+                        </div>
+                        <div style="min-width: 100px; max-width: 150%; width: 20%">About</div>
+                    </div>
+                </a>
+                
+                <a href="/archives">
+                    <div class="item">
+                        <div style="min-width: 20px; max-width: 50px; width: 10%">
+                            <i class="fa-solid fa-box-archive fa-fw"></i>
+                        </div>
+                        <div style="min-width: 100px; max-width: 150%; width: 20%">Archives</div>
+                    </div>
+                </a>
+                
+                <a href="/categories">
+                    <div class="item">
+                        <div style="min-width: 20px; max-width: 50px; width: 10%">
+                            <i class="fa-solid fa-bookmark fa-fw"></i>
+                        </div>
+                        <div style="min-width: 100px; max-width: 150%; width: 20%">Categories</div>
+                    </div>
+                </a>
+                
+                <a href="/tags">
+                    <div class="item">
+                        <div style="min-width: 20px; max-width: 50px; width: 10%">
+                            <i class="fa-solid fa-tags fa-fw"></i>
+                        </div>
+                        <div style="min-width: 100px; max-width: 150%; width: 20%">Tags</div>
+                    </div>
+                </a>
+                
+            </div>
+        </transition>
+    </nav>
+</div>
+<transition name="fade">
+    <div id="menu-curtain" @click="showMenuItems = !showMenuItems" v-show="showMenuItems"></div>
+</transition>
+
+        <div id="main" :class="loading ? 'into-enter-from': 'into-enter-active'">
+            <div class="article">
+    <div>
+        <h1>记一次Harbor在K8s上的搭建</h1>
+    </div>
+    <div class="info">
+        <span class="date">
+            <span class="icon">
+                <i class="fa-solid fa-calendar fa-fw"></i>
+            </span>
+            2025/10/14
+        </span>
+        
+        
+        <span class="tags">
+            <span class="icon">
+                <i class="fa-solid fa-tags fa-fw"></i>
+            </span>
+            
+            
+            <span class="tag">
+                
+                <a href="/tags/Kubernetes/" style="color: #00a596">
+                    Kubernetes
+                </a>
+            </span>
+            
+            <span class="tag">
+                
+                <a href="/tags/HomeLab/" style="color: #03a9f4">
+                    HomeLab
+                </a>
+            </span>
+            
+            <span class="tag">
+                
+                <a href="/tags/K8s/" style="color: #00a596">
+                    K8s
+                </a>
+            </span>
+            
+            <span class="tag">
+                
+                <a href="/tags/%E9%95%9C%E5%83%8F%E4%BB%93%E5%BA%93/" style="color: #ffa2c4">
+                    镜像仓库
+                </a>
+            </span>
+            
+            <span class="tag">
+                
+                <a href="/tags/Docker/" style="color: #00a596">
+                    Docker
+                </a>
+            </span>
+            
+        </span>
+        
+    </div>
+    
+    <div class="content" v-pre>
+        <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>我之前一直让K8s的Node直接走软路由代理</p>
+<p>那包能用的 但一直这样也不是个办法 我别的设备（比如我自己电脑上的WSL）现在都还下不来Docker镜像</p>
+<p><del>傻逼微软的HyperVisior跟史一样 时不时给我电脑蓝一下</del></p>
+<p>然后我需要迁移以前的Docker镜像到集群中 最好是能找个地方暂存一下我的镜像</p>
+<p>顺便作为镜像加速站 这是最好的</p>
+<p>目前在强大和易部署之间比较平衡的应该就是Harbor</p>
+<span id="more"></span> 
+
+<h1 id="开始折腾"><a href="#开始折腾" class="headerlink" title="开始折腾"></a>开始折腾</h1><p>我觉得应该不难吧（</p>
+<p>参考到了一篇Blog 在<a target="_blank" rel="noopener" href="https://todoit.tech/k8s/harbor/#%E4%BF%AE%E6%94%B9%E5%8F%AF%E9%85%8D%E7%BD%AE%E9%A1%B9">这里</a></p>
+<p>先添加他的仓库</p>
+<pre><code class="Bash">helm repo add harbor https://helm.goharbor.io
+</code></pre>
+<p>然后修改一下他的Value文件 主要是改域名</p>
+<p>然后安装</p>
+<pre><code class="Bash">kubectl create ns harbor
+helm install harbor harbor/harbor -n harbor -f values.yaml
+</code></pre>
+<p>卧槽成了？一切顺利（</p>
+<p>然后我们去给Ingress加一行</p>
+<pre><code class="YAML">annotations:
+    cert-manager.io/cluster-issuer: my-acme-issuer 
+</code></pre>
+<p>让Certmanager自动申请证书</p>
+<p>完事了？就这？就这？</p>
+<p>然后的话如果没有改Values的话</p>
+<p>默认账号密码是admin Harbor12345</p>
+<p>完事之后就可以测试一下是否正常了</p>
+<p>找个别的设备 我这里直接Windows了</p>
+<p>打开命令行，先登录</p>
+<pre><code class="Powershell">docker login -u admin -p Harbor12345 harbor.k8s.lan
+</code></pre>
+<p>然后随便pull一个镜像，我们尝试push到自己的镜像仓库上面</p>
+<pre><code class="Powershell">docker pull listenzz/gohttpserver:latest
+docker tag listenzz/gohttpserver:latest harbor.k8s.lan/library/gohttpserver:latest
+docker push harbor.k8s.lan/library/gohttpserver:latest
+</code></pre>
+<p><img src="https://s2.loli.net/2025/10/16/5QzTjkM7oR2GdaW.png" alt="919034f5-eb76-4fbc-89e7-5816800f6812.png"></p>
+<p>没问题了</p>
+<h1 id="Docker镜像仓库的配置"><a href="#Docker镜像仓库的配置" class="headerlink" title="Docker镜像仓库的配置"></a>Docker镜像仓库的配置</h1><p>然后的话去设置添加下DockerHub作为上游仓库</p>
+<p><img src="https://s2.loli.net/2025/10/16/zvIoSxWq4iC7kKc.png" alt="1a6e73f5-fa68-4bab-9925-14ea7f1f1339.png"></p>
+<p><del>Windows的HDR又出问题了</del></p>
+<p>访问ID是你dockerhub的用户名 访问密码是你申请的Token 可以省略的</p>
+<p>再新建一个项目 打开镜像代理</p>
+<p><img src="https://s2.loli.net/2025/10/16/S4s1QniyMHedGL6.png" alt="1326f7e0-43ea-40cf-a115-86227c0ab717.png"></p>
+<p>接下来我们尝试从镜像仓库pull一个本地没有的镜像</p>
+<pre><code class="Powershell">PS C:\Users\Cainong&gt; docker pull harbor.k8s.lan/proxy/library/nginx:latest
+latest: Pulling from proxy/library/nginx
+8c7716127147: Pull complete
+250b90fb2b9a: Pull complete
+5d8ea9f4c626: Pull complete
+58d144c4badd: Pull complete
+b459da543435: Pull complete
+8da8ed3552af: Pull complete
+54e822d8ee0c: Pull complete
+Digest: sha256:3b7732505933ca591ce4a6d860cb713ad96a3176b82f7979a8dfa9973486a0d6
+Status: Downloaded newer image for harbor.k8s.lan/proxy/library/nginx:latest
+harbor.k8s.lan/proxy/library/nginx:latest
+</code></pre>
+<p>Harbor会缓存Nginx的镜像到本地 下次下载会快很多</p>
+<p>没问题了 就酱把（</p>
+
+    </div>
+    
+    
+    
+    
+    
+    
+    
+</div>
+
+            <footer id="footer">
+    <div id="footer-wrap">
+        <div>
+            &copy;
+            221 - 2025 Cainong&#39;s Blog
+            <span id="footer-icon">
+                <i class="fa-solid fa-font-awesome fa-fw"></i>
+            </span>
+            &commat;Cainong
+        </div>
+        <div>
+            Based on the <a target="_blank" rel="noopener" href="https://hexo.io">Hexo Engine</a> &amp;
+            <a target="_blank" rel="noopener" href="https://github.com/theme-particlex/hexo-theme-particlex">ParticleX Theme</a>
+        </div>
+        
+    </div>
+</footer>
+
+        </div>
+        
+        <transition name="fade">
+            <div id="preview" ref="preview" v-show="previewShow">
+                <img id="preview-content" ref="previewContent" />
+            </div>
+        </transition>
+        
+    </div>
+    <script src="/js/main.js"></script>
+    
+    
+
+
+
+
+    
+</body>
+</html>

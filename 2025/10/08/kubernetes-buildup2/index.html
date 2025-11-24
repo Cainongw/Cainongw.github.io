@@ -1,0 +1,429 @@
+
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="utf-8" />
+    <title>记一次Kubernetes集群的完善 | Cainong&#39;s Blog</title>
+    <meta name="author" content="Cainong" />
+    <meta name="description" content="" />
+    <meta name="keywords" content="" />
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"
+    />
+    <link rel="icon" href="/images/avatar.png" />
+    <link rel="preconnect" href="https://s4.zstatic.net" />
+<script src="https://s4.zstatic.net/ajax/libs/vue/3.3.7/vue.global.prod.min.js"></script>
+<link rel="stylesheet" href="https://s4.zstatic.net/ajax/libs/font-awesome/6.4.2/css/all.min.css" />
+<link rel="preconnect" href="https://fonts.googleapis.cn" />
+<link rel="preconnect" href="https://fonts.gstatic.cn" crossorigin />
+<link
+    rel="stylesheet"
+    href="https://fonts.googleapis.cn/css2?family=Fira+Code:wght@400;500;600;700&family=Lexend:wght@400;500;600;700;800;900&family=Noto+Sans+SC:wght@400;500;600;700;800;900&display=swap"
+/>
+<script> const mixins = {}; </script>
+
+<script src="https://polyfill.alicdn.com/v3/polyfill.min.js?features=default"></script>
+
+
+<script src="https://s4.zstatic.net/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="https://s4.zstatic.net/ajax/libs/highlightjs-line-numbers.js/2.8.0/highlightjs-line-numbers.min.js"></script>
+<link
+    rel="stylesheet"
+    href="https://s4.zstatic.net/ajax/libs/highlight.js/11.9.0/styles/github.min.css"
+/>
+<script src="/js/lib/highlight.js"></script>
+
+
+
+<script src="/js/lib/preview.js"></script>
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/css/main.css" />
+
+<meta name="generator" content="Hexo 5.4.2"></head>
+<body>
+    <div id="layout">
+        <transition name="fade">
+            <div id="loading" v-show="loading">
+                <div id="loading-circle">
+                    <h2>LOADING</h2>
+                    <p>加载过慢请开启缓存 浏览器默认开启</p>
+                    <img src="/images/loading.gif" />
+                </div>
+            </div>
+        </transition>
+        <div id="menu" :class="{ hidden: hiddenMenu, 'menu-color': menuColor}">
+    <nav id="desktop-menu">
+        <a class="title" href="/">
+            <span>CAINONG&#39;S BLOG</span>
+        </a>
+        
+        <a href="/">
+            <i class="fa-solid fa-house fa-fw"></i>
+            <span>&ensp;Home</span>
+        </a>
+        
+        <a href="/about">
+            <i class="fa-solid fa-id-card fa-fw"></i>
+            <span>&ensp;About</span>
+        </a>
+        
+        <a href="/archives">
+            <i class="fa-solid fa-box-archive fa-fw"></i>
+            <span>&ensp;Archives</span>
+        </a>
+        
+        <a href="/categories">
+            <i class="fa-solid fa-bookmark fa-fw"></i>
+            <span>&ensp;Categories</span>
+        </a>
+        
+        <a href="/tags">
+            <i class="fa-solid fa-tags fa-fw"></i>
+            <span>&ensp;Tags</span>
+        </a>
+        
+    </nav>
+    <nav id="mobile-menu">
+        <div class="title" @click="showMenuItems = !showMenuItems">
+            <i class="fa-solid fa-bars fa-fw"></i>
+            <span>&emsp;CAINONG&#39;S BLOG</span>
+        </div>
+        <transition name="slide">
+            <div class="items" v-show="showMenuItems">
+                
+                <a href="/">
+                    <div class="item">
+                        <div style="min-width: 20px; max-width: 50px; width: 10%">
+                            <i class="fa-solid fa-house fa-fw"></i>
+                        </div>
+                        <div style="min-width: 100px; max-width: 150%; width: 20%">Home</div>
+                    </div>
+                </a>
+                
+                <a href="/about">
+                    <div class="item">
+                        <div style="min-width: 20px; max-width: 50px; width: 10%">
+                            <i class="fa-solid fa-id-card fa-fw"></i>
+                        </div>
+                        <div style="min-width: 100px; max-width: 150%; width: 20%">About</div>
+                    </div>
+                </a>
+                
+                <a href="/archives">
+                    <div class="item">
+                        <div style="min-width: 20px; max-width: 50px; width: 10%">
+                            <i class="fa-solid fa-box-archive fa-fw"></i>
+                        </div>
+                        <div style="min-width: 100px; max-width: 150%; width: 20%">Archives</div>
+                    </div>
+                </a>
+                
+                <a href="/categories">
+                    <div class="item">
+                        <div style="min-width: 20px; max-width: 50px; width: 10%">
+                            <i class="fa-solid fa-bookmark fa-fw"></i>
+                        </div>
+                        <div style="min-width: 100px; max-width: 150%; width: 20%">Categories</div>
+                    </div>
+                </a>
+                
+                <a href="/tags">
+                    <div class="item">
+                        <div style="min-width: 20px; max-width: 50px; width: 10%">
+                            <i class="fa-solid fa-tags fa-fw"></i>
+                        </div>
+                        <div style="min-width: 100px; max-width: 150%; width: 20%">Tags</div>
+                    </div>
+                </a>
+                
+            </div>
+        </transition>
+    </nav>
+</div>
+<transition name="fade">
+    <div id="menu-curtain" @click="showMenuItems = !showMenuItems" v-show="showMenuItems"></div>
+</transition>
+
+        <div id="main" :class="loading ? 'into-enter-from': 'into-enter-active'">
+            <div class="article">
+    <div>
+        <h1>记一次Kubernetes集群的完善</h1>
+    </div>
+    <div class="info">
+        <span class="date">
+            <span class="icon">
+                <i class="fa-solid fa-calendar fa-fw"></i>
+            </span>
+            2025/10/8
+        </span>
+        
+        
+        <span class="tags">
+            <span class="icon">
+                <i class="fa-solid fa-tags fa-fw"></i>
+            </span>
+            
+            
+            <span class="tag">
+                
+                <a href="/tags/%E6%9C%8D%E5%8A%A1%E5%99%A8/" style="color: #00a596">
+                    服务器
+                </a>
+            </span>
+            
+            <span class="tag">
+                
+                <a href="/tags/Kubernetes/" style="color: #03a9f4">
+                    Kubernetes
+                </a>
+            </span>
+            
+            <span class="tag">
+                
+                <a href="/tags/HomeLab/" style="color: #00bcd4">
+                    HomeLab
+                </a>
+            </span>
+            
+            <span class="tag">
+                
+                <a href="/tags/%E5%AE%B9%E5%99%A8%E5%8C%96/" style="color: #ff7d73">
+                    容器化
+                </a>
+            </span>
+            
+        </span>
+        
+    </div>
+    
+    <div class="content" v-pre>
+        <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>我们成功搭建起了K8s 接下来我们需要搭建一些额外的服务来满足我的需求</p>
+<span id="more"></span> 
+
+<h1 id="包管理器Helm"><a href="#包管理器Helm" class="headerlink" title="包管理器Helm"></a>包管理器Helm</h1><p>类似于apt 有了之后我们就不用kubectl 后面跟一坨yml了</p>
+<p>在Master节点上输入</p>
+<pre><code class="Bash">curl -fsSL https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
+</code></pre>
+<h1 id="Ingress-Nginx"><a href="#Ingress-Nginx" class="headerlink" title="Ingress-Nginx"></a>Ingress-Nginx</h1><p>思来想去还是选择Nginx而不是Traefik，证书的解决我们可以用另一个服务</p>
+<pre><code class="Bash">helm upgrade --install ingress-nginx ingress-nginx \
+  --repo https://kubernetes.github.io/ingress-nginx \
+  --namespace ingress-nginx --create-namespace
+</code></pre>
+<p><del>其实还是要跟一坨东西</del></p>
+<p>然后我们就发现有个LoadBalance的Ingress一直在Pending</p>
+<p>怎么回事呢</p>
+<p>当然是因为我们没有配置负载均衡了</p>
+<h1 id="MentalLB"><a href="#MentalLB" class="headerlink" title="MentalLB"></a>MentalLB</h1><pre><code class="Bash">helm repo add metallb https://metallb.github.io/metallb
+helm install metallb metallb/metallb
+</code></pre>
+<p>然后我们需要定义它的行为</p>
+<pre><code class="YAML">apiVersion: metallb.io/v1beta1
+kind: IPAddressPool
+metadata:
+  name: default-address-pool
+  namespace: metallb-system
+spec:
+  addresses:
+  - 192.168.0.240-192.168.0.250 #这改成你想让她分配的IP地址段 不要和路由器上DHCP的重合
+---
+apiVersion: metallb.io/v1beta1
+kind: L2Advertisement
+metadata:
+  name: l2-advertisement
+  namespace: metallb-system
+</code></pre>
+<p>然后kubectl apply -f这个yml</p>
+<h2 id="测试一下"><a href="#测试一下" class="headerlink" title="测试一下"></a>测试一下</h2><p>测试一下Ingress正不正常：Apply这个yml</p>
+<pre><code class="YAML">apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: test-nginx
+  namespace: default
+spec:
+  replicas: 2                    
+  selector:
+    matchLabels:
+      app: test-nginx
+  template:
+    metadata:
+      labels:
+        app: test-nginx
+    spec:
+      containers:
+      - name: nginx
+        image: nginx:stable
+        ports:
+        - containerPort: 80
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: test-nginx
+  namespace: default
+spec:
+  selector:
+    app: test-nginx
+  ports:
+    - port: 80
+      targetPort: 80
+  type: ClusterIP
+
+---
+
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: test-ingress
+  namespace: default
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+spec:
+  ingressClassName: nginx        
+  rules:
+  - host: nginx.k8s.lan
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: test-nginx
+            port:
+              number: 80
+</code></pre>
+<p>他会生成一个Nginx的Deployment 一个指向Deployment的Service 一个指向Service的Ingress 并且地址为nginx.k8s.lan</p>
+<pre><code class="Bash">kubectl get svc -n ingress-nginx
+</code></pre>
+<p>看到ingress-nginx-controller拥有了ExternalIP 就没问题 把dns解析指向这个ip</p>
+<p>浏览器访问nginx.k8s.lan 能看到欢迎界面就是成功了</p>
+<h1 id="题外话：Cilium的更换"><a href="#题外话：Cilium的更换" class="headerlink" title="题外话：Cilium的更换"></a>题外话：Cilium的更换</h1><p>为啥要换呢 很简单 只是我看到了Cilium支持Hubble 可观测性强</p>
+<p>换他 能看到各个Pod的网络拓扑 这多酷炫（</p>
+<p>这里参考的<a target="_blank" rel="noopener" href="https://tinychen.com/20230201-k8s-15-migrate-cni-from-calico-to-cilium/#1-3-%E5%8F%98%E6%9B%B4%E7%9B%AE%E6%A0%87">这个blog</a></p>
+<h1 id="Longhorn"><a href="#Longhorn" class="headerlink" title="Longhorn"></a>Longhorn</h1><p>K8s默认的没有持久化存储，文件持久化是单节点的</p>
+<p>我们需要Longhorn去分布进行持久化存储</p>
+<p>Ubuntu默认包含了Longhorn所需要的Open-iscsi</p>
+<p>所以直接装就好</p>
+<pre><code class="Bash">helm repo add longhorn https://charts.longhorn.io
+helm repo update
+helm install longhorn longhorn/longhorn --namespace longhorn-system --create-namespace --version 1.10.0
+</code></pre>
+<p>然后为了解锁完全体的Longhorn 也就是多节点读写 需要安装nfs tools</p>
+<p>需要在所有节点上执行</p>
+<pre><code class="Bash">sudo apt-get install -y nfs-common
+</code></pre>
+<h1 id="Dashboard"><a href="#Dashboard" class="headerlink" title="Dashboard"></a>Dashboard</h1><p>我觉得最好用的应该是国产的Kuboard</p>
+<p>他这里推荐用另一台宿主机的docker跑</p>
+<p>我们也可以用Static Pod</p>
+<p>详情去看文档把 因为这个挺麻烦的</p>
+<h1 id="以前服务的迁移"><a href="#以前服务的迁移" class="headerlink" title="以前服务的迁移"></a>以前服务的迁移</h1><h2 id="Authentik"><a href="#Authentik" class="headerlink" title="Authentik"></a>Authentik</h2><p>说是迁移不如说重新搭建 反正我也没做什么 不如推翻重来</p>
+<p>如果你已经部署了Longhorn和上面的服务 Authentik应该没啥问题 直接能跑</p>
+<p>按照文档跑就好</p>
+<p><a target="_blank" rel="noopener" href="https://docs.goauthentik.io/install-config/install/kubernetes/">https://docs.goauthentik.io/install-config/install/kubernetes/</a></p>
+<h2 id="AquaDX"><a href="#AquaDX" class="headerlink" title="AquaDX"></a>AquaDX</h2><p>这个就不能重新搭建了 之前用了好久的游戏数据都在里面</p>
+<p>我们看到Github上面有提到如果想反向代理的话有一些指南：</p>
+<pre><code>AquaDX 使用哪些端口？
+80：ALL.Net，游戏端点
+8443：计费
+22345：Aime
+我怎样才能在反向代理后面托管它？
+以下是一些提示：
+
+ALL.Net 和游戏端点可以代理
+计费端点可以通过代理进行，但需要额外的步骤：启用弃用的TLS_RSA_*密码并使用自签名ib.naominet.jpTLS 证书 - 或者干脆禁用它
+不要代理 Aime 端点：它是 TCP 流量，而不是 HTTP
+不要压缩流量：如果可以的话，按原样进行代理
+不要使用 CDN 代理：例如 Cloudflare
+使用您的公共 IP 或主机名allnet.server.host进行设置application.properties
+您可以更改内部端点端口（aqua &lt;-&gt; 代理），但暴露的外部端口需要与默认端口相同（代理 &lt;-&gt; 游戏）
+</code></pre>
+<p>说白了就是：</p>
+<p>80可以代理</p>
+<p>8443有点麻烦</p>
+<p>22345不推荐代理</p>
+<p>那还说啥 我们直接给他分配一个LoadBalance得了</p>
+<p>这个简单 问题是数据怎么迁移呢</p>
+<p>一开始我想的是在原机子上打包docker</p>
+<p>但我傻逼了对不起 挂载的卷不会打包进镜像</p>
+<p>那我们只能手动打包数据然后用initPod手动解压进PVC里</p>
+<p>然后还有一个关键问题：</p>
+<p>之前为了实现让别人访问 我用的是ZeroTier去组虚拟局域网</p>
+<p>这玩意工作在二层 需要修改host主机的tun配置</p>
+<p>在K8s里肯定是不允许的 我也不敢试 等下把我集群搞炸了</p>
+<p>想了下，我们还是可以用三层的组网方案</p>
+<p>ZeroTier主要是给sdvx联机用，因为SDVX的联机是局域网广播 三层是不转发的</p>
+<p>扯远了</p>
+<p>简而言之，我们需要一个能直接在集群内工作，负责零信任网络转发的服务</p>
+<p>详情请看新一篇（）</p>
+<h2 id="Openlist"><a href="#Openlist" class="headerlink" title="Openlist"></a>Openlist</h2><p>这个手写一下Development就好，我为什么单独拿出来说呢</p>
+<p>因为我发现在用Ingress反代之后，我的Restic传不上去文件了</p>
+<p><img src="https://s2.loli.net/2025/10/25/ZhQSdVnF2vqKe4A.png" alt="chrome_4uaXe8sHGI.png"></p>
+<p>我一开始以为是百度又整了什么新幺蛾子，直到我把OpenList直接用LoadBalanceIP暴露出来之后发现又没问题了</p>
+<p>一看Openlist日志也没报错</p>
+<p><img src="https://s2.loli.net/2025/10/25/TXwMPYrRsSxNcVO.png" alt="chrome_lCpCbW0HKm.png"></p>
+<p>也就是说是Ingress的锅</p>
+<p><img src="https://s2.loli.net/2025/10/25/xsNw4JPioWcfMBO.png" alt="chrome_p3Tqn3QgUC.png"></p>
+<p>我们直接让他无限制Bodysize就好</p>
+<pre><code class="YAML">metadata:
+  name: openlist
+  annotations:
+    nginx.ingress.kubernetes.io/proxy-body-size: &quot;0&quot; 
+</code></pre>
+
+    </div>
+    
+    
+    
+    
+    
+    
+    
+</div>
+
+            <footer id="footer">
+    <div id="footer-wrap">
+        <div>
+            &copy;
+            221 - 2025 Cainong&#39;s Blog
+            <span id="footer-icon">
+                <i class="fa-solid fa-font-awesome fa-fw"></i>
+            </span>
+            &commat;Cainong
+        </div>
+        <div>
+            Based on the <a target="_blank" rel="noopener" href="https://hexo.io">Hexo Engine</a> &amp;
+            <a target="_blank" rel="noopener" href="https://github.com/theme-particlex/hexo-theme-particlex">ParticleX Theme</a>
+        </div>
+        
+    </div>
+</footer>
+
+        </div>
+        
+        <transition name="fade">
+            <div id="preview" ref="preview" v-show="previewShow">
+                <img id="preview-content" ref="previewContent" />
+            </div>
+        </transition>
+        
+    </div>
+    <script src="/js/main.js"></script>
+    
+    
+
+
+
+
+    
+</body>
+</html>

@@ -1,0 +1,411 @@
+
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="utf-8" />
+    <title>开源WAF 雷池在K8s上的搭建 | Cainong&#39;s Blog</title>
+    <meta name="author" content="Cainong" />
+    <meta name="description" content="" />
+    <meta name="keywords" content="" />
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"
+    />
+    <link rel="icon" href="/images/avatar.png" />
+    <link rel="preconnect" href="https://s4.zstatic.net" />
+<script src="https://s4.zstatic.net/ajax/libs/vue/3.3.7/vue.global.prod.min.js"></script>
+<link rel="stylesheet" href="https://s4.zstatic.net/ajax/libs/font-awesome/6.4.2/css/all.min.css" />
+<link rel="preconnect" href="https://fonts.googleapis.cn" />
+<link rel="preconnect" href="https://fonts.gstatic.cn" crossorigin />
+<link
+    rel="stylesheet"
+    href="https://fonts.googleapis.cn/css2?family=Fira+Code:wght@400;500;600;700&family=Lexend:wght@400;500;600;700;800;900&family=Noto+Sans+SC:wght@400;500;600;700;800;900&display=swap"
+/>
+<script> const mixins = {}; </script>
+
+<script src="https://polyfill.alicdn.com/v3/polyfill.min.js?features=default"></script>
+
+
+<script src="https://s4.zstatic.net/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="https://s4.zstatic.net/ajax/libs/highlightjs-line-numbers.js/2.8.0/highlightjs-line-numbers.min.js"></script>
+<link
+    rel="stylesheet"
+    href="https://s4.zstatic.net/ajax/libs/highlight.js/11.9.0/styles/github.min.css"
+/>
+<script src="/js/lib/highlight.js"></script>
+
+
+
+<script src="/js/lib/preview.js"></script>
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/css/main.css" />
+
+<meta name="generator" content="Hexo 5.4.2"></head>
+<body>
+    <div id="layout">
+        <transition name="fade">
+            <div id="loading" v-show="loading">
+                <div id="loading-circle">
+                    <h2>LOADING</h2>
+                    <p>加载过慢请开启缓存 浏览器默认开启</p>
+                    <img src="/images/loading.gif" />
+                </div>
+            </div>
+        </transition>
+        <div id="menu" :class="{ hidden: hiddenMenu, 'menu-color': menuColor}">
+    <nav id="desktop-menu">
+        <a class="title" href="/">
+            <span>CAINONG&#39;S BLOG</span>
+        </a>
+        
+        <a href="/">
+            <i class="fa-solid fa-house fa-fw"></i>
+            <span>&ensp;Home</span>
+        </a>
+        
+        <a href="/about">
+            <i class="fa-solid fa-id-card fa-fw"></i>
+            <span>&ensp;About</span>
+        </a>
+        
+        <a href="/archives">
+            <i class="fa-solid fa-box-archive fa-fw"></i>
+            <span>&ensp;Archives</span>
+        </a>
+        
+        <a href="/categories">
+            <i class="fa-solid fa-bookmark fa-fw"></i>
+            <span>&ensp;Categories</span>
+        </a>
+        
+        <a href="/tags">
+            <i class="fa-solid fa-tags fa-fw"></i>
+            <span>&ensp;Tags</span>
+        </a>
+        
+    </nav>
+    <nav id="mobile-menu">
+        <div class="title" @click="showMenuItems = !showMenuItems">
+            <i class="fa-solid fa-bars fa-fw"></i>
+            <span>&emsp;CAINONG&#39;S BLOG</span>
+        </div>
+        <transition name="slide">
+            <div class="items" v-show="showMenuItems">
+                
+                <a href="/">
+                    <div class="item">
+                        <div style="min-width: 20px; max-width: 50px; width: 10%">
+                            <i class="fa-solid fa-house fa-fw"></i>
+                        </div>
+                        <div style="min-width: 100px; max-width: 150%; width: 20%">Home</div>
+                    </div>
+                </a>
+                
+                <a href="/about">
+                    <div class="item">
+                        <div style="min-width: 20px; max-width: 50px; width: 10%">
+                            <i class="fa-solid fa-id-card fa-fw"></i>
+                        </div>
+                        <div style="min-width: 100px; max-width: 150%; width: 20%">About</div>
+                    </div>
+                </a>
+                
+                <a href="/archives">
+                    <div class="item">
+                        <div style="min-width: 20px; max-width: 50px; width: 10%">
+                            <i class="fa-solid fa-box-archive fa-fw"></i>
+                        </div>
+                        <div style="min-width: 100px; max-width: 150%; width: 20%">Archives</div>
+                    </div>
+                </a>
+                
+                <a href="/categories">
+                    <div class="item">
+                        <div style="min-width: 20px; max-width: 50px; width: 10%">
+                            <i class="fa-solid fa-bookmark fa-fw"></i>
+                        </div>
+                        <div style="min-width: 100px; max-width: 150%; width: 20%">Categories</div>
+                    </div>
+                </a>
+                
+                <a href="/tags">
+                    <div class="item">
+                        <div style="min-width: 20px; max-width: 50px; width: 10%">
+                            <i class="fa-solid fa-tags fa-fw"></i>
+                        </div>
+                        <div style="min-width: 100px; max-width: 150%; width: 20%">Tags</div>
+                    </div>
+                </a>
+                
+            </div>
+        </transition>
+    </nav>
+</div>
+<transition name="fade">
+    <div id="menu-curtain" @click="showMenuItems = !showMenuItems" v-show="showMenuItems"></div>
+</transition>
+
+        <div id="main" :class="loading ? 'into-enter-from': 'into-enter-active'">
+            <div class="article">
+    <div>
+        <h1>开源WAF 雷池在K8s上的搭建</h1>
+    </div>
+    <div class="info">
+        <span class="date">
+            <span class="icon">
+                <i class="fa-solid fa-calendar fa-fw"></i>
+            </span>
+            2025/10/25
+        </span>
+        
+        
+        <span class="tags">
+            <span class="icon">
+                <i class="fa-solid fa-tags fa-fw"></i>
+            </span>
+            
+            
+            <span class="tag">
+                
+                <a href="/tags/%E6%9C%8D%E5%8A%A1%E5%99%A8/" style="color: #ffa2c4">
+                    服务器
+                </a>
+            </span>
+            
+            <span class="tag">
+                
+                <a href="/tags/Kubernetes/" style="color: #00a596">
+                    Kubernetes
+                </a>
+            </span>
+            
+            <span class="tag">
+                
+                <a href="/tags/HomeLab/" style="color: #03a9f4">
+                    HomeLab
+                </a>
+            </span>
+            
+        </span>
+        
+    </div>
+    
+    <div class="content" v-pre>
+        <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>换了条宽带，现在我拥有动态的公网IPV4地址了</p>
+<p>我打算暴露一些服务出去以便我使用</p>
+<p>例如Openlist RDP Gitlab</p>
+<p>但是 我并不打算公开 我只打算自己使用</p>
+<p>前面我们搭建了Authentik作为SSO单点登录，刚好雷池WAF支持通过单点登录鉴权来允许访问</p>
+<p>这样我就可以实现把ESXi挂到公网 但是不登录都过不了防火墙</p>
+<span id="more"></span> 
+
+<h1 id="开始折腾"><a href="#开始折腾" class="headerlink" title="开始折腾"></a>开始折腾</h1><h2 id="在K8s上的搭建"><a href="#在K8s上的搭建" class="headerlink" title="在K8s上的搭建"></a>在K8s上的搭建</h2><p>雷池官方文档有给到docker compose 但是没有K8s的</p>
+<p>我的大部分服务都已经从分开的docker迁移到了K8s内</p>
+<p>我是打算搭建到K8s，因为这样WAF可以直接访问集群内部的虚拟地址</p>
+<p>也就是</p>
+<pre><code>&lt;Service name&gt;.&lt;namespace&gt;.svc.cluster.local
+</code></pre>
+<p>这样的话好处有三</p>
+<ul>
+<li>数据不会经过局域网 防止局域网抓包</li>
+<li>直接在集群内部流转 效率更高</li>
+<li>雷池转发不需要处理Https解密的问题</li>
+</ul>
+<p>一开始是想手动转compose 马上就放弃了 他的容器太多而且又相互依赖</p>
+<p>那么有没有Helm Chart呢</p>
+<p>我一搜 很快啊 确实是有的</p>
+<p><img src="https://s2.loli.net/2025/10/25/R6Q3lFNiZLvobMT.png" alt="chrome_cRnKg0gTTt.png"></p>
+<p>这么简单 还好我没古法转Compose</p>
+<p>我直接SSH上我们的Master节点</p>
+<pre><code class="Bash">helm repo add yaencn https://helm.yaencn.com/charts
+
+helm install safeline --namespace safeline \
+  --set global.ingress.enabled=true \
+  --set global.ingress.hostname=&quot;waf.k8s.lan&quot; \
+  yaencn/safeline
+</code></pre>
+<p>上个厕所回来发现名为tengine的Deployment红红的</p>
+<p>一看日志：</p>
+<p><img src="https://s2.loli.net/2025/10/25/yVOc7YvPJh9ftGb.png" alt="QQ_jM4NmDIkBE.png"></p>
+<p>？大哥你这对吗</p>
+<p>我一看发现这个helm居然是用PVC挂载的conf文件</p>
+<p>这就算了 我开busybox一看 /etc/nginx里面居然是空的</p>
+<p>这特么能不报错就有鬼了</p>
+<p>那不对啊 我以为是我集群有问题，我uninstall重装了之后还是这样</p>
+<p>我找了个docker机把镜像pull下来 里面没问题啊 是有东西的</p>
+<p>也就是这个helm有问题啊</p>
+<p>那我又得手转Compose？不要啊</p>
+<p>搞了半天，没辙了</p>
+<p>摇人！</p>
+<p><img src="https://s2.loli.net/2025/10/25/J2PRjHvE96ZCcaV.png" alt="QQ_H6Fyg7Jh2q.png"></p>
+<p>我也不知道他是怎么做到的 我猜测可能是init pod忘记写copy命令了</p>
+<p><img src="https://s2.loli.net/2025/10/25/XR6lF4HNLzgj91u.png" alt="MobaXterm_13XRWMaaPT.png"></p>
+<p>我一个一个大版本试</p>
+<p>结果搞笑的是我一路试下去 只有5开头的版本是可以用的</p>
+<p>我想起来雷池社区的一个在K3s部署的教程</p>
+<p><img src="https://s2.loli.net/2025/10/25/1DWyCULf9HIiRnj.png" alt="chrome_zoCJrQf7x3.png"></p>
+<p>一时间不知道怎么说 也是有点抽象</p>
+<p>简单来说就是我们先装5.2.0版本然后upgrade到最新版应该就没问题了</p>
+<pre><code class="Bash">helm install safeline --namespace safeline \
+  --set global.ingress.enabled=true \
+  --set global.ingress.hostname=&quot;waf.local&quot; \
+  --version 5.2.0  \
+  yaencn/safeline 
+</code></pre>
+<p>确保所有容器都没问题之后再跑</p>
+<pre><code class="Bash">helm upgrade safeline --namespace safeline \
+  --version 10.0.25  \
+  yaencn/safeline 
+</code></pre>
+<p>吐槽一下这个版本号 7.4.0之前WAF版本还和Chart Version同步 突然一下子蹦到10.几</p>
+<p>这规范吗兄弟</p>
+<p>不管怎么说这样是能跑了</p>
+<p>然后的话我们不知道重启了多少次WAF 他输出在控制台的密码我们应该是找不到了</p>
+<p>所以进入名为safeline-mgt的Pod 执行resetadmin</p>
+<p>用admin 和新密码进入WAF</p>
+<p><img src="https://s2.loli.net/2025/10/25/Rj7sLF4QWMNyVEd.png" alt="chrome_tTJ6CGOIws.png"></p>
+<p>美滋滋</p>
+<p>然后是路由的配置，我们可以选择用Loadbalance或者NodePort暴露tengine反代引擎</p>
+<p>也可以选择先用Ingress代理</p>
+<p>其实都可以</p>
+<p>文档那里有个最佳实践就是直接把WAF注入Ingress 但那个不适用于我</p>
+<p>因为我的Ingress还需要管理*.lan局域网的域名</p>
+<p><del>啊可以新建一个Ingress类 那太麻烦了我懒</del></p>
+<p>直接把*.example.com指向WAF 然后路由转发把443转发到公网除80 443以外的端口</p>
+<p>这样的话流量路径就是</p>
+<pre><code>外部-&gt;路由器-&gt;Ingress LoadbalanceIP-&gt;WAF-&gt;内部服务
+</code></pre>
+<p>配置好Ingress的X-Forward IP转发，并信任内网网段，雷池是可以获取到真实IP并透传到后端的</p>
+<p>2025.10.26更新：</p>
+<h1 id="我是大傻逼"><a href="#我是大傻逼" class="headerlink" title="我是大傻逼"></a>我是大傻逼</h1><p>我洗澡的时候突然想到，Nginx反代识别客户端实际访问域名的方式是识别Header里面的Host内容来匹配实际应该访问的地址</p>
+<p>也就是说nginx不能在三层上识别访问的地址 这意味着什么呢</p>
+<p>这意味着如果把WAF和内网服务挂在同一个ingress上又不设置安全规则的话，别人完全可以通过伪造Header来绕过WAF直接访问我的.lan域名</p>
+<p>我手边没有VPS，但是我们可以设置一个代理来测试一下：</p>
+<pre><code class="Bash">export http_proxy=&quot;http://10.0.0.233:7890&quot;
+export https_proxy=&quot;http://10.0.0.233:7890&quot;
+curl -vk -H &quot;Host: xxx.k8s.lan&quot; https://我的公网地址/
+</code></pre>
+<pre><code>* Uses proxy env variable https_proxy == &#39;http://10.0.0.233:7890&#39;
+*   Trying 10.0.0.233:7890...
+* CONNECT tunnel: HTTP/1.1 negotiated
+* allocate connect buffer
+* Establish HTTP proxy tunnel to 公网地址
+&gt; CONNECT 公网地址 HTTP/1.1
+&gt; Host: 公网地址
+&gt; User-Agent: curl/8.12.0
+&gt; Proxy-Connection: Keep-Alive
+&gt;
+&lt; HTTP/1.1 200 Connection established
+&lt;
+* CONNECT phase completed
+* CONNECT tunnel established, response 200
+* ALPN: curl offers http/1.1
+* TLSv1.3 (OUT), TLS handshake, Client hello (1):
+* TLSv1.3 (IN), TLS handshake, Server hello (2):
+* TLSv1.3 (IN), TLS handshake, Encrypted Extensions (8):
+* TLSv1.3 (IN), TLS handshake, Certificate (11):
+* TLSv1.3 (IN), TLS handshake, CERT verify (15):
+* TLSv1.3 (IN), TLS handshake, Finished (20):
+* TLSv1.3 (OUT), TLS change cipher, Change cipher spec (1):
+* TLSv1.3 (OUT), TLS handshake, Finished (20):
+* SSL connection using TLSv1.3 / TLS_AES_256_GCM_SHA384 / X25519 / RSASSA-PSS
+* ALPN: server accepted http/1.1
+* Server certificate:
+*  subject: O=Acme Co; CN=Kubernetes Ingress Controller Fake Certificate
+*  start date: Oct 22 01:48:21 2025 GMT
+*  expire date: Oct 22 01:48:21 2026 GMT
+*  issuer: O=Acme Co; CN=Kubernetes Ingress Controller Fake Certificate
+*  SSL certificate verify result: self-signed certificate (18), continuing anyway.
+*   Certificate level 0: Public key type RSA (2048/112 Bits/secBits), signed using sha256WithRSAEncryption
+* Connected to 10.0.0.233 (10.0.0.233) port 7890
+* using HTTP/1.x
+&gt; GET / HTTP/1.1
+&gt; Host: xxx.k8s.lan
+&gt; User-Agent: curl/8.12.0
+&gt; Accept: */*
+&gt;
+* Request completely sent off
+* TLSv1.3 (IN), TLS handshake, Newsession Ticket (4):
+* TLSv1.3 (IN), TLS handshake, Newsession Ticket (4):
+&lt; HTTP/1.1 200 OK
+&lt; Date: Sat, 25 Oct 2025 21:59:00 GMT
+&lt; Content-Type: text/html&gt;
+后面是网页内容
+</code></pre>
+<p>我他妈马上把端口转发关了然后给自己两个大臂兜</p>
+<p>不管怎么说，这车算是翻了 我决定还是用最佳实践</p>
+<p>其实的话直接把tengine加一个443端口然后用LoadBalanceIP暴露出去 转发全部指向tengine就好了</p>
+<p>我是大傻逼 不要学</p>
+<h2 id="WAF的配置"><a href="#WAF的配置" class="headerlink" title="WAF的配置"></a>WAF的配置</h2><p>首先我们先配置统一登陆</p>
+<p>去Authentik创建一个新的Provider 类型就是OIDC 然后来雷池这里添加</p>
+<p><img src="https://s2.loli.net/2025/10/25/Rf4Zj6M8X9gSVJW.png" alt="chrome_9n0sqTOy86.png"></p>
+<p>这里的url填写是Authentik的配置颁发者而不是URL</p>
+<p><img src="https://s2.loli.net/2025/10/25/OfFplH1aTh2R7Nv.png" alt="chrome_fY8Aldy975.png"></p>
+<p><img src="https://s2.loli.net/2025/10/25/DbwXjoRYt1gvAT8.png" alt="chrome_yU0YzQXtDW.png"></p>
+<p>然后新加一个防护应用，我们就用OpenList做测试</p>
+<p><img src="https://s2.loli.net/2025/10/25/iK7dun8TVNhejtx.png" alt="chrome_26LDH4jSfq.png"></p>
+<p>然后打开身份认证功能</p>
+<p><img src="https://s2.loli.net/2025/10/25/K5WHeiMIRDBGV84.png" alt="chrome_75CJnrqlqI.png"></p>
+<p>我不知道为什么选择统一认证之后无论访问哪个服务他都会跳转到Authentik 应该是我铸币 反正这样配置能用 不管他</p>
+<p>然后我们访问一下保护的域名 他就会自动跳转到Authentik认证了</p>
+<p>完事</p>
+<h2 id="几天后的小更新"><a href="#几天后的小更新" class="headerlink" title="几天后的小更新"></a>几天后的小更新</h2><p>我一开始只是防患于未然，挂了几周之后发现是真的有人扫</p>
+<p>拦了几百万次请求 就夸张</p>
+<p><img src="https://s2.loli.net/2025/10/25/eZgyEnFr2jLDUuK.png" alt="chrome_MHLl2rK3s1.png"></p>
+<p>不管怎么说，能用而且能保护我们的服务安全 足矣</p>
+
+    </div>
+    
+    
+    
+    
+    
+    
+    
+</div>
+
+            <footer id="footer">
+    <div id="footer-wrap">
+        <div>
+            &copy;
+            221 - 2025 Cainong&#39;s Blog
+            <span id="footer-icon">
+                <i class="fa-solid fa-font-awesome fa-fw"></i>
+            </span>
+            &commat;Cainong
+        </div>
+        <div>
+            Based on the <a target="_blank" rel="noopener" href="https://hexo.io">Hexo Engine</a> &amp;
+            <a target="_blank" rel="noopener" href="https://github.com/theme-particlex/hexo-theme-particlex">ParticleX Theme</a>
+        </div>
+        
+    </div>
+</footer>
+
+        </div>
+        
+        <transition name="fade">
+            <div id="preview" ref="preview" v-show="previewShow">
+                <img id="preview-content" ref="previewContent" />
+            </div>
+        </transition>
+        
+    </div>
+    <script src="/js/main.js"></script>
+    
+    
+
+
+
+
+    
+</body>
+</html>

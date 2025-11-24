@@ -1,0 +1,320 @@
+
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="utf-8" />
+    <title>在自己家搭一台服务器吧！DELL R730折腾（1） | Cainong&#39;s Blog</title>
+    <meta name="author" content="Cainong" />
+    <meta name="description" content="" />
+    <meta name="keywords" content="" />
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"
+    />
+    <link rel="icon" href="/images/avatar.png" />
+    <link rel="preconnect" href="https://s4.zstatic.net" />
+<script src="https://s4.zstatic.net/ajax/libs/vue/3.3.7/vue.global.prod.min.js"></script>
+<link rel="stylesheet" href="https://s4.zstatic.net/ajax/libs/font-awesome/6.4.2/css/all.min.css" />
+<link rel="preconnect" href="https://fonts.googleapis.cn" />
+<link rel="preconnect" href="https://fonts.gstatic.cn" crossorigin />
+<link
+    rel="stylesheet"
+    href="https://fonts.googleapis.cn/css2?family=Fira+Code:wght@400;500;600;700&family=Lexend:wght@400;500;600;700;800;900&family=Noto+Sans+SC:wght@400;500;600;700;800;900&display=swap"
+/>
+<script> const mixins = {}; </script>
+
+<script src="https://polyfill.alicdn.com/v3/polyfill.min.js?features=default"></script>
+
+
+<script src="https://s4.zstatic.net/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="https://s4.zstatic.net/ajax/libs/highlightjs-line-numbers.js/2.8.0/highlightjs-line-numbers.min.js"></script>
+<link
+    rel="stylesheet"
+    href="https://s4.zstatic.net/ajax/libs/highlight.js/11.9.0/styles/github.min.css"
+/>
+<script src="/js/lib/highlight.js"></script>
+
+
+
+<script src="/js/lib/preview.js"></script>
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/css/main.css" />
+
+<meta name="generator" content="Hexo 5.4.2"></head>
+<body>
+    <div id="layout">
+        <transition name="fade">
+            <div id="loading" v-show="loading">
+                <div id="loading-circle">
+                    <h2>LOADING</h2>
+                    <p>加载过慢请开启缓存 浏览器默认开启</p>
+                    <img src="/images/loading.gif" />
+                </div>
+            </div>
+        </transition>
+        <div id="menu" :class="{ hidden: hiddenMenu, 'menu-color': menuColor}">
+    <nav id="desktop-menu">
+        <a class="title" href="/">
+            <span>CAINONG&#39;S BLOG</span>
+        </a>
+        
+        <a href="/">
+            <i class="fa-solid fa-house fa-fw"></i>
+            <span>&ensp;Home</span>
+        </a>
+        
+        <a href="/about">
+            <i class="fa-solid fa-id-card fa-fw"></i>
+            <span>&ensp;About</span>
+        </a>
+        
+        <a href="/archives">
+            <i class="fa-solid fa-box-archive fa-fw"></i>
+            <span>&ensp;Archives</span>
+        </a>
+        
+        <a href="/categories">
+            <i class="fa-solid fa-bookmark fa-fw"></i>
+            <span>&ensp;Categories</span>
+        </a>
+        
+        <a href="/tags">
+            <i class="fa-solid fa-tags fa-fw"></i>
+            <span>&ensp;Tags</span>
+        </a>
+        
+    </nav>
+    <nav id="mobile-menu">
+        <div class="title" @click="showMenuItems = !showMenuItems">
+            <i class="fa-solid fa-bars fa-fw"></i>
+            <span>&emsp;CAINONG&#39;S BLOG</span>
+        </div>
+        <transition name="slide">
+            <div class="items" v-show="showMenuItems">
+                
+                <a href="/">
+                    <div class="item">
+                        <div style="min-width: 20px; max-width: 50px; width: 10%">
+                            <i class="fa-solid fa-house fa-fw"></i>
+                        </div>
+                        <div style="min-width: 100px; max-width: 150%; width: 20%">Home</div>
+                    </div>
+                </a>
+                
+                <a href="/about">
+                    <div class="item">
+                        <div style="min-width: 20px; max-width: 50px; width: 10%">
+                            <i class="fa-solid fa-id-card fa-fw"></i>
+                        </div>
+                        <div style="min-width: 100px; max-width: 150%; width: 20%">About</div>
+                    </div>
+                </a>
+                
+                <a href="/archives">
+                    <div class="item">
+                        <div style="min-width: 20px; max-width: 50px; width: 10%">
+                            <i class="fa-solid fa-box-archive fa-fw"></i>
+                        </div>
+                        <div style="min-width: 100px; max-width: 150%; width: 20%">Archives</div>
+                    </div>
+                </a>
+                
+                <a href="/categories">
+                    <div class="item">
+                        <div style="min-width: 20px; max-width: 50px; width: 10%">
+                            <i class="fa-solid fa-bookmark fa-fw"></i>
+                        </div>
+                        <div style="min-width: 100px; max-width: 150%; width: 20%">Categories</div>
+                    </div>
+                </a>
+                
+                <a href="/tags">
+                    <div class="item">
+                        <div style="min-width: 20px; max-width: 50px; width: 10%">
+                            <i class="fa-solid fa-tags fa-fw"></i>
+                        </div>
+                        <div style="min-width: 100px; max-width: 150%; width: 20%">Tags</div>
+                    </div>
+                </a>
+                
+            </div>
+        </transition>
+    </nav>
+</div>
+<transition name="fade">
+    <div id="menu-curtain" @click="showMenuItems = !showMenuItems" v-show="showMenuItems"></div>
+</transition>
+
+        <div id="main" :class="loading ? 'into-enter-from': 'into-enter-active'">
+            <div class="article">
+    <div>
+        <h1>在自己家搭一台服务器吧！DELL R730折腾（1）</h1>
+    </div>
+    <div class="info">
+        <span class="date">
+            <span class="icon">
+                <i class="fa-solid fa-calendar fa-fw"></i>
+            </span>
+            2023/4/30
+        </span>
+        
+        
+        <span class="tags">
+            <span class="icon">
+                <i class="fa-solid fa-tags fa-fw"></i>
+            </span>
+            
+            
+            <span class="tag">
+                
+                <a href="/tags/%E6%9C%8D%E5%8A%A1%E5%99%A8/" style="color: #ffa2c4">
+                    服务器
+                </a>
+            </span>
+            
+            <span class="tag">
+                
+                <a href="/tags/HomeLab/" style="color: #00bcd4">
+                    HomeLab
+                </a>
+            </span>
+            
+            <span class="tag">
+                
+                <a href="/tags/%E6%88%B4%E5%B0%94/" style="color: #ff7d73">
+                    戴尔
+                </a>
+            </span>
+            
+        </span>
+        
+    </div>
+    
+    <div class="content" v-pre>
+        <h1 id="老规矩，起因放前面："><a href="#老规矩，起因放前面：" class="headerlink" title="老规矩，起因放前面："></a>老规矩，起因放前面：</h1><p>我自签一些游戏安装包的时候，需要AltServer实时在线，而且Windows下的AltServer算半个残废，我需要一台一直开着的MacOS</p>
+<p>其二是我需要一台文件共享服务器（NAS），存<del>我的资源</del>我拍到的一些照片</p>
+<p>其三是家里接了两条宽带，需要ikuai分流</p>
+<p>其四是8G显存满足不了我，我需要更大显存的卡来玩机器学习</p>
+<p>综上，我买了一台服务器</p>
+<span id="more"></span> 
+
+<h1 id="配置："><a href="#配置：" class="headerlink" title="配置："></a>配置：</h1><p>服务器主体：Dell PowerEdge R730</p>
+<p>咸鱼收的，带H730阵列卡+750W电源 花了1050</p>
+<p>CPU：志强E5 2680v4 两颗 210</p>
+<p>内存是三星的16G DDR4 ECC 2133 3</p>
+<p>因为要跑Ai，买了张Tesla P40 1162</p>
+<p>还有Riser卡，硬盘架啥的</p>
+<p>共计2900左右</p>
+<p>硬盘的话，家里有两块英特尔256G的企业固态，两块4T的西数紫盘，1块希捷NAS红盘<br>分配如下：</p>
+<table>
+<thead>
+<tr>
+<th>256G固态1</th>
+<th>256G固态2</th>
+<th>紫盘1</th>
+<th>NAS红盘</th>
+<th>紫盘2</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>ESXi系统盘</td>
+<td>TrueNAS加速盘</td>
+<td>TrueNAS数据盘</td>
+<td>TrueNAS数据盘</td>
+<td>虚拟机盘</td>
+</tr>
+</tbody></table>
+<p>两块数据盘组Mirror</p>
+<p>其实这里说起来也挺离谱的，这几块硬盘加起来少说得1500</p>
+<p>所以实际成本不止2900</p>
+<p><em>来自一个月后：我远远低估了我的数据使用能力，iscsi挂载会直接占用对应空间，片一存4T直接满了，所以以后会升RaidZ，以后再写</em></p>
+<p>当然了，如果不需要跑深度学习可以把P40省掉</p>
+<p>正如上面写的，系统选择了ESXi8.0</p>
+<p>为什么不是PVE呢？</p>
+<p><del>不会用，单纯因为觉得ESXi更易用</del></p>
+<p>我把服务器放在我家桌子上，直接插进我家路由器</p>
+<p>因为要放隔壁房间解决噪音问题（P40是被动散热），要重新拉线</p>
+<p>所以暂时先不拿来当路由器</p>
+<p>相当于现在服务器就是我家的一台旁路设备而已，以后再改</p>
+<p>浏览器访问iDRAC，直接装系统，这里不多说</p>
+<p>但是发现默认密码calvin进不去</p>
+<p>只能插上显示器进BIOS手动改</p>
+<p>接下来用java虚拟控制台装系统就好了</p>
+<h1 id="Trouble-Shooting"><a href="#Trouble-Shooting" class="headerlink" title="Trouble Shooting"></a>Trouble Shooting</h1><p>我遇到的第一个问题是发现系统一块硬盘也不认</p>
+<p>进入iDRAC管理界面，发现阵列卡默认是RAID模式，怪不得</p>
+<p>考虑这张阵列卡缓存也不大，不如直接调成HBA</p>
+<p>我这里幻想着以后可能要RAID，我选择把要用的盘调成非RAID</p>
+<p>然后就认硬盘了</p>
+<p>接下来固定IP，安装啥的一气呵成</p>
+<p>虚拟机这边我装了OpenWRT TrueNAS WinServer2022 Ubuntu两台 和一台MacOS Montery</p>
+<p>至于为什么不是最新的Ventura</p>
+<p>啊这是因为我家里电脑之前拆下来的GT740在Montery免驱</p>
+<h1 id="关于功耗"><a href="#关于功耗" class="headerlink" title="关于功耗"></a>关于功耗</h1><p>功耗的话，只插一颗CPU功耗大概只有160W</p>
+<p>我插了一个智能插座记录耗电度数</p>
+<p>iDRAC里也有功耗显示</p>
+<p>插了GPU大概是170W</p>
+<p>按我这最低0.51最高0.54的梯度电费</p>
+<p>一个月大概就80多块钱</p>
+<p>有人觉得很多，但想一下群晖啊那些大牌NAS动辄6000起的售价</p>
+<p>性能还比不上我这台，功能也不如</p>
+<p>这么一想一年1000多点电费也要用好几年才能赶得上6000块钱吧</p>
+<p>更不用说出租GPU，网心云啥的赚的钱了</p>
+<p>再说了空调都1000w+这点电算啥对吧</p>
+<p>先写到这，其实到现在（2023.7.31）我已经用了两个月了</p>
+<p>目前来说很稳，除了转换TrueNAS Raid模式那会折腾死了我，别的是没啥问题</p>
+
+    </div>
+    
+    
+    
+    
+    
+    
+    
+</div>
+
+            <footer id="footer">
+    <div id="footer-wrap">
+        <div>
+            &copy;
+            221 - 2025 Cainong&#39;s Blog
+            <span id="footer-icon">
+                <i class="fa-solid fa-font-awesome fa-fw"></i>
+            </span>
+            &commat;Cainong
+        </div>
+        <div>
+            Based on the <a target="_blank" rel="noopener" href="https://hexo.io">Hexo Engine</a> &amp;
+            <a target="_blank" rel="noopener" href="https://github.com/theme-particlex/hexo-theme-particlex">ParticleX Theme</a>
+        </div>
+        
+    </div>
+</footer>
+
+        </div>
+        
+        <transition name="fade">
+            <div id="preview" ref="preview" v-show="previewShow">
+                <img id="preview-content" ref="previewContent" />
+            </div>
+        </transition>
+        
+    </div>
+    <script src="/js/main.js"></script>
+    
+    
+
+
+
+
+    
+</body>
+</html>

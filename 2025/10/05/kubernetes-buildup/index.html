@@ -1,0 +1,571 @@
+
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="utf-8" />
+    <title>记一次Kubernetes完整集群的搭建 | Cainong&#39;s Blog</title>
+    <meta name="author" content="Cainong" />
+    <meta name="description" content="" />
+    <meta name="keywords" content="" />
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"
+    />
+    <link rel="icon" href="/images/avatar.png" />
+    <link rel="preconnect" href="https://s4.zstatic.net" />
+<script src="https://s4.zstatic.net/ajax/libs/vue/3.3.7/vue.global.prod.min.js"></script>
+<link rel="stylesheet" href="https://s4.zstatic.net/ajax/libs/font-awesome/6.4.2/css/all.min.css" />
+<link rel="preconnect" href="https://fonts.googleapis.cn" />
+<link rel="preconnect" href="https://fonts.gstatic.cn" crossorigin />
+<link
+    rel="stylesheet"
+    href="https://fonts.googleapis.cn/css2?family=Fira+Code:wght@400;500;600;700&family=Lexend:wght@400;500;600;700;800;900&family=Noto+Sans+SC:wght@400;500;600;700;800;900&display=swap"
+/>
+<script> const mixins = {}; </script>
+
+<script src="https://polyfill.alicdn.com/v3/polyfill.min.js?features=default"></script>
+
+
+<script src="https://s4.zstatic.net/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="https://s4.zstatic.net/ajax/libs/highlightjs-line-numbers.js/2.8.0/highlightjs-line-numbers.min.js"></script>
+<link
+    rel="stylesheet"
+    href="https://s4.zstatic.net/ajax/libs/highlight.js/11.9.0/styles/github.min.css"
+/>
+<script src="/js/lib/highlight.js"></script>
+
+
+
+<script src="/js/lib/preview.js"></script>
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/css/main.css" />
+
+<meta name="generator" content="Hexo 5.4.2"></head>
+<body>
+    <div id="layout">
+        <transition name="fade">
+            <div id="loading" v-show="loading">
+                <div id="loading-circle">
+                    <h2>LOADING</h2>
+                    <p>加载过慢请开启缓存 浏览器默认开启</p>
+                    <img src="/images/loading.gif" />
+                </div>
+            </div>
+        </transition>
+        <div id="menu" :class="{ hidden: hiddenMenu, 'menu-color': menuColor}">
+    <nav id="desktop-menu">
+        <a class="title" href="/">
+            <span>CAINONG&#39;S BLOG</span>
+        </a>
+        
+        <a href="/">
+            <i class="fa-solid fa-house fa-fw"></i>
+            <span>&ensp;Home</span>
+        </a>
+        
+        <a href="/about">
+            <i class="fa-solid fa-id-card fa-fw"></i>
+            <span>&ensp;About</span>
+        </a>
+        
+        <a href="/archives">
+            <i class="fa-solid fa-box-archive fa-fw"></i>
+            <span>&ensp;Archives</span>
+        </a>
+        
+        <a href="/categories">
+            <i class="fa-solid fa-bookmark fa-fw"></i>
+            <span>&ensp;Categories</span>
+        </a>
+        
+        <a href="/tags">
+            <i class="fa-solid fa-tags fa-fw"></i>
+            <span>&ensp;Tags</span>
+        </a>
+        
+    </nav>
+    <nav id="mobile-menu">
+        <div class="title" @click="showMenuItems = !showMenuItems">
+            <i class="fa-solid fa-bars fa-fw"></i>
+            <span>&emsp;CAINONG&#39;S BLOG</span>
+        </div>
+        <transition name="slide">
+            <div class="items" v-show="showMenuItems">
+                
+                <a href="/">
+                    <div class="item">
+                        <div style="min-width: 20px; max-width: 50px; width: 10%">
+                            <i class="fa-solid fa-house fa-fw"></i>
+                        </div>
+                        <div style="min-width: 100px; max-width: 150%; width: 20%">Home</div>
+                    </div>
+                </a>
+                
+                <a href="/about">
+                    <div class="item">
+                        <div style="min-width: 20px; max-width: 50px; width: 10%">
+                            <i class="fa-solid fa-id-card fa-fw"></i>
+                        </div>
+                        <div style="min-width: 100px; max-width: 150%; width: 20%">About</div>
+                    </div>
+                </a>
+                
+                <a href="/archives">
+                    <div class="item">
+                        <div style="min-width: 20px; max-width: 50px; width: 10%">
+                            <i class="fa-solid fa-box-archive fa-fw"></i>
+                        </div>
+                        <div style="min-width: 100px; max-width: 150%; width: 20%">Archives</div>
+                    </div>
+                </a>
+                
+                <a href="/categories">
+                    <div class="item">
+                        <div style="min-width: 20px; max-width: 50px; width: 10%">
+                            <i class="fa-solid fa-bookmark fa-fw"></i>
+                        </div>
+                        <div style="min-width: 100px; max-width: 150%; width: 20%">Categories</div>
+                    </div>
+                </a>
+                
+                <a href="/tags">
+                    <div class="item">
+                        <div style="min-width: 20px; max-width: 50px; width: 10%">
+                            <i class="fa-solid fa-tags fa-fw"></i>
+                        </div>
+                        <div style="min-width: 100px; max-width: 150%; width: 20%">Tags</div>
+                    </div>
+                </a>
+                
+            </div>
+        </transition>
+    </nav>
+</div>
+<transition name="fade">
+    <div id="menu-curtain" @click="showMenuItems = !showMenuItems" v-show="showMenuItems"></div>
+</transition>
+
+        <div id="main" :class="loading ? 'into-enter-from': 'into-enter-active'">
+            <div class="article">
+    <div>
+        <h1>记一次Kubernetes完整集群的搭建</h1>
+    </div>
+    <div class="info">
+        <span class="date">
+            <span class="icon">
+                <i class="fa-solid fa-calendar fa-fw"></i>
+            </span>
+            2025/10/5
+        </span>
+        
+        
+        <span class="tags">
+            <span class="icon">
+                <i class="fa-solid fa-tags fa-fw"></i>
+            </span>
+            
+            
+            <span class="tag">
+                
+                <a href="/tags/%E6%9C%8D%E5%8A%A1%E5%99%A8/" style="color: #ffa2c4">
+                    服务器
+                </a>
+            </span>
+            
+            <span class="tag">
+                
+                <a href="/tags/Kubernetes/" style="color: #00a596">
+                    Kubernetes
+                </a>
+            </span>
+            
+            <span class="tag">
+                
+                <a href="/tags/HomeLab/" style="color: #ff7d73">
+                    HomeLab
+                </a>
+            </span>
+            
+            <span class="tag">
+                
+                <a href="/tags/%E5%AE%B9%E5%99%A8%E5%8C%96/" style="color: #ffa2c4">
+                    容器化
+                </a>
+            </span>
+            
+        </span>
+        
+    </div>
+    
+    <div class="content" v-pre>
+        <h1 id="写在前面"><a href="#写在前面" class="headerlink" title="写在前面"></a>写在前面</h1><p>太好了孩子们 这次基本全都是命令行操作 我不用截图了</p>
+<p>以下几乎全是命令 几乎一张图片没有 如果你想做为参考的话请仔细阅读每一行</p>
+<h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>昨天我在折腾Authentik认证服务的时候 一直在思考用什么反代服务</p>
+<p>常见的可以用Nginx Proxy Manager,Caddy,Traefik</p>
+<p>这里面我觉得比较好用的是Traefik，但是即使是Traefik想要自动申请证书之类的你也需要在docker compose里写一堆lable去定义</p>
+<p>再加上我的服务越来越多 之前都是宝塔和1Panel混着用来管理docker</p>
+<p>这太不健康了</p>
+<p>我认为是时候开始大一统了</p>
+<span id="more"></span> 
+
+<p>那么随着Docker慢慢被大企业抛弃 Kubernetes（以下简称K8s）越来越流行了</p>
+<p>模块化 资源分配 负载均衡 统一管理 故障迁移 分布存储等等</p>
+<p>事实上Docker你分开用一堆模块也可以做到这些东西</p>
+<p>但是K8s是一整套解决方案 刚好我也想学习一下</p>
+<p>让我们来搭建一个完整的K8s集群吧</p>
+<p>为什么不用K3s 因为目的不只是为了方便 我认为学习K8s的组件也是很有必要的</p>
+<h1 id="折腾开始"><a href="#折腾开始" class="headerlink" title="折腾开始"></a>折腾开始</h1><p>大部分都可以参考K8s的官方文档 写的很详细，介绍了很多概念以及在生产环境中要学习的东西</p>
+<p>我个人觉得学习的话收益还是很大的</p>
+<p>而且还有中文 美滋滋</p>
+<p>地址在这里<a target="_blank" rel="noopener" href="https://kubernetes.io/zh-cn/docs/home/">https://kubernetes.io/zh-cn/docs/home/</a></p>
+<h2 id="1-1-主机配置说明"><a href="#1-1-主机配置说明" class="headerlink" title="1.1 主机配置说明"></a>1.1 主机配置说明</h2><p>我首先搭建了三台相同的Ubuntu Server，我的打算是1Master 2Node</p>
+<p>配置如下</p>
+<table>
+<thead>
+<tr>
+<th>配置</th>
+<th>CPU</th>
+<th>RAM</th>
+<th>硬盘</th>
+<th>IP地址</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Master</td>
+<td>4Core</td>
+<td>4G</td>
+<td>40G</td>
+<td>192.168.0.100/24</td>
+</tr>
+<tr>
+<td>Worker01</td>
+<td>4Core</td>
+<td>8G</td>
+<td>128G</td>
+<td>192.168.0.101/24</td>
+</tr>
+<tr>
+<td>Worker02</td>
+<td>4Core</td>
+<td>8G</td>
+<td>128G</td>
+<td>192.168.0.102/24</td>
+</tr>
+</tbody></table>
+<p>我是ESXi虚拟机 实在不够用可以扩容 而且我可能会打算部署分布存储 所以先这样配置</p>
+<h2 id="1-2-主机配置"><a href="#1-2-主机配置" class="headerlink" title="1.2 主机配置"></a>1.2 主机配置</h2><h3 id="1-2-1-主机名配置"><a href="#1-2-1-主机名配置" class="headerlink" title="1.2.1 主机名配置"></a>1.2.1 主机名配置</h3><p>我们用xShell连接上三台机器 全部切换到root</p>
+<p>为了方便我们先分别设定一下三台机器的主机名字</p>
+<p>master节点</p>
+<pre><code class="Bash">hostnamectl set-hostname k8s-master01
+</code></pre>
+<p>Worker1</p>
+<pre><code class="Bash">hostnamectl set-hostname k8s-worker01
+</code></pre>
+<p>Worker2</p>
+<pre><code class="Bash">hostnamectl set-hostname k8s-worker02
+</code></pre>
+<p>然后上面菜单栏————查看————撰写————撰写栏</p>
+<p>打开它 然后左下角有一个将命令发送到全部会话</p>
+<p>这样我们可以统一执行一些命令</p>
+<h3 id="1-2-2-统一时区与时间"><a href="#1-2-2-统一时区与时间" class="headerlink" title="1.2.2 统一时区与时间"></a>1.2.2 统一时区与时间</h3><p>!!<strong>以下命令所有机器都要执行</strong>!!</p>
+<pre><code class="Bash">apt update
+apt upgrade -y #更新软件包
+timedatectl set-timezone Asia/Shanghai # 统一时间
+</code></pre>
+<p>为了统一时间 防止时间偏移 我们可以定期让三台机器自动同步时间</p>
+<p>这边用的最小化安装 还得安装一下cron</p>
+<pre><code class="Bash">apt install cron -y 
+systemctl enable cron
+systemctl start cron
+</code></pre>
+<pre><code class="Bash">apt install ntpdate -y
+ntpdate ntp.aliyun.com
+crontab -e
+</code></pre>
+<p>选择2 我们用vim编辑</p>
+<p>我们想让他在每天 5点自动更新 那就写</p>
+<pre><code>0 5 * * * ntpdate ntp.aliyun.com
+</code></pre>
+<p>然后:wq保存</p>
+<h3 id="1-2-3-配置内核转发-网桥过滤"><a href="#1-2-3-配置内核转发-网桥过滤" class="headerlink" title="1.2.3 配置内核转发 网桥过滤"></a>1.2.3 配置内核转发 网桥过滤</h3><p>Ubuntu默认是不开启这个的 为了便于集群之间的通信 还有一些Pod的特殊需求 这个肯定是要打开的</p>
+<pre><code class="Bash">cat &lt;&lt;EOF | sudo tee /etc/sysctl.d/k8s.conf
+net.bridge.bridge-nf-call-ip6tables = 1
+net.bridge.bridge-nf-call-iptables = 1
+net.ipv4.ip_forward = 1
+EOF
+</code></pre>
+<p>然后给内核导入overlay br_netfilter这两个模块 这两个是K8s的必要模块</p>
+<pre><code class="Bash">modprobe overlay
+modprobe br_netfilter
+cat &lt;&lt;EOF | sudo tee /etc/modules-load.d/k8s.conf
+overlay
+br_netfilter
+EOF
+sysctl --system
+</code></pre>
+<p>然后既然是新搭建的，我们可以给kube-proxy用新的ipvs模式 性能更好</p>
+<p>需要安装ipset和ipvsadm</p>
+<pre><code class="Bash">apt install ipset ipvsadm -y
+#让其自动加载
+cat &lt;&lt; EOF | tee /etc/modules-load.d/ipvs.conf
+ip_vs
+ip_vs_rr
+ip_vs_wrr
+ip_vs_sh
+nf_conntrack
+EOF
+# 立即加载模块
+modprobe ip_vs
+modprobe ip_vs_rr
+modprobe ip_vs_wrr
+modprobe ip_vs_sh
+modprobe nf_conntrack
+</code></pre>
+<h3 id="1-2-4-关闭swap分区"><a href="#1-2-4-关闭swap分区" class="headerlink" title="1.2.4 关闭swap分区"></a>1.2.4 关闭swap分区</h3><p>K8s可以强行兼容swap分区 但是官方文档建议是关闭</p>
+<p>因为K8s运行中显然需要的是真实的内存和CPU 为了防止出现奇奇怪怪的问题 关掉它</p>
+<pre><code class="Bash">swapoff -a
+vim /etc/fstab
+</code></pre>
+<p>找到最下面一行带有swap关键字的 前面加个#给他注释掉</p>
+<p>!!<strong>以上命令所有机器都要执行</strong>!!</p>
+<p>完成之后机器的基本配置算是完成了</p>
+<h2 id="2-1-容器运行时的安装"><a href="#2-1-容器运行时的安装" class="headerlink" title="2.1 容器运行时的安装"></a>2.1 容器运行时的安装</h2><p>K8s弃用了Docker作为容器运行时 转而使用Containerd</p>
+<p><del>事实上这就是Docker的底层</del></p>
+<p>依旧所有机器都要运行：</p>
+<pre><code class="Bash">wget https://github.com/containerd/containerd/releases/download/v2.1.4/containerd-2.1.4-linux-amd64.tar.gz
+</code></pre>
+<p>下不来可以配置一下proxy</p>
+<p>这里的地址可以自己去Github下载最新的release</p>
+<p>然后解压出来</p>
+<pre><code class="Bash">tar Cxzvf /usr/local containerd-2.1.4-linux-amd64.tar.gz 
+which containerd #检查是否成功
+</code></pre>
+<p>然后旧版本的cri懒人包没了 我们需要手动安装runc和CNI</p>
+<pre><code class="Bash">wget https://github.com/opencontainers/runc/releases/download/v1.3.2/runc.amd64
+wget https://github.com/containernetworking/plugins/releases/download/v1.8.0/cni-plugins-linux-amd64-v1.8.0.tgz
+install -m 755 runc.amd64 /usr/local/sbin/runc
+mkdir -p /opt/cni/bin
+tar Cxzvf /opt/cni/bin cni-plugins-linux-amd64-v1.8.0.tgz
+</code></pre>
+<p>然后生成containerd的基础配置文件</p>
+<pre><code class="Bash">mkdir -p /etc/containerd
+containerd config default &gt; /etc/containerd/config.toml
+
+
+#sed -i &#39;s/SystemdCgroup = false/SystemdCgroup = true/&#39; /etc/containerd/config.toml
+</code></pre>
+<p>网上提到的systemd cgroup在新版Containerd中默认使用 我们等下可以验证</p>
+<p>然后差点忘了我们手动安装的要注册一下才能用systemctl去调用</p>
+<pre><code class="Bash">wget -O /etc/systemd/system/containerd.service https://raw.githubusercontent.com/containerd/containerd/main/containerd.service
+systemctl daemon-reload
+systemctl restart containerd
+systemctl enable containerd
+</code></pre>
+<p>跑起来之后我们ls /var/run/containerd/看看 有一个.sock结尾就是ok了</p>
+<h2 id="3-1-正式开始部署K8s"><a href="#3-1-正式开始部署K8s" class="headerlink" title="3.1 正式开始部署K8s"></a>3.1 正式开始部署K8s</h2><pre><code class="Bash"># 下载K8s仓库的公钥
+sudo apt-get install -y apt-transport-https ca-certificates curl gpg
+curl -fsSL https://pkgs.k8s.io/core:/stable:/v1.34/deb/Release.key | sudo gpg --dearmor -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg
+echo &#39;deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/v1.34/deb/ /&#39; | sudo tee /etc/apt/sources.list.d/kubernetes.list
+apt update
+# 查看版本
+apt-cache madison kubeadm
+</code></pre>
+<p>我这里版本最新是1.34.1-1.1</p>
+<p>直接安装</p>
+<pre><code class="Bash">apt install kubeadm=1.34.1-1.1 kubelet=1.34.1-1.1 kubectl=1.34.1-1.1
+apt-mark hold kubelet kubeadm kubectl # 锁定版本防止自动更新炸刚
+</code></pre>
+<h2 id="3-2-配置kubelet"><a href="#3-2-配置kubelet" class="headerlink" title="3.2 配置kubelet"></a>3.2 配置kubelet</h2><p>先配置kubelet的cgroup驱动</p>
+<pre><code class="Bash">vim /etc/default/kubelet 
+</code></pre>
+<p>在后面加上”–cgroup-driver=systemd”</p>
+<p>kubelet负责集群中Pod的生命周期管理，所以我们需要开机自启动 否则集群会炸</p>
+<pre><code class="Bash">systemctl enable kubelet 
+</code></pre>
+<h2 id="3-3-集群初始化"><a href="#3-3-集群初始化" class="headerlink" title="3.3 集群初始化"></a>3.3 集群初始化</h2><h3 id="3-3-1-生成初始配置文件"><a href="#3-3-1-生成初始配置文件" class="headerlink" title="3.3.1 生成初始配置文件"></a>3.3.1 生成初始配置文件</h3><p><strong>请注意：以下命令只需要在Master节点中执行</strong></p>
+<pre><code class="Bash">kubeadm config print init-defaults &gt; kubeadm-config.yaml
+</code></pre>
+<p>配置文件太长了我直接贴出来</p>
+<pre><code class="YAML">apiVersion: kubeadm.k8s.io/v1beta4
+bootstrapTokens:
+- groups:
+  - system:bootstrappers:kubeadm:default-node-token
+  token: abcdef.0123456789abcdef
+  ttl: 24h0m0s
+  usages:
+  - signing
+  - authentication
+kind: InitConfiguration
+localAPIEndpoint:
+  advertiseAddress: 192.168.0.100 #改这里
+  bindPort: 6443
+nodeRegistration:
+  criSocket: unix:///var/run/containerd/containerd.sock
+  imagePullPolicy: IfNotPresent
+  imagePullSerial: true
+  name: k8s-master01 #改这里
+  taints: null
+timeouts:
+  controlPlaneComponentHealthCheck: 4m0s
+  discovery: 5m0s
+  etcdAPICall: 2m0s
+  kubeletHealthCheck: 4m0s
+  kubernetesAPICall: 1m0s
+  tlsBootstrap: 5m0s
+  upgradeManifests: 5m0s
+---
+kind: ClusterConfiguration
+kubernetesVersion: 1.34.0
+networking:
+  dnsDomain: cluster.local
+  serviceSubnet: 10.96.0.0/12
+  podSubnet: 10.244.0.0/16 #改这里
+proxy: &#123;&#125;
+scheduler: &#123;&#125;
+</code></pre>
+<h3 id="3-3-2-获取镜像"><a href="#3-3-2-获取镜像" class="headerlink" title="3.3.2 获取镜像"></a>3.3.2 获取镜像</h3><p>然后Pull相关镜像</p>
+<pre><code class="Bash">kubeadm config images pull
+</code></pre>
+<p>这里官方镜像是完全不可达的 由于Containerd默认不走系统设置的proxy变量 这里要么用镜像源要么就软路由给整个节点起飞走</p>
+<p>下完之后就可以初始化集群了</p>
+<h3 id="3-3-3-正式初始化集群"><a href="#3-3-3-正式初始化集群" class="headerlink" title="3.3.3 正式初始化集群"></a>3.3.3 正式初始化集群</h3><pre><code class="Bash">kubeadm init --config kubeadm-config.yaml --upload-certs --v=9
+</code></pre>
+<pre><code>Your Kubernetes control-plane has initialized successfully!
+
+To start using your cluster, you need to run the following as a regular user:
+
+  mkdir -p $HOME/.kube
+  sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
+  sudo chown $(id -u):$(id -g) $HOME/.kube/config
+</code></pre>
+<p>当你看到这一坨 意味着控制平面搭建成功了</p>
+<p>然后把它上面给的三行命令复制粘贴到控制台</p>
+<pre><code class="Bash">mkdir -p $HOME/.kube
+sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
+sudo chown $(id -u):$(id -g) $HOME/.kube/config
+</code></pre>
+<p>然后</p>
+<pre><code class="Bash">kubectl get nodes
+</code></pre>
+<p>如果得到这样的输出</p>
+<pre><code>NAME           STATUS     ROLES           AGE     VERSION
+k8s-master01   NotReady   control-plane   3m30s   v1.34.1
+</code></pre>
+<p>完事了</p>
+<p>然后记得上面他给了一行让worker加入的命令 复制他粘贴到Workernodes 前期配置没有问题的话顺利加入肯定也没问题</p>
+<p>重新get nodes之后能看到</p>
+<pre><code>NAME           STATUS     ROLES           AGE     VERSION
+k8s-master01   NotReady   control-plane   8m39s   v1.34.1
+k8s-worker01   NotReady   &lt;none&gt;          8s      v1.34.1
+k8s-worker02   NotReady   &lt;none&gt;          8s      v1.34.1
+</code></pre>
+<p>我们可以看到Status还是NotReady，怎么回事呢</p>
+<p>我们可以看到pods里面的coredns 还属于pending状态 他作为核心pod之一还没有调度到节点里去</p>
+<p>我们的节点还没有调度IP 所以我们需要网络插件CNI</p>
+<h2 id="4-1-网络插件"><a href="#4-1-网络插件" class="headerlink" title="4.1 网络插件"></a>4.1 网络插件</h2><h3 id="4-1-1-选择"><a href="#4-1-1-选择" class="headerlink" title="4.1.1 选择"></a>4.1.1 选择</h3><p>常见的话有三个 Flannel Calico Cilium</p>
+<p>复杂程度都是递增的</p>
+<p>事实上的话Calico已经足够极其庞大的集群使用了</p>
+<p><del>Cilium则是用于多集群 而且他会复杂非常多 我们暂时不考虑</del></p>
+<p>为了练手 我这里还是选择Calico</p>
+<p>后续换成了Cilium</p>
+<h3 id="4-1-2-Calico的安装"><a href="#4-1-2-Calico的安装" class="headerlink" title="4.1.2 Calico的安装"></a>4.1.2 Calico的安装</h3><p>如果用Opertor安装的话其实很简单 只是还是网络环境的问题</p>
+<p>如果之前你能成功init我相信是没问题的 我们偷懒用Operator就好</p>
+<p>进入Tigera的文档<a target="_blank" rel="noopener" href="https://docs.tigera.io/calico/latest/getting-started/kubernetes/self-managed-onprem/onpremises">https://docs.tigera.io/calico/latest/getting-started/kubernetes/self-managed-onprem/onpremises</a>找到安装的命令</p>
+<p>在Master节点上执行：</p>
+<pre><code class="Bash">kubectl create -f https://raw.githubusercontent.com/projectcalico/calico/v3.30.3/manifests/tigera-operator.yaml
+wget https://raw.githubusercontent.com/projectcalico/calico/v3.30.3/manifests/custom-resources.yaml
+vim custom-resources.yaml
+</code></pre>
+<p>自定义一下Calico的配置 我们要改的就是默认的那个网段</p>
+<pre><code class="YAML">apiVersion: operator.tigera.io/v1
+kind: Installation
+metadata:
+  name: default
+spec:
+  # Configures Calico networking.
+  calicoNetwork:
+    ipPools:
+    - name: default-ipv4-ippool
+      blockSize: 26
+      cidr: 10.244.0.0/16  # 这里
+      encapsulation: VXLANCrossSubnet
+      natOutgoing: Enabled
+      nodeSelector: all()
+
+---
+apiVersion: operator.tigera.io/v1
+</code></pre>
+<p>改完保存然后</p>
+<pre><code class="Bash">kubectl create -f custom-resources.yaml
+</code></pre>
+<p>完事之后Calico就开始初始化了</p>
+<pre><code class="Bash">watch kubectl get pods -n calico-system
+</code></pre>
+<p>看里面的组件确保全部Running</p>
+<p>这时候我们在看看nodes状态</p>
+<pre><code class="Bash">root@k8s-master01:/home/cainong# kubectl get nodes
+NAME           STATUS   ROLES           AGE   VERSION
+k8s-master01   Ready    control-plane   83m   v1.34.1
+k8s-worker01   Ready    &lt;none&gt;          74m   v1.34.1
+k8s-worker02   Ready    &lt;none&gt;          74m   v1.34.1
+</code></pre>
+<p>完事 至此K8s已经完全启动了 撒花撒花</p>
+<p>还没完全结束 我们还有Ingress Dashboard没有配置 我是不可能手敲命令行手写yml的</p>
+<p>而且我们还要慢慢迁移之前的docker服务 以及Longhorn的配置</p>
+<p>这是下一个坑</p>
+
+    </div>
+    
+    
+    
+    
+    
+    
+    
+</div>
+
+            <footer id="footer">
+    <div id="footer-wrap">
+        <div>
+            &copy;
+            221 - 2025 Cainong&#39;s Blog
+            <span id="footer-icon">
+                <i class="fa-solid fa-font-awesome fa-fw"></i>
+            </span>
+            &commat;Cainong
+        </div>
+        <div>
+            Based on the <a target="_blank" rel="noopener" href="https://hexo.io">Hexo Engine</a> &amp;
+            <a target="_blank" rel="noopener" href="https://github.com/theme-particlex/hexo-theme-particlex">ParticleX Theme</a>
+        </div>
+        
+    </div>
+</footer>
+
+        </div>
+        
+        <transition name="fade">
+            <div id="preview" ref="preview" v-show="previewShow">
+                <img id="preview-content" ref="previewContent" />
+            </div>
+        </transition>
+        
+    </div>
+    <script src="/js/main.js"></script>
+    
+    
+
+
+
+
+    
+</body>
+</html>

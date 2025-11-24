@@ -1,0 +1,344 @@
+
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="utf-8" />
+    <title>sovit3折腾实录与教程（2）Colab训练 推理 | Cainong&#39;s Blog</title>
+    <meta name="author" content="Cainong" />
+    <meta name="description" content="" />
+    <meta name="keywords" content="" />
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"
+    />
+    <link rel="icon" href="/images/avatar.png" />
+    <link rel="preconnect" href="https://s4.zstatic.net" />
+<script src="https://s4.zstatic.net/ajax/libs/vue/3.3.7/vue.global.prod.min.js"></script>
+<link rel="stylesheet" href="https://s4.zstatic.net/ajax/libs/font-awesome/6.4.2/css/all.min.css" />
+<link rel="preconnect" href="https://fonts.googleapis.cn" />
+<link rel="preconnect" href="https://fonts.gstatic.cn" crossorigin />
+<link
+    rel="stylesheet"
+    href="https://fonts.googleapis.cn/css2?family=Fira+Code:wght@400;500;600;700&family=Lexend:wght@400;500;600;700;800;900&family=Noto+Sans+SC:wght@400;500;600;700;800;900&display=swap"
+/>
+<script> const mixins = {}; </script>
+
+<script src="https://polyfill.alicdn.com/v3/polyfill.min.js?features=default"></script>
+
+
+<script src="https://s4.zstatic.net/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="https://s4.zstatic.net/ajax/libs/highlightjs-line-numbers.js/2.8.0/highlightjs-line-numbers.min.js"></script>
+<link
+    rel="stylesheet"
+    href="https://s4.zstatic.net/ajax/libs/highlight.js/11.9.0/styles/github.min.css"
+/>
+<script src="/js/lib/highlight.js"></script>
+
+
+
+<script src="/js/lib/preview.js"></script>
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/css/main.css" />
+
+<meta name="generator" content="Hexo 5.4.2"></head>
+<body>
+    <div id="layout">
+        <transition name="fade">
+            <div id="loading" v-show="loading">
+                <div id="loading-circle">
+                    <h2>LOADING</h2>
+                    <p>加载过慢请开启缓存 浏览器默认开启</p>
+                    <img src="/images/loading.gif" />
+                </div>
+            </div>
+        </transition>
+        <div id="menu" :class="{ hidden: hiddenMenu, 'menu-color': menuColor}">
+    <nav id="desktop-menu">
+        <a class="title" href="/">
+            <span>CAINONG&#39;S BLOG</span>
+        </a>
+        
+        <a href="/">
+            <i class="fa-solid fa-house fa-fw"></i>
+            <span>&ensp;Home</span>
+        </a>
+        
+        <a href="/about">
+            <i class="fa-solid fa-id-card fa-fw"></i>
+            <span>&ensp;About</span>
+        </a>
+        
+        <a href="/archives">
+            <i class="fa-solid fa-box-archive fa-fw"></i>
+            <span>&ensp;Archives</span>
+        </a>
+        
+        <a href="/categories">
+            <i class="fa-solid fa-bookmark fa-fw"></i>
+            <span>&ensp;Categories</span>
+        </a>
+        
+        <a href="/tags">
+            <i class="fa-solid fa-tags fa-fw"></i>
+            <span>&ensp;Tags</span>
+        </a>
+        
+    </nav>
+    <nav id="mobile-menu">
+        <div class="title" @click="showMenuItems = !showMenuItems">
+            <i class="fa-solid fa-bars fa-fw"></i>
+            <span>&emsp;CAINONG&#39;S BLOG</span>
+        </div>
+        <transition name="slide">
+            <div class="items" v-show="showMenuItems">
+                
+                <a href="/">
+                    <div class="item">
+                        <div style="min-width: 20px; max-width: 50px; width: 10%">
+                            <i class="fa-solid fa-house fa-fw"></i>
+                        </div>
+                        <div style="min-width: 100px; max-width: 150%; width: 20%">Home</div>
+                    </div>
+                </a>
+                
+                <a href="/about">
+                    <div class="item">
+                        <div style="min-width: 20px; max-width: 50px; width: 10%">
+                            <i class="fa-solid fa-id-card fa-fw"></i>
+                        </div>
+                        <div style="min-width: 100px; max-width: 150%; width: 20%">About</div>
+                    </div>
+                </a>
+                
+                <a href="/archives">
+                    <div class="item">
+                        <div style="min-width: 20px; max-width: 50px; width: 10%">
+                            <i class="fa-solid fa-box-archive fa-fw"></i>
+                        </div>
+                        <div style="min-width: 100px; max-width: 150%; width: 20%">Archives</div>
+                    </div>
+                </a>
+                
+                <a href="/categories">
+                    <div class="item">
+                        <div style="min-width: 20px; max-width: 50px; width: 10%">
+                            <i class="fa-solid fa-bookmark fa-fw"></i>
+                        </div>
+                        <div style="min-width: 100px; max-width: 150%; width: 20%">Categories</div>
+                    </div>
+                </a>
+                
+                <a href="/tags">
+                    <div class="item">
+                        <div style="min-width: 20px; max-width: 50px; width: 10%">
+                            <i class="fa-solid fa-tags fa-fw"></i>
+                        </div>
+                        <div style="min-width: 100px; max-width: 150%; width: 20%">Tags</div>
+                    </div>
+                </a>
+                
+            </div>
+        </transition>
+    </nav>
+</div>
+<transition name="fade">
+    <div id="menu-curtain" @click="showMenuItems = !showMenuItems" v-show="showMenuItems"></div>
+</transition>
+
+        <div id="main" :class="loading ? 'into-enter-from': 'into-enter-active'">
+            <div class="article">
+    <div>
+        <h1>sovit3折腾实录与教程（2）Colab训练 推理</h1>
+    </div>
+    <div class="info">
+        <span class="date">
+            <span class="icon">
+                <i class="fa-solid fa-calendar fa-fw"></i>
+            </span>
+            2023/2/26
+        </span>
+        
+        
+        <span class="tags">
+            <span class="icon">
+                <i class="fa-solid fa-tags fa-fw"></i>
+            </span>
+            
+            
+            <span class="tag">
+                
+                <a href="/tags/AI/" style="color: #00bcd4">
+                    AI
+                </a>
+            </span>
+            
+            <span class="tag">
+                
+                <a href="/tags/%E8%AF%AD%E9%9F%B3/" style="color: #ff7d73">
+                    语音
+                </a>
+            </span>
+            
+            <span class="tag">
+                
+                <a href="/tags/Python/" style="color: #00a596">
+                    Python
+                </a>
+            </span>
+            
+        </span>
+        
+    </div>
+    
+    <div class="content" v-pre>
+        <p>值得一提的是，即使你炼丹在Colab， <del>推理也依然需要在本地进行</del></p>
+<p>折腾了一下，推理可以在Colab进行了</p>
+<p>先给链接：</p>
+<p><a target="_blank" rel="noopener" href="https://colab.research.google.com/drive/1_-gh9i-wCPNlRZw6pYF-9UufetcVrGBX?usp=sharing">训练与处理脚本</a></p>
+<p><a target="_blank" rel="noopener" href="https://colab.research.google.com/drive/18yxeUPcAcnznZr31qh5ptYfv_ZCwFqTO?usp=sharing">推理脚本</a>（用我自己三脚猫功夫改的）</p>
+<span id="more"></span> 
+
+<h1 id="正片开始"><a href="#正片开始" class="headerlink" title="正片开始"></a>正片开始</h1><p>打开上面的训练脚本</p>
+<p>为了方便后续，建议保存一个副本到你的GoogleDrive</p>
+<p>在你GoogleDrive根目录创建一个名为dataset的文件夹</p>
+<p>把说话人的数据压缩成zip传到dataset里面</p>
+<p>注意是整个文件夹，而不是直接把wav打压缩</p>
+<p>请使用zip，避免出现奇奇怪怪的错误</p>
+<p>然后在Colab里从上到下点执行就可以，真的很简单</p>
+<p>需要改的是“从谷歌云盘加载打包好的数据集进行预处理”这步</p>
+<p>把DATASEINAME改成你说话人的名字</p>
+<p>然后到训练，如果你是第一次并且选的48k的分支，请按照下面这么设置</p>
+<p><img src="https://s2.loli.net/2023/02/26/dpg1V7K3cWyZkrO.png" alt="_TV___QVZ_1__OCO`9O7X`M.png"></p>
+<p>一直到开始训练，等就好了，比本地简单不知道多少倍</p>
+<h2 id="再次训练"><a href="#再次训练" class="headerlink" title="再次训练"></a>再次训练</h2><p>如果你的GPU到限额了啊 或者要关闭网页了，过了一段时间想重新回来炼丹的话</p>
+<p>从“已经预处理过数据集的话，就可以跳过预处理部分 直接从云盘解压处理过的数据 以及配置文件”这步开始</p>
+<p>当然前面Clone库该是需要的…</p>
+<h1 id="等待模型收敛"><a href="#等待模型收敛" class="headerlink" title="等待模型收敛"></a>等待模型收敛</h1><p>看你的TensorBoard，主要看<code>learning_rate</code>和<code>loss</code>最后面三个图表，也就是</p>
+<p><code>g/kl</code> <code> g/mel</code> <code>g/total</code></p>
+<p><code>learning_rate</code>不断下降，且下降幅度放缓</p>
+<p><img src="https://s2.loli.net/2023/02/27/CLikTn2d5F6xEI4.png" alt="O5QRBLY1Z83VCNTCRTIB__A.png"></p>
+<p><code>g/kl</code> <code> g/mel</code> <code>g/total</code>不断下降，且几乎与X轴平行，下降放缓</p>
+<p><img src="https://s2.loli.net/2023/02/27/9heWOVY6duTFMXG.png" alt="0_R__XNIFSE2FM7_8_ZUJ4P.png"></p>
+<p>就代表模型基本收敛了，这个时候再训练下去可能会过拟合，模型会废</p>
+<h1 id="推理"><a href="#推理" class="headerlink" title="推理"></a>推理</h1><p>如果模型收敛了，就可以推理了</p>
+<p>这里分两个方法</p>
+<h2 id="Colab云端推理"><a href="#Colab云端推理" class="headerlink" title="Colab云端推理"></a>Colab云端推理</h2><p><a target="_blank" rel="noopener" href="https://drive.google.com/file/d/18yxeUPcAcnznZr31qh5ptYfv_ZCwFqTO/view?usp=sharing">推理脚本</a>（用我自己三脚猫功夫改的）</p>
+<p>保存笔记后，手动把你要转换的wav放到云端的<code>/content/so-vits-svc/raw</code>里面</p>
+<p>填一下“从Drive中copy模型与json”从上到下执行就可以了</p>
+<p><img src="https://s2.loli.net/2023/03/02/WBqHRDTOfh4UEkm.png" alt="UC~_YL__3D2DJ1697GY9X6O.png"></p>
+<p>如果你不需要我的三脚猫功夫，可以手动改</p>
+<p>这里说一下要点：</p>
+<p>在Colab中，系统命令前需要加一个!(半角)</p>
+<p>推理依然需要必要模型</p>
+<pre><code>!wget -P hubert/ https://github.com/bshall/hubert/releases/download/v0.1/hubert-soft-0d54a1f4.pt
+</code></pre>
+<p>Drive云盘在挂载后地址为： <code>/content/drive/MyDrive/</code></p>
+<p>下面是详细的</p>
+<p>加一个代码</p>
+<p><img src="https://s2.loli.net/2023/03/02/gtAhlQj53cXNB71.png" alt="code.png"></p>
+<p>在代码框中，你需要多安装一个依赖</p>
+<pre><code>!pip install scikit-maad
+</code></pre>
+<p>然后你可以选择手动把模型和config传上去，但这显然不如把Drive挂载后复制：</p>
+<pre><code>from google.colab import drive
+drive.mount(&#39;/content/drive&#39;)
+</code></pre>
+<p><strong>注意：推理所需要的是G_开头的模型，而不是D_开头的</strong></p>
+<p>大概是这样的：</p>
+<pre><code>!cp 你最新模型在挂载后的路径 /content/so-vits-svc/logs/48k/模型名字.pth
+
+!rm -rf /content/so-vits-svc/configs/config.json
+
+!cp 你模型config.json的路径 /content/so-vits-svc/configs/config.json
+</code></pre>
+<p>举个例子：</p>
+<pre><code>!cp /content/drive/MyDrive/48k/G_2000.pth /content/so-vits-svc/logs/48k/G_2000.pth
+
+!rm -rf /content/so-vits-svc/configs/config.json
+
+!cp /content/drive/MyDrive/48k/config.json /content/so-vits-svc/configs/config.json
+</code></pre>
+<p>以上为48k分支（也就是main分支），如果你选择32k，那应该是这样</p>
+<pre><code>!cp 你最新模型在挂载后的路径 /content/so-vits-svc/logs/32k/模型名字.pth
+
+!rm -rf /content/so-vits-svc-32k/configs/config.json
+
+!cp 你模型config.json的路径 /content/so-vits-svc-32k/configs/config.json
+</code></pre>
+<p>如果你是Colab Pro可以打开命令行，我不行所以我只能改笔记</p>
+<p>接下来手动打开<code>inference_main.py</code>并修改</p>
+<p>依然是重点改<code>model_path</code>,<code>clean_names</code>,<code>trans</code>,<code>spk_list</code>这几个</p>
+<p><code>model_path</code>改成你训练出最新模型的路径</p>
+<p><code>clean_names</code>改为你raw文件夹中放的wav的文件名，<strong>无需.wav结尾</strong></p>
+<p><code>trans</code>为变调，根据实际来调，男模型唱女声大概需要-12~-16</p>
+<p><code>spk_lisk</code>为你说话人的名字，可以支持多个，用半角逗号隔开</p>
+<p><img src="https://s2.loli.net/2023/03/01/a95srgbvJqNBUfE.png" alt="18E4__DSN6B@R__D_OE_M6P.png"></p>
+<p><del>偷懒了，直接复制上一篇的过来</del></p>
+<p>改完之后，加一个代码并运行</p>
+<pre><code>!python inference_main.py
+</code></pre>
+<p><img src="https://s2.loli.net/2023/03/01/PDVOWCgX9A4LcG5.png" alt="run.png"></p>
+<p>值得一提的是…即使Colab给了15GB大显存，如果你直接把一首歌不裁剪丢进去也丝毫不妨碍他炸显存</p>
+<p><img src="https://s2.loli.net/2023/03/02/lcufzBrOqdJ2tZY.png" alt="boom.png"></p>
+<p>成功了就把results里的成果下载下来就好了</p>
+<h2 id="本地推理"><a href="#本地推理" class="headerlink" title="本地推理"></a>本地推理</h2><p>首先，像上一篇一样配好环境 <del>（这一句话足够折腾几个小时）</del></p>
+<p>然后把Colab里出来的G_开头的.pth模型下载下来，放到你本地的<code>logs/32k</code>或者<code>logs/48k</code>文件夹中</p>
+<p>把Colab上的<code>configs/config.json</code>放到和你本地一样的位置，也就是<code>.../configs/config.json中</code></p>
+<p>然后接下来与上一篇基本相同，不细说了</p>
+<h1 id="写在最后"><a href="#写在最后" class="headerlink" title="写在最后"></a>写在最后</h1><p>未经允许，禁止转载到国内网站，包括但不限于CSDN等</p>
+
+    </div>
+    
+    
+    
+    
+    
+    
+    
+</div>
+
+            <footer id="footer">
+    <div id="footer-wrap">
+        <div>
+            &copy;
+            221 - 2025 Cainong&#39;s Blog
+            <span id="footer-icon">
+                <i class="fa-solid fa-font-awesome fa-fw"></i>
+            </span>
+            &commat;Cainong
+        </div>
+        <div>
+            Based on the <a target="_blank" rel="noopener" href="https://hexo.io">Hexo Engine</a> &amp;
+            <a target="_blank" rel="noopener" href="https://github.com/theme-particlex/hexo-theme-particlex">ParticleX Theme</a>
+        </div>
+        
+    </div>
+</footer>
+
+        </div>
+        
+        <transition name="fade">
+            <div id="preview" ref="preview" v-show="previewShow">
+                <img id="preview-content" ref="previewContent" />
+            </div>
+        </transition>
+        
+    </div>
+    <script src="/js/main.js"></script>
+    
+    
+
+
+
+
+    
+</body>
+</html>

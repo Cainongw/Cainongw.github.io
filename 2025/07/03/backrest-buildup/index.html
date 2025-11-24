@@ -1,0 +1,415 @@
+
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="utf-8" />
+    <title>记一次基于Backrest+百度网盘 TrueNAS的云端块备份 | Cainong&#39;s Blog</title>
+    <meta name="author" content="Cainong" />
+    <meta name="description" content="" />
+    <meta name="keywords" content="" />
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"
+    />
+    <link rel="icon" href="/images/avatar.png" />
+    <link rel="preconnect" href="https://s4.zstatic.net" />
+<script src="https://s4.zstatic.net/ajax/libs/vue/3.3.7/vue.global.prod.min.js"></script>
+<link rel="stylesheet" href="https://s4.zstatic.net/ajax/libs/font-awesome/6.4.2/css/all.min.css" />
+<link rel="preconnect" href="https://fonts.googleapis.cn" />
+<link rel="preconnect" href="https://fonts.gstatic.cn" crossorigin />
+<link
+    rel="stylesheet"
+    href="https://fonts.googleapis.cn/css2?family=Fira+Code:wght@400;500;600;700&family=Lexend:wght@400;500;600;700;800;900&family=Noto+Sans+SC:wght@400;500;600;700;800;900&display=swap"
+/>
+<script> const mixins = {}; </script>
+
+<script src="https://polyfill.alicdn.com/v3/polyfill.min.js?features=default"></script>
+
+
+<script src="https://s4.zstatic.net/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="https://s4.zstatic.net/ajax/libs/highlightjs-line-numbers.js/2.8.0/highlightjs-line-numbers.min.js"></script>
+<link
+    rel="stylesheet"
+    href="https://s4.zstatic.net/ajax/libs/highlight.js/11.9.0/styles/github.min.css"
+/>
+<script src="/js/lib/highlight.js"></script>
+
+
+
+<script src="/js/lib/preview.js"></script>
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/css/main.css" />
+
+<meta name="generator" content="Hexo 5.4.2"></head>
+<body>
+    <div id="layout">
+        <transition name="fade">
+            <div id="loading" v-show="loading">
+                <div id="loading-circle">
+                    <h2>LOADING</h2>
+                    <p>加载过慢请开启缓存 浏览器默认开启</p>
+                    <img src="/images/loading.gif" />
+                </div>
+            </div>
+        </transition>
+        <div id="menu" :class="{ hidden: hiddenMenu, 'menu-color': menuColor}">
+    <nav id="desktop-menu">
+        <a class="title" href="/">
+            <span>CAINONG&#39;S BLOG</span>
+        </a>
+        
+        <a href="/">
+            <i class="fa-solid fa-house fa-fw"></i>
+            <span>&ensp;Home</span>
+        </a>
+        
+        <a href="/about">
+            <i class="fa-solid fa-id-card fa-fw"></i>
+            <span>&ensp;About</span>
+        </a>
+        
+        <a href="/archives">
+            <i class="fa-solid fa-box-archive fa-fw"></i>
+            <span>&ensp;Archives</span>
+        </a>
+        
+        <a href="/categories">
+            <i class="fa-solid fa-bookmark fa-fw"></i>
+            <span>&ensp;Categories</span>
+        </a>
+        
+        <a href="/tags">
+            <i class="fa-solid fa-tags fa-fw"></i>
+            <span>&ensp;Tags</span>
+        </a>
+        
+    </nav>
+    <nav id="mobile-menu">
+        <div class="title" @click="showMenuItems = !showMenuItems">
+            <i class="fa-solid fa-bars fa-fw"></i>
+            <span>&emsp;CAINONG&#39;S BLOG</span>
+        </div>
+        <transition name="slide">
+            <div class="items" v-show="showMenuItems">
+                
+                <a href="/">
+                    <div class="item">
+                        <div style="min-width: 20px; max-width: 50px; width: 10%">
+                            <i class="fa-solid fa-house fa-fw"></i>
+                        </div>
+                        <div style="min-width: 100px; max-width: 150%; width: 20%">Home</div>
+                    </div>
+                </a>
+                
+                <a href="/about">
+                    <div class="item">
+                        <div style="min-width: 20px; max-width: 50px; width: 10%">
+                            <i class="fa-solid fa-id-card fa-fw"></i>
+                        </div>
+                        <div style="min-width: 100px; max-width: 150%; width: 20%">About</div>
+                    </div>
+                </a>
+                
+                <a href="/archives">
+                    <div class="item">
+                        <div style="min-width: 20px; max-width: 50px; width: 10%">
+                            <i class="fa-solid fa-box-archive fa-fw"></i>
+                        </div>
+                        <div style="min-width: 100px; max-width: 150%; width: 20%">Archives</div>
+                    </div>
+                </a>
+                
+                <a href="/categories">
+                    <div class="item">
+                        <div style="min-width: 20px; max-width: 50px; width: 10%">
+                            <i class="fa-solid fa-bookmark fa-fw"></i>
+                        </div>
+                        <div style="min-width: 100px; max-width: 150%; width: 20%">Categories</div>
+                    </div>
+                </a>
+                
+                <a href="/tags">
+                    <div class="item">
+                        <div style="min-width: 20px; max-width: 50px; width: 10%">
+                            <i class="fa-solid fa-tags fa-fw"></i>
+                        </div>
+                        <div style="min-width: 100px; max-width: 150%; width: 20%">Tags</div>
+                    </div>
+                </a>
+                
+            </div>
+        </transition>
+    </nav>
+</div>
+<transition name="fade">
+    <div id="menu-curtain" @click="showMenuItems = !showMenuItems" v-show="showMenuItems"></div>
+</transition>
+
+        <div id="main" :class="loading ? 'into-enter-from': 'into-enter-active'">
+            <div class="article">
+    <div>
+        <h1>记一次基于Backrest+百度网盘 TrueNAS的云端块备份</h1>
+    </div>
+    <div class="info">
+        <span class="date">
+            <span class="icon">
+                <i class="fa-solid fa-calendar fa-fw"></i>
+            </span>
+            2025/7/3
+        </span>
+        
+        
+        <span class="tags">
+            <span class="icon">
+                <i class="fa-solid fa-tags fa-fw"></i>
+            </span>
+            
+            
+            <span class="tag">
+                
+                <a href="/tags/R730/" style="color: #03a9f4">
+                    R730
+                </a>
+            </span>
+            
+            <span class="tag">
+                
+                <a href="/tags/%E6%9C%8D%E5%8A%A1%E5%99%A8/" style="color: #00bcd4">
+                    服务器
+                </a>
+            </span>
+            
+            <span class="tag">
+                
+                <a href="/tags/%E6%95%B0%E6%8D%AE%E5%A4%87%E4%BB%BD/" style="color: #03a9f4">
+                    数据备份
+                </a>
+            </span>
+            
+        </span>
+        
+    </div>
+    
+    <div class="content" v-pre>
+        <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>前段时间服务器不是炸过一次</p>
+<p>那倒是给我敲响了一次警钟</p>
+<p>虽然数据基本没丢失，但要是丢失了对我来说也是挺伤的</p>
+<p>NAS里有我拍的很多照片 我存的一些黑历史 还有<del>我自己下的资源之类的</del></p>
+<p>真要说多重要没了会死的数据那不至于</p>
+<p>只是没了对我来讲是不小的损失</p>
+<p>我就想到，我们可以加密把数据存储到云端，这样不会被网盘和谐(至少就目前来说应该百度网盘还是破解不了AES加密)，也多了一份异地备份</p>
+<p>我的NAS是三块4T组的RAID5，也就是8T的储存空间</p>
+<p>刚好，我自己有百度网盘的会员，他给了12T的储存空间</p>
+<span id="more"></span> 
+
+<h1 id="确定方案"><a href="#确定方案" class="headerlink" title="确定方案"></a>确定方案</h1><p>TrueNAS里其实有云备份的功能了，加密定时等等都有</p>
+<p>但他也不是这么完美的</p>
+<p>最简单的来说，百度网盘文件大小有限制，我最大的文件有60多个G（也就是某个街机音游的压缩包）</p>
+<p>文件名太长，文件路径太长，小文件太多等等这都可能会出bug</p>
+<p>所以我们需要一个能分块备份的</p>
+<p>搜了一圈，有个项目名为Backrest非常符合我们的需求</p>
+<p>加密存储+增量块备份+支持WebDev等+定时</p>
+<p>这就是我们需要的</p>
+<h1 id="那就开始吧"><a href="#那就开始吧" class="headerlink" title="那就开始吧"></a>那就开始吧</h1><p>看了一下这个项目的README，我选择用docker跑</p>
+<p>以前不喜欢用docker，觉得麻烦</p>
+<p><del>用了就真香</del></p>
+<p>虚拟机内部用的虚拟交换机，那个是万兆的内网</p>
+<p>那肯定是没瓶颈的，毕竟我硬盘性能拉满拉满也就几百MiB/s</p>
+<p>但是如果说你要在别的虚拟机上跑backrest，就要过虚拟交换机去连接TrueNAS</p>
+<p>我个人认为这没啥必要，因为这样会多过一层CPU</p>
+<p>TrueNAS是支持docker的，直接跑我觉得更好</p>
+<p>TrueNAS管这个叫<strong>应用</strong></p>
+<p>我一开始点的添加应用里的自定义应用程序</p>
+<p><img src="https://s2.loli.net/2025/07/03/CGjyMdArPIehUfk.png" alt="image.png"></p>
+<p>这不就是docker run的一堆东西</p>
+<p>那我还得手动填进去</p>
+<p>作为懒狗的我，亚达</p>
+<p>然后我突然发现旁边有个通过yaml进行安装</p>
+<p><img src="https://s2.loli.net/2025/07/03/RH9G1LcbYglydrw.png" alt="image.png"></p>
+<p>我一拍脑袋，这不就是<code>docker-compose.yml</code>吗</p>
+<p>Backrest的README里面也有compose的模板，改一下直接填进去</p>
+<pre><code class="YAML">services:
+  backrest:
+    image: garethgeorge/backrest:latest
+    container_name: backrest
+    hostname: backrest
+    volumes:
+      - ./backrest/data:/data
+      - ./backrest/config:/config
+      - ./backrest/cache:/cache
+      - ./backrest/tmp:/tmp
+      - /mnt/main:/nasdata #你truenas的存储集地址
+    environment:
+      - BACKREST_DATA=/data
+      - BACKREST_CONFIG=/config/config.json
+      - XDG_CACHE_HOME=/cache
+      - TMPDIR=/tmp
+      - TZ=Asia/Shanghai
+    ports:
+      - &quot;9898:9898&quot;
+    restart: unless-stopped
+</code></pre>
+<p>还真的能跑，完美</p>
+<p>我们现在需要给Backrest添加repo，也就是远程存储仓库</p>
+<h1 id="百度网盘挂载"><a href="#百度网盘挂载" class="headerlink" title="百度网盘挂载"></a>百度网盘挂载</h1><p>那问题来了</p>
+<p>挂载百度网盘要用Alist（坚果云123云盘啥的可以用WebDev）</p>
+<p>但是众所周知，Alist作者把项目卖了</p>
+<p>你挂载网盘无论如何都是要用Alist的api的，那个并不开源</p>
+<p>你可以说我数据没啥多机密的，但很显然把自己的数据丢给一个不开源的黑箱去处理是不明智的</p>
+<p>找了一圈发现有个OpenAlist项目</p>
+<p>老规矩，也是用docker把他跑起来，这里我们也把他部署在TrueNAS上</p>
+<pre><code class="YAML">services:
+  openlist:
+    container_name: openlist
+    environment:
+      - UMASK=022
+    image: openlistteam/openlist:latest
+    ports:
+      - &#39;5244:5244&#39;
+      - &#39;5246:5246&#39;
+    restart: unless-stopped
+    environment:
+    - TZ=Asia/Shanghai
+    user: &#39;0:0&#39;
+    volumes:
+      - /etc/openlist:/opt/openlist/data
+</code></pre>
+<p>运行起来之后手动查看下日志，他会把网页admin账户的密码给出来</p>
+<p>然后按照官方文档挂载百度网盘</p>
+<p>这里想吐槽的一点就是百度网盘把个人开发者的申请给关了</p>
+<p>咋想的呢 文档都来不及改</p>
+<p>2025.9.27更新：他又把个人申请打开了（）</p>
+<p>那理论来说可以做到用自己申请的apikey去挂载了，数据更透明</p>
+<p>然后的话，大文件上传下载需要修改UserAgent</p>
+<p>但是我考虑到我们的分片并不会特别大，<del>可改可不改</del></p>
+<p>他这里主要是要改浏览器的UA和aria2的</p>
+<h1 id="开始debug"><a href="#开始debug" class="headerlink" title="开始debug"></a>开始debug</h1><p>挂载上百度网盘之后，我一开始想的是去创建S3对象存储</p>
+<p>试了下发现不咋地，甚至可以说很难用</p>
+<p>具体表现就是我用一些S3查看器发现文件传不上去</p>
+<p>可能我是猪头肉不会整 但至少在我这OpenList的S3对象存储不可用</p>
+<p>那没办法了，用Webdav吧</p>
+<p>我的想法是百度网盘——OpenList——（webdav）—Rclone——Backrest</p>
+<p>感觉是一坨石山，先试试能不能用</p>
+<p>TrueNAS是自带rclone的</p>
+<p>打开一个TrueNAS命令行，输入</p>
+<pre><code class="Bash">rclone config
+</code></pre>
+<p>然后选择创建，输入你想要的rclone名字，服务提供商选择Webdav，我这里是序号52</p>
+<p>地址的话填写<a target="_blank" rel="noopener" href="http://openlist地址:5244/dav">http://openlist地址:5244/dav</a></p>
+<p>然后供应商vendor直接回车</p>
+<p>然后输入用户名密码</p>
+<p>输入密码的时候是不显示的</p>
+<p>然后高级设置的时候选是</p>
+<p>headers填写<code>Referer,https://pan.baidu.com/,User-Agent,pan.baidu.com</code></p>
+<p>输入rclone ls 你的rclone名字:/</p>
+<p>能看到你网盘的文件就算成功了</p>
+<p>我怀着激动的心情去backrest尝试备份</p>
+<p>首先我们得更改一下compose的配置</p>
+<pre><code class="YAML">services:
+  backrest:
+    image: garethgeorge/backrest:latest
+    container_name: backrest
+    hostname: backrest
+    volumes:
+      - ./backrest/data:/data
+      - ./backrest/config:/config
+      - ./backrest/cache:/cache
+      - ./backrest/tmp:/tmp
+      - /mnt/main:/nasdata #你truenas的存储集地址
+      - /root/.config/rclone:/root/.config/rclone #rclone配置文件的地址
+    environment: 
+      - BACKREST_DATA=/data
+      - BACKREST_CONFIG=/config/config.json
+      - XDG_CACHE_HOME=/cache
+      - TMPDIR=/tmp
+      - TZ=Asia/Shanghai
+    ports:
+      - &quot;9898:9898&quot;
+    restart: unless-stopped
+</code></pre>
+<p>然后的话新建一个repo</p>
+<p>这里的baidu就是之前rclone的名字</p>
+<p>下面的密码请牢牢记住，以后恢复文件没这个密码可恢复不了</p>
+<p><img src="https://s2.loli.net/2025/09/27/OaIieDWkPtArcnZ.png" alt="35380971-0245-4e69-a95d-6a89b4d19d53.png"></p>
+<p>接下来新建一个备份任务，我这里是每天凌晨5点备份</p>
+<p><img src="https://s2.loli.net/2025/09/27/qlpFek4AUSV9xL3.png" alt="eb871b0e-b31c-4607-a416-d4ee0148e4f6.png"></p>
+<p>然后我加了一个参数<code>--pack-size=128</code>，也就是分包为128M，默认的4M太小了，而且好像大于128就传不上去了 得在rclone那里分片才行</p>
+<p>然后试一下备份</p>
+<p>现在就是等待。。</p>
+<p>过了几分钟不出意外报错一片片</p>
+<pre><code>[restic] rclone: 2025/09/27 03:15:06 ERROR : data/9d/9d91c28f8335c83773d782c682c7bc354e09ec26b96f175b46821653d5387168: Post request rcat error: Method Not Allowed: 405 Method Not Allowed
+[restic] Save(&lt;data/9d91c28f83&gt;) returned error, retrying after 49.043625591s: unexpected HTTP response (500): 500 Internal Server Error
+</code></pre>
+<p>去Openlist的日志看到：</p>
+<pre><code>2025-09-27 13:39:41.854410+00:00#1: upload/download stream incomplete, possible network issue; error in uploading to baidu, will retry. response=&#123;&quot;error_code&quot;:31299, &quot;error_msg&quot;:&quot;Invalid param keylist&quot;&#125;
+</code></pre>
+<p>我们去<a target="_blank" rel="noopener" href="https://pan.baidu.com/union/doc/nksg0s9vi">这个文档</a>看到这个response 31299是第一个分片的大小小于4M</p>
+<p>理论来说超级会员可以分片大于4M，我们管它呢</p>
+<p><img src="https://s2.loli.net/2025/09/27/pz8MusNRHIayS3k.png" alt="0971f5dd-8b1c-444f-8381-c95fa7016d24.png"></p>
+<p>我们直接在Openlist改成4M分片大小</p>
+<p>然后还是报错</p>
+<p>没辙了 去搜了一下</p>
+<p>我找到了<a target="_blank" rel="noopener" href="https://github.com/AlistGo/alist/discussions/1948">这个issue</a></p>
+<p><img src="https://s2.loli.net/2025/09/27/OEgiJFv8sVIWR9A.png" alt="1e919ca1-3956-4fc5-bfa4-5e91940f1b79.png"></p>
+<p>打开Web代理 Webdav代理改成本地 Upload Api改成这个</p>
+<p>再试试</p>
+<p><img src="https://s2.loli.net/2025/09/27/WciPb2sGQdXAh6S.png" alt="371ba569-ef1e-4716-95c1-efea37e0ed2a.png"></p>
+<p>欸得了（）传了几百个G 应该没啥问题了</p>
+<p>不过有时候可能会断，不过restic会断点续传，再试一次就好</p>
+<p>然后要注意的就是小心传太多被运营商当PCDN了</p>
+
+    </div>
+    
+    
+    
+    
+    
+    
+    
+</div>
+
+            <footer id="footer">
+    <div id="footer-wrap">
+        <div>
+            &copy;
+            221 - 2025 Cainong&#39;s Blog
+            <span id="footer-icon">
+                <i class="fa-solid fa-font-awesome fa-fw"></i>
+            </span>
+            &commat;Cainong
+        </div>
+        <div>
+            Based on the <a target="_blank" rel="noopener" href="https://hexo.io">Hexo Engine</a> &amp;
+            <a target="_blank" rel="noopener" href="https://github.com/theme-particlex/hexo-theme-particlex">ParticleX Theme</a>
+        </div>
+        
+    </div>
+</footer>
+
+        </div>
+        
+        <transition name="fade">
+            <div id="preview" ref="preview" v-show="previewShow">
+                <img id="preview-content" ref="previewContent" />
+            </div>
+        </transition>
+        
+    </div>
+    <script src="/js/main.js"></script>
+    
+    
+
+
+
+
+    
+</body>
+</html>

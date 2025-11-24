@@ -1,0 +1,365 @@
+
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="utf-8" />
+    <title>记一次上海bw的碎碎念 | Cainong&#39;s Blog</title>
+    <meta name="author" content="Cainong" />
+    <meta name="description" content="" />
+    <meta name="keywords" content="" />
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"
+    />
+    <link rel="icon" href="/images/avatar.png" />
+    <link rel="preconnect" href="https://s4.zstatic.net" />
+<script src="https://s4.zstatic.net/ajax/libs/vue/3.3.7/vue.global.prod.min.js"></script>
+<link rel="stylesheet" href="https://s4.zstatic.net/ajax/libs/font-awesome/6.4.2/css/all.min.css" />
+<link rel="preconnect" href="https://fonts.googleapis.cn" />
+<link rel="preconnect" href="https://fonts.gstatic.cn" crossorigin />
+<link
+    rel="stylesheet"
+    href="https://fonts.googleapis.cn/css2?family=Fira+Code:wght@400;500;600;700&family=Lexend:wght@400;500;600;700;800;900&family=Noto+Sans+SC:wght@400;500;600;700;800;900&display=swap"
+/>
+<script> const mixins = {}; </script>
+
+<script src="https://polyfill.alicdn.com/v3/polyfill.min.js?features=default"></script>
+
+
+<script src="https://s4.zstatic.net/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="https://s4.zstatic.net/ajax/libs/highlightjs-line-numbers.js/2.8.0/highlightjs-line-numbers.min.js"></script>
+<link
+    rel="stylesheet"
+    href="https://s4.zstatic.net/ajax/libs/highlight.js/11.9.0/styles/github.min.css"
+/>
+<script src="/js/lib/highlight.js"></script>
+
+
+
+<script src="/js/lib/preview.js"></script>
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/css/main.css" />
+
+<meta name="generator" content="Hexo 5.4.2"></head>
+<body>
+    <div id="layout">
+        <transition name="fade">
+            <div id="loading" v-show="loading">
+                <div id="loading-circle">
+                    <h2>LOADING</h2>
+                    <p>加载过慢请开启缓存 浏览器默认开启</p>
+                    <img src="/images/loading.gif" />
+                </div>
+            </div>
+        </transition>
+        <div id="menu" :class="{ hidden: hiddenMenu, 'menu-color': menuColor}">
+    <nav id="desktop-menu">
+        <a class="title" href="/">
+            <span>CAINONG&#39;S BLOG</span>
+        </a>
+        
+        <a href="/">
+            <i class="fa-solid fa-house fa-fw"></i>
+            <span>&ensp;Home</span>
+        </a>
+        
+        <a href="/about">
+            <i class="fa-solid fa-id-card fa-fw"></i>
+            <span>&ensp;About</span>
+        </a>
+        
+        <a href="/archives">
+            <i class="fa-solid fa-box-archive fa-fw"></i>
+            <span>&ensp;Archives</span>
+        </a>
+        
+        <a href="/categories">
+            <i class="fa-solid fa-bookmark fa-fw"></i>
+            <span>&ensp;Categories</span>
+        </a>
+        
+        <a href="/tags">
+            <i class="fa-solid fa-tags fa-fw"></i>
+            <span>&ensp;Tags</span>
+        </a>
+        
+    </nav>
+    <nav id="mobile-menu">
+        <div class="title" @click="showMenuItems = !showMenuItems">
+            <i class="fa-solid fa-bars fa-fw"></i>
+            <span>&emsp;CAINONG&#39;S BLOG</span>
+        </div>
+        <transition name="slide">
+            <div class="items" v-show="showMenuItems">
+                
+                <a href="/">
+                    <div class="item">
+                        <div style="min-width: 20px; max-width: 50px; width: 10%">
+                            <i class="fa-solid fa-house fa-fw"></i>
+                        </div>
+                        <div style="min-width: 100px; max-width: 150%; width: 20%">Home</div>
+                    </div>
+                </a>
+                
+                <a href="/about">
+                    <div class="item">
+                        <div style="min-width: 20px; max-width: 50px; width: 10%">
+                            <i class="fa-solid fa-id-card fa-fw"></i>
+                        </div>
+                        <div style="min-width: 100px; max-width: 150%; width: 20%">About</div>
+                    </div>
+                </a>
+                
+                <a href="/archives">
+                    <div class="item">
+                        <div style="min-width: 20px; max-width: 50px; width: 10%">
+                            <i class="fa-solid fa-box-archive fa-fw"></i>
+                        </div>
+                        <div style="min-width: 100px; max-width: 150%; width: 20%">Archives</div>
+                    </div>
+                </a>
+                
+                <a href="/categories">
+                    <div class="item">
+                        <div style="min-width: 20px; max-width: 50px; width: 10%">
+                            <i class="fa-solid fa-bookmark fa-fw"></i>
+                        </div>
+                        <div style="min-width: 100px; max-width: 150%; width: 20%">Categories</div>
+                    </div>
+                </a>
+                
+                <a href="/tags">
+                    <div class="item">
+                        <div style="min-width: 20px; max-width: 50px; width: 10%">
+                            <i class="fa-solid fa-tags fa-fw"></i>
+                        </div>
+                        <div style="min-width: 100px; max-width: 150%; width: 20%">Tags</div>
+                    </div>
+                </a>
+                
+            </div>
+        </transition>
+    </nav>
+</div>
+<transition name="fade">
+    <div id="menu-curtain" @click="showMenuItems = !showMenuItems" v-show="showMenuItems"></div>
+</transition>
+
+        <div id="main" :class="loading ? 'into-enter-from': 'into-enter-active'">
+            <div class="article">
+    <div>
+        <h1>记一次上海bw的碎碎念</h1>
+    </div>
+    <div class="info">
+        <span class="date">
+            <span class="icon">
+                <i class="fa-solid fa-calendar fa-fw"></i>
+            </span>
+            2023/7/28
+        </span>
+        
+        
+        <span class="tags">
+            <span class="icon">
+                <i class="fa-solid fa-tags fa-fw"></i>
+            </span>
+            
+            
+            <span class="tag">
+                
+                <a href="/tags/%E6%97%85%E6%B8%B8/" style="color: #ff7d73">
+                    旅游
+                </a>
+            </span>
+            
+            <span class="tag">
+                
+                <a href="/tags/vlog/" style="color: #00a596">
+                    vlog
+                </a>
+            </span>
+            
+            <span class="tag">
+                
+                <a href="/tags/bw/" style="color: #ffa2c4">
+                    bw
+                </a>
+            </span>
+            
+        </span>
+        
+    </div>
+    
+    <div class="content" v-pre>
+        <p>我一开始本来想着这里放的东西是偏技术性的，按理来说blog好像不应该放这种东西</p>
+<p><del>但是没东西写了</del></p>
+<p>其实是我有3篇东西没写完，没空写</p>
+<p>所以闲着无事，在返程的飞机上写了这篇blog</p>
+<h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>我兄弟啊，两年前嚷着去CJ，结果好巧不巧，长江三角洲那边出疫情了，南京波及上海挺合理的</p>
+<p>他还信誓旦旦告诉我“我基本稳了”</p>
+<p>结果买了票差点没能退</p>
+<span id="more"></span> 
+
+<p>更巧的是那时候我就在南京，回来喜提7天隔离套餐</p>
+<p>不管怎么说，bw也好几年没开了，今年既然开了就去看看吧</p>
+<p>也算是陪我儿子出去旅游走走</p>
+<p>也算是我第一次看这么大的展子（广西是真的穷啊，。</p>
+<p>与其说是记录blog，更应该说是一些旅途中的碎碎念</p>
+<h1 id="关于航班"><a href="#关于航班" class="headerlink" title="关于航班"></a>关于航班</h1><p>去的时候上海下雨，航班从12:50一路推到16:55</p>
+<p>回来的时候刚起床就看到从17:20变成了19:40</p>
+<p>后悔死了干嘛不买延误险呢</p>
+<h1 id="bw抢票"><a href="#bw抢票" class="headerlink" title="bw抢票"></a>bw抢票</h1><p><img src="https://s2.loli.net/2023/07/29/tIDh8nasQzY9kXT.jpg" alt="IMG_8393.jpeg"></p>
+<p>很遗憾我没在场上看到这个大旗子，但这也是我的真实感受</p>
+<p>兄弟为了抢票开了大会员结果被演了</p>
+<p>晚上8点也是啥也没拿到</p>
+<p>在这里很感谢Github上的<a target="_blank" rel="noopener" href="https://github.com/fengx1a0/Bilibili_show_ticket_auto_order">这个项目</a></p>
+<p>没错，我用他抢到了，5个兄弟5张票</p>
+<p>大概就是抢别人退的票和官方时不时放出来的一两张吧</p>
+<p>不管怎么说，7月22日5张VIP全拿到了</p>
+<h1 id="关于bw"><a href="#关于bw" class="headerlink" title="关于bw"></a>关于bw</h1><p>那么问题来了，21 22 23三天为什么我选了22呢？</p>
+<p><del>因为有东雪莲</del></p>
+<p><img src="https://s2.loli.net/2023/07/29/y7fiUIE9mSlxRC1.png" alt="IMG_4159.png"></p>
+<p>好吧这也许是某个特别的原因，但除了东雪莲对于我来说其实三天都一样</p>
+<p>因为邀请嘉宾一半都是vtb，剩下到场的嘉宾我认识的也是少的一p</p>
+<p>所以就选择了中间这天</p>
+<h1 id="bw当天"><a href="#bw当天" class="headerlink" title="bw当天"></a>bw当天</h1><p>很遗憾，我早上5点和兄弟起床，坐了一个小时地铁，结果已经提前放普通票进场了</p>
+<p>就，挺无语的，我付了588就图个提前入场领周边结果他给我来这一出</p>
+<p>检票的那个外场居然就已经比南宁会展中心一整个展馆大了，果然是魔都。。</p>
+<p>进场之后给自己定了个和20位Coser集邮的目标，没想到最后成功了！</p>
+<p>整个场子给我的感觉就是，人多</p>
+<p><img src="https://s2.loli.net/2023/07/29/sRpAQDrkLyhKJMB.jpg" alt="IMG_8576.jpeg"></p>
+<p>人超多，，，有些地方基站会炸，手机信息都发不出去</p>
+<p>我整个展子说过最多的话就是</p>
+<p><strong>二次元好可怕</strong></p>
+<p>无论是出了地铁站跑起来的人还是里面排出天际的队列</p>
+<p>尤其是米家那几个是真的离谱</p>
+<p>想领米家的无料是真的领不到</p>
+<p>但哥俩收获还是很多，领了一堆</p>
+<p><img src="https://s2.loli.net/2023/07/29/h85xwpHb3teEcQ6.jpg" alt="FullSizeRender.jpeg"></p>
+<p><img src="https://s2.loli.net/2023/07/29/dbYQ1eVfw83ZPBS.jpg" alt="IMG_8615.jpeg"></p>
+<p><del>寄快递回来花了50多 妈的</del></p>
+<p>哦，还给叔叔上贡了（</p>
+<p><img src="https://s2.loli.net/2023/07/29/5A4SLcJ8vd3Hqy6.jpg" alt="_Q8A0021.jpg"></p>
+<p>这里有个好玩的，前一天晚上我说兄买点东西放包里当午饭吧，于是我买了桶泡面</p>
+<p>我兄弟则是在赌里面便利店有东西吃</p>
+<p>事实证明他赌对了，于是买了个芝士饭团当午饭</p>
+<p>然后存包的时候把包存进去了，饭团在包里</p>
+<p>晚上拿出来饭团已经变成zip了</p>
+<p>于是兄弟看着我吃午饭</p>
+<p>然后是集邮</p>
+<p>穿着东雪莲的战袍（bushi）和Coser合照了</p>
+<p><img src="https://s2.loli.net/2023/07/31/gFvl138X65HrfxP.jpg" alt="_Q8A0017-已增强-NR.jpg"></p>
+<p><del>最满意的一张</del></p>
+<p>20个Coser，只多不少</p>
+<p>说起来以前我都是喜欢自己拍Coser自己欣赏，这会不知道为啥就想集邮了</p>
+<p>我和兄弟就在8个馆来回走，到处走</p>
+<p>虽然还是错过了10:40东雪莲的直播</p>
+<p>那时候我在结果不是东雪莲，就润了。。</p>
+<p>声明：我绝对不是喜欢东雪莲，我只是乐子人，相信我（）</p>
+<p>展上买了一个抱枕</p>
+<p><img src="https://s2.loli.net/2023/07/31/szYO7BLDIQw8AmK.jpg" alt="IMG_8829.jpeg"></p>
+<p>回酒店拆开了，抱枕涨起来根本塞不进包里，只能一路拿着从地铁到动车，真是草了都</p>
+<p>时间过的还是好快，写到这里我已经在回家的路上了（飞机上睡着了）</p>
+<p>每次漫展出来都有种空虚感，或许是每次都遗憾自己因为身材原因没能出Cos吧</p>
+<p>一想到那些照片就是我去漫展的唯一证明，我好像什么都没留下，心里确实有点难受呢</p>
+<p>绝对不是因为花了588心痛钱！！</p>
+<p>出了展子要打车，离谱的来了</p>
+<p>我第一次看见打车要排队的滴滴。。。</p>
+<p><img src="https://s2.loli.net/2023/07/29/wLgFtxYCcIPB47l.jpg" alt="IMG_8610.jpeg"></p>
+<p>还要tm一个小时</p>
+<p>最后加钱打的专车 贵死了</p>
+<h1 id="大概行程"><a href="#大概行程" class="headerlink" title="大概行程"></a>大概行程</h1><p>这次出行去的最多的地方：上海烈火 索尼x孤独摇滚联动店</p>
+<p>上海 杭州 南京，去了三个地方的索尼店</p>
+<p><img src="https://s2.loli.net/2023/07/29/BZE6NX4sCe3bJvQ.jpg" alt="IMG_8673.jpeg"></p>
+<p>索尼的这个耳机还给我听流泪了（贫穷的泪水</p>
+<p><img src="https://s2.loli.net/2023/07/29/2PF5mMGkl9iUtQg.jpg" alt="IMG_8780.jpeg"></p>
+<p><img src="https://s2.loli.net/2023/07/29/Lvs5Na3ZW8hETAf.jpg" alt="IMG_8779.jpeg"></p>
+<p>太心动了，+100可以拿到波奇酱的耳机包（二次元奇怪的消费观）</p>
+<p>其实挺想换XM5，但家里有点事，再加上我有XM4了根本没理由换</p>
+<p>但是我兄弟提了，<del>毕竟是富佬</del></p>
+<p><img src="https://s2.loli.net/2023/07/29/DqG69uy5zfbovNt.jpg" alt="IMG_8782.jpeg"></p>
+<p>烈火这个我想骂自己一句sb，出来玩去打nm音游，这一趟光买币花了快200，可以在我家这边打100pc的mai，也不知道我咋想的</p>
+<p><img src="https://s2.loli.net/2023/07/29/VP5MK63jko1zeCf.jpg" alt="IMG_4232.jpeg"></p>
+<p>后面还去了米哈游总部</p>
+<p><img src="https://s2.loli.net/2023/07/29/Fgtnp3RlZKuh9e6.jpg" alt="IMG_8637.jpeg"></p>
+<p>这里如果有人看的话我给的建议是：别去</p>
+<p>虽然免费，但是排队一个多小时不说还只有一层一点点东西能看</p>
+<p>去了外文书店，买了本铃芽之旅的生肉</p>
+<p>属于是冲动消费，不知道咋想的我认为我能看得懂</p>
+<p>70多块钱，建议各位是不要学习</p>
+<h1 id="一些碎碎念"><a href="#一些碎碎念" class="headerlink" title="一些碎碎念"></a>一些碎碎念</h1><p>太无语了，大商场里面能找个地方坐的只有星巴克，结果出来7天不到星巴克一人涨了4颗星星</p>
+<p>更草的是吃不起东西天天吃麦当劳，吃饭钱花的没星巴克多</p>
+<p>最最离谱的是大商场里东西最便宜的是Apple Store</p>
+<p>这7天不是m属性大爆发就是s属性大爆发</p>
+<h2 id="年轻人诡异的旅行安排"><a href="#年轻人诡异的旅行安排" class="headerlink" title="年轻人诡异的旅行安排"></a>年轻人诡异的旅行安排</h2><p>同行的有5位兄弟，除了和我逛bw以及睡一间房的@baohai</p>
+<p>另外三位就nb了，睡几天酒店不说bw居然啥没领到</p>
+<p><del>我严厉批判这种出来浪费钱的行为</del></p>
+<h1 id="一些旅途中的乐子"><a href="#一些旅途中的乐子" class="headerlink" title="一些旅途中的乐子"></a>一些旅途中的乐子</h1><p><img src="https://s2.loli.net/2023/07/29/3cB54vaneUF6Nlx.jpg" alt="IMG_8738.jpeg"></p>
+<p>滨州可乐</p>
+<p><img src="https://s2.loli.net/2023/07/29/FkecblixWHhqON7.jpg" alt="IMG_8714.jpeg"></p>
+<p>哥几个等了半个小时的杭州原神4号线</p>
+<p><img src="https://s2.loli.net/2023/07/29/52Nyxq3J7pkQnKd.jpg" alt="IMG_8722.jpeg"></p>
+<p>“你定闹钟没？”</p>
+<p>“定了，七点半的”</p>
+<p>“现在八点半了”</p>
+<p>“Oh shit”</p>
+<p>于是高铁改签变成了绿皮火车。。</p>
+<p>到这里就差不多了，7天过的真的好快，感觉就像做了一场梦一样</p>
+<p>两年后高考结束或许我会写一篇霓虹之旅</p>
+<p>大概吧</p>
+
+    </div>
+    
+    
+    
+    
+    
+    
+    
+</div>
+
+            <footer id="footer">
+    <div id="footer-wrap">
+        <div>
+            &copy;
+            221 - 2025 Cainong&#39;s Blog
+            <span id="footer-icon">
+                <i class="fa-solid fa-font-awesome fa-fw"></i>
+            </span>
+            &commat;Cainong
+        </div>
+        <div>
+            Based on the <a target="_blank" rel="noopener" href="https://hexo.io">Hexo Engine</a> &amp;
+            <a target="_blank" rel="noopener" href="https://github.com/theme-particlex/hexo-theme-particlex">ParticleX Theme</a>
+        </div>
+        
+    </div>
+</footer>
+
+        </div>
+        
+        <transition name="fade">
+            <div id="preview" ref="preview" v-show="previewShow">
+                <img id="preview-content" ref="previewContent" />
+            </div>
+        </transition>
+        
+    </div>
+    <script src="/js/main.js"></script>
+    
+    
+
+
+
+
+    
+</body>
+</html>

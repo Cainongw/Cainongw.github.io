@@ -1,0 +1,300 @@
+
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="utf-8" />
+    <title>记一次MelonLoader的使用和开发还有踩坑 | Cainong&#39;s Blog</title>
+    <meta name="author" content="Cainong" />
+    <meta name="description" content="" />
+    <meta name="keywords" content="" />
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"
+    />
+    <link rel="icon" href="/images/avatar.png" />
+    <link rel="preconnect" href="https://s4.zstatic.net" />
+<script src="https://s4.zstatic.net/ajax/libs/vue/3.3.7/vue.global.prod.min.js"></script>
+<link rel="stylesheet" href="https://s4.zstatic.net/ajax/libs/font-awesome/6.4.2/css/all.min.css" />
+<link rel="preconnect" href="https://fonts.googleapis.cn" />
+<link rel="preconnect" href="https://fonts.gstatic.cn" crossorigin />
+<link
+    rel="stylesheet"
+    href="https://fonts.googleapis.cn/css2?family=Fira+Code:wght@400;500;600;700&family=Lexend:wght@400;500;600;700;800;900&family=Noto+Sans+SC:wght@400;500;600;700;800;900&display=swap"
+/>
+<script> const mixins = {}; </script>
+
+<script src="https://polyfill.alicdn.com/v3/polyfill.min.js?features=default"></script>
+
+
+<script src="https://s4.zstatic.net/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="https://s4.zstatic.net/ajax/libs/highlightjs-line-numbers.js/2.8.0/highlightjs-line-numbers.min.js"></script>
+<link
+    rel="stylesheet"
+    href="https://s4.zstatic.net/ajax/libs/highlight.js/11.9.0/styles/github.min.css"
+/>
+<script src="/js/lib/highlight.js"></script>
+
+
+
+<script src="/js/lib/preview.js"></script>
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/css/main.css" />
+
+<meta name="generator" content="Hexo 5.4.2"></head>
+<body>
+    <div id="layout">
+        <transition name="fade">
+            <div id="loading" v-show="loading">
+                <div id="loading-circle">
+                    <h2>LOADING</h2>
+                    <p>加载过慢请开启缓存 浏览器默认开启</p>
+                    <img src="/images/loading.gif" />
+                </div>
+            </div>
+        </transition>
+        <div id="menu" :class="{ hidden: hiddenMenu, 'menu-color': menuColor}">
+    <nav id="desktop-menu">
+        <a class="title" href="/">
+            <span>CAINONG&#39;S BLOG</span>
+        </a>
+        
+        <a href="/">
+            <i class="fa-solid fa-house fa-fw"></i>
+            <span>&ensp;Home</span>
+        </a>
+        
+        <a href="/about">
+            <i class="fa-solid fa-id-card fa-fw"></i>
+            <span>&ensp;About</span>
+        </a>
+        
+        <a href="/archives">
+            <i class="fa-solid fa-box-archive fa-fw"></i>
+            <span>&ensp;Archives</span>
+        </a>
+        
+        <a href="/categories">
+            <i class="fa-solid fa-bookmark fa-fw"></i>
+            <span>&ensp;Categories</span>
+        </a>
+        
+        <a href="/tags">
+            <i class="fa-solid fa-tags fa-fw"></i>
+            <span>&ensp;Tags</span>
+        </a>
+        
+    </nav>
+    <nav id="mobile-menu">
+        <div class="title" @click="showMenuItems = !showMenuItems">
+            <i class="fa-solid fa-bars fa-fw"></i>
+            <span>&emsp;CAINONG&#39;S BLOG</span>
+        </div>
+        <transition name="slide">
+            <div class="items" v-show="showMenuItems">
+                
+                <a href="/">
+                    <div class="item">
+                        <div style="min-width: 20px; max-width: 50px; width: 10%">
+                            <i class="fa-solid fa-house fa-fw"></i>
+                        </div>
+                        <div style="min-width: 100px; max-width: 150%; width: 20%">Home</div>
+                    </div>
+                </a>
+                
+                <a href="/about">
+                    <div class="item">
+                        <div style="min-width: 20px; max-width: 50px; width: 10%">
+                            <i class="fa-solid fa-id-card fa-fw"></i>
+                        </div>
+                        <div style="min-width: 100px; max-width: 150%; width: 20%">About</div>
+                    </div>
+                </a>
+                
+                <a href="/archives">
+                    <div class="item">
+                        <div style="min-width: 20px; max-width: 50px; width: 10%">
+                            <i class="fa-solid fa-box-archive fa-fw"></i>
+                        </div>
+                        <div style="min-width: 100px; max-width: 150%; width: 20%">Archives</div>
+                    </div>
+                </a>
+                
+                <a href="/categories">
+                    <div class="item">
+                        <div style="min-width: 20px; max-width: 50px; width: 10%">
+                            <i class="fa-solid fa-bookmark fa-fw"></i>
+                        </div>
+                        <div style="min-width: 100px; max-width: 150%; width: 20%">Categories</div>
+                    </div>
+                </a>
+                
+                <a href="/tags">
+                    <div class="item">
+                        <div style="min-width: 20px; max-width: 50px; width: 10%">
+                            <i class="fa-solid fa-tags fa-fw"></i>
+                        </div>
+                        <div style="min-width: 100px; max-width: 150%; width: 20%">Tags</div>
+                    </div>
+                </a>
+                
+            </div>
+        </transition>
+    </nav>
+</div>
+<transition name="fade">
+    <div id="menu-curtain" @click="showMenuItems = !showMenuItems" v-show="showMenuItems"></div>
+</transition>
+
+        <div id="main" :class="loading ? 'into-enter-from': 'into-enter-active'">
+            <div class="article">
+    <div>
+        <h1>记一次MelonLoader的使用和开发还有踩坑</h1>
+    </div>
+    <div class="info">
+        <span class="date">
+            <span class="icon">
+                <i class="fa-solid fa-calendar fa-fw"></i>
+            </span>
+            2025/6/22
+        </span>
+        
+        
+        <span class="tags">
+            <span class="icon">
+                <i class="fa-solid fa-tags fa-fw"></i>
+            </span>
+            
+            
+            <span class="tag">
+                
+                <a href="/tags/%E5%BC%80%E5%8F%91/" style="color: #00bcd4">
+                    开发
+                </a>
+            </span>
+            
+        </span>
+        
+    </div>
+    
+    <div class="content" v-pre>
+        <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>我上一次逆向了八按键音游，瞎几把写了个mod丢到了Github</p>
+<p>事实上那时候我手上并没有能测试的郊狼，写出来的玩意除了Miss判定是对的别的东西基本都用不了</p>
+<span id="more"></span> 
+
+<p>那时候我没搞清楚郊狼的ws通信到底是咋样的 随便找个文档就写上去了</p>
+<p>现在研究了一下大概就是：</p>
+<p>很显然我们需要3.0的郊狼才可可以</p>
+<p>郊狼App的ws功能是连接一个ws后端（在他的<a target="_blank" rel="noopener" href="https://github.com/DG-LAB-OPENSOURCE/DG-LAB-OPENSOURCE/tree/main/socket/BackEnd(Node)">演示文稿</a>里有）</p>
+<p>这个很好跑，解决依赖用node跑起来就好</p>
+<p>实际上App连接的也是这个后端，相当于一个中转服务器</p>
+<p>是为了一对多或者多对一玩法</p>
+<p><del>玩的真花</del></p>
+<p>但我们的需求仅仅是一对一而已</p>
+<p>但我懒得去写个后端了，我的史山水平真的不敢恭维</p>
+<p>所以这次我们主要是对那个mod的websocket逻辑进行更改,并且还是用官方的后端</p>
+<p>实际上这后端因为uuid强绑定 随便一个人的都可以</p>
+<p>以后可能会考虑把这个后端集成到mod里？</p>
+<h1 id="开始"><a href="#开始" class="headerlink" title="开始"></a>开始</h1><h2 id="JSON解析的坑"><a href="#JSON解析的坑" class="headerlink" title="JSON解析的坑"></a>JSON解析的坑</h2><p>事实上我上次那个代码是手拆json，手动解析配置文件里的json内容发送出去</p>
+<p>然后我就被ChatGPT坑了</p>
+<p>他给我推荐了个<code>Newtonsoft.Json</code>去解析</p>
+<p>结果这玩意我死活导不进去依赖 游戏加载不出来</p>
+<p>我猜可能是版本问题？毕竟maimai用的net3版本了 melonloader也是0.6.4的老版本</p>
+<p>但他确实用不了</p>
+<pre><code class="Csharp">System.TypeLoadException: Failure has occurred while loading a type.
+  at Newtonsoft.Json.Linq.JValue..ctor (System.Object value) [0x00000] in &lt;f74995119334484fb6db6825be2eac0d&gt;:0
+  at Newtonsoft.Json.Linq.JContainer.ReadContentFrom (Newtonsoft.Json.JsonReader r, Newtonsoft.Json.Linq.JsonLoadSettings settings) [0x0012e] in &lt;f74995119334484fb6db6825be2eac0d&gt;:0
+  at Newtonsoft.Json.Linq.JContainer.ReadTokenFrom (Newtonsoft.Json.JsonReader reader, Newtonsoft.Json.Linq.JsonLoadSettings options) [0x00030] in &lt;f74995119334484fb6db6825be2eac0d&gt;:0
+  at Newtonsoft.Json.Linq.JObject.Load (Newtonsoft.Json.JsonReader reader, Newtonsoft.Json.Linq.JsonLoadSettings settings) [0x0006a] in &lt;f74995119334484fb6db6825be2eac0d&gt;:0
+  at Newtonsoft.Json.Linq.JObject.Parse (System.String json, Newtonsoft.Json.Linq.JsonLoadSettings settings) [0x0000c] in &lt;f74995119334484fb6db6825be2eac0d&gt;:0
+  at Newtonsoft.Json.Linq.JObject.Parse (System.String json) [0x00000] in &lt;f74995119334484fb6db6825be2eac0d&gt;:0
+  at dg_sinmai_shcoker.WebsocketHandler.&lt;Connect&gt;g__gencode|1_5 (System.String msg, System.String ws_url) [0x00002] in &lt;5a67bc8a7654442583205147e4a8ecb9&gt;:0
+</code></pre>
+<p>我是真的不会.NET开发，完全是现学的</p>
+<p>后面试了System自带的JSON解析</p>
+<p>用不了（）那个要.NET6</p>
+<p>你猜怎么的，我又开了一个对话问GPT，这次他不推荐这个库给我了</p>
+<p>纯左右脑互博</p>
+<p>这次他给我推荐了MiniJSON</p>
+<p>又相信了（）</p>
+<p>用了一下还是可以的，没啥兼容性问题而且适配Unity</p>
+<p>唯一需要注意的就是反序列化之后记得加个.ToString()方法 不然会报错</p>
+<pre><code class="Csharp">var dict = Json.Deserialize(msg) as Dictionary&lt;string, object&gt;;
+string targetId = dict[&quot;targetId&quot;].ToString()
+</code></pre>
+<p>至此JSON解析就解决了</p>
+<p>至少不用手拆JSON</p>
+<h2 id="WebSocket的坑"><a href="#WebSocket的坑" class="headerlink" title="WebSocket的坑"></a>WebSocket的坑</h2><p>我一开始用的是<code>websocket-sharp.dll</code>这个库</p>
+<p>当然是没问题的 很好用啊</p>
+<p>我被Csharp的event订阅吸引到了，+=去订阅event来调用回调函数是哪个天才想出来的</p>
+<p>后来我的猪头脑袋就发现：欸System里不是有Websocket吗</p>
+<p>Melonloader的文件夹里也有<code>WebsocketDotNet</code>这个库</p>
+<p>为什么不用呢？</p>
+<p>写了半天代码试了半天之后发现真几把是史</p>
+<p>首先是System里的ws库非常的底层，心跳处理消息解析全部都没有</p>
+<p><code>WebsocketDotNet</code>则是没有发消息的功能？？而且一链接就断开</p>
+<p>那我玩个蛋</p>
+<p>兜兜转转还是用的<code>websocket-sharp.dll</code></p>
+<h1 id="最后"><a href="#最后" class="headerlink" title="最后"></a>最后</h1><p>该说不说事后我想了下用DX分=0来判定是一个</p>
+<p>怎么说呢</p>
+<p>很巧妙很神奇的思路</p>
+<p>因为如果你是通过hook miss的数字之类的去判定Miss的话，你需要处理跳关啊 FreedomMode重开的情况</p>
+<p>假如你用hook combo数字为0来判定miss的话那你得处理空的情况（也就是游戏没开始）</p>
+<p>或者游戏刚开始没出tap那不被电死了</p>
+<p>但DX分这个不需要</p>
+<p>也算是<del>傻人有傻福</del></p>
+
+    </div>
+    
+    
+    
+    
+    
+    
+    
+</div>
+
+            <footer id="footer">
+    <div id="footer-wrap">
+        <div>
+            &copy;
+            221 - 2025 Cainong&#39;s Blog
+            <span id="footer-icon">
+                <i class="fa-solid fa-font-awesome fa-fw"></i>
+            </span>
+            &commat;Cainong
+        </div>
+        <div>
+            Based on the <a target="_blank" rel="noopener" href="https://hexo.io">Hexo Engine</a> &amp;
+            <a target="_blank" rel="noopener" href="https://github.com/theme-particlex/hexo-theme-particlex">ParticleX Theme</a>
+        </div>
+        
+    </div>
+</footer>
+
+        </div>
+        
+        <transition name="fade">
+            <div id="preview" ref="preview" v-show="previewShow">
+                <img id="preview-content" ref="previewContent" />
+            </div>
+        </transition>
+        
+    </div>
+    <script src="/js/main.js"></script>
+    
+    
+
+
+
+
+    
+</body>
+</html>

@@ -1,0 +1,360 @@
+
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="utf-8" />
+    <title>基于authentik的局域网单点登录与通行密钥的配置与部署 | Cainong&#39;s Blog</title>
+    <meta name="author" content="Cainong" />
+    <meta name="description" content="" />
+    <meta name="keywords" content="" />
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"
+    />
+    <link rel="icon" href="/images/avatar.png" />
+    <link rel="preconnect" href="https://s4.zstatic.net" />
+<script src="https://s4.zstatic.net/ajax/libs/vue/3.3.7/vue.global.prod.min.js"></script>
+<link rel="stylesheet" href="https://s4.zstatic.net/ajax/libs/font-awesome/6.4.2/css/all.min.css" />
+<link rel="preconnect" href="https://fonts.googleapis.cn" />
+<link rel="preconnect" href="https://fonts.gstatic.cn" crossorigin />
+<link
+    rel="stylesheet"
+    href="https://fonts.googleapis.cn/css2?family=Fira+Code:wght@400;500;600;700&family=Lexend:wght@400;500;600;700;800;900&family=Noto+Sans+SC:wght@400;500;600;700;800;900&display=swap"
+/>
+<script> const mixins = {}; </script>
+
+<script src="https://polyfill.alicdn.com/v3/polyfill.min.js?features=default"></script>
+
+
+<script src="https://s4.zstatic.net/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="https://s4.zstatic.net/ajax/libs/highlightjs-line-numbers.js/2.8.0/highlightjs-line-numbers.min.js"></script>
+<link
+    rel="stylesheet"
+    href="https://s4.zstatic.net/ajax/libs/highlight.js/11.9.0/styles/github.min.css"
+/>
+<script src="/js/lib/highlight.js"></script>
+
+
+
+<script src="/js/lib/preview.js"></script>
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/css/main.css" />
+
+<meta name="generator" content="Hexo 5.4.2"></head>
+<body>
+    <div id="layout">
+        <transition name="fade">
+            <div id="loading" v-show="loading">
+                <div id="loading-circle">
+                    <h2>LOADING</h2>
+                    <p>加载过慢请开启缓存 浏览器默认开启</p>
+                    <img src="/images/loading.gif" />
+                </div>
+            </div>
+        </transition>
+        <div id="menu" :class="{ hidden: hiddenMenu, 'menu-color': menuColor}">
+    <nav id="desktop-menu">
+        <a class="title" href="/">
+            <span>CAINONG&#39;S BLOG</span>
+        </a>
+        
+        <a href="/">
+            <i class="fa-solid fa-house fa-fw"></i>
+            <span>&ensp;Home</span>
+        </a>
+        
+        <a href="/about">
+            <i class="fa-solid fa-id-card fa-fw"></i>
+            <span>&ensp;About</span>
+        </a>
+        
+        <a href="/archives">
+            <i class="fa-solid fa-box-archive fa-fw"></i>
+            <span>&ensp;Archives</span>
+        </a>
+        
+        <a href="/categories">
+            <i class="fa-solid fa-bookmark fa-fw"></i>
+            <span>&ensp;Categories</span>
+        </a>
+        
+        <a href="/tags">
+            <i class="fa-solid fa-tags fa-fw"></i>
+            <span>&ensp;Tags</span>
+        </a>
+        
+    </nav>
+    <nav id="mobile-menu">
+        <div class="title" @click="showMenuItems = !showMenuItems">
+            <i class="fa-solid fa-bars fa-fw"></i>
+            <span>&emsp;CAINONG&#39;S BLOG</span>
+        </div>
+        <transition name="slide">
+            <div class="items" v-show="showMenuItems">
+                
+                <a href="/">
+                    <div class="item">
+                        <div style="min-width: 20px; max-width: 50px; width: 10%">
+                            <i class="fa-solid fa-house fa-fw"></i>
+                        </div>
+                        <div style="min-width: 100px; max-width: 150%; width: 20%">Home</div>
+                    </div>
+                </a>
+                
+                <a href="/about">
+                    <div class="item">
+                        <div style="min-width: 20px; max-width: 50px; width: 10%">
+                            <i class="fa-solid fa-id-card fa-fw"></i>
+                        </div>
+                        <div style="min-width: 100px; max-width: 150%; width: 20%">About</div>
+                    </div>
+                </a>
+                
+                <a href="/archives">
+                    <div class="item">
+                        <div style="min-width: 20px; max-width: 50px; width: 10%">
+                            <i class="fa-solid fa-box-archive fa-fw"></i>
+                        </div>
+                        <div style="min-width: 100px; max-width: 150%; width: 20%">Archives</div>
+                    </div>
+                </a>
+                
+                <a href="/categories">
+                    <div class="item">
+                        <div style="min-width: 20px; max-width: 50px; width: 10%">
+                            <i class="fa-solid fa-bookmark fa-fw"></i>
+                        </div>
+                        <div style="min-width: 100px; max-width: 150%; width: 20%">Categories</div>
+                    </div>
+                </a>
+                
+                <a href="/tags">
+                    <div class="item">
+                        <div style="min-width: 20px; max-width: 50px; width: 10%">
+                            <i class="fa-solid fa-tags fa-fw"></i>
+                        </div>
+                        <div style="min-width: 100px; max-width: 150%; width: 20%">Tags</div>
+                    </div>
+                </a>
+                
+            </div>
+        </transition>
+    </nav>
+</div>
+<transition name="fade">
+    <div id="menu-curtain" @click="showMenuItems = !showMenuItems" v-show="showMenuItems"></div>
+</transition>
+
+        <div id="main" :class="loading ? 'into-enter-from': 'into-enter-active'">
+            <div class="article">
+    <div>
+        <h1>基于authentik的局域网单点登录与通行密钥的配置与部署</h1>
+    </div>
+    <div class="info">
+        <span class="date">
+            <span class="icon">
+                <i class="fa-solid fa-calendar fa-fw"></i>
+            </span>
+            2025/10/4
+        </span>
+        
+        
+        <span class="tags">
+            <span class="icon">
+                <i class="fa-solid fa-tags fa-fw"></i>
+            </span>
+            
+            
+            <span class="tag">
+                
+                <a href="/tags/Kubernetes/" style="color: #03a9f4">
+                    Kubernetes
+                </a>
+            </span>
+            
+            <span class="tag">
+                
+                <a href="/tags/OIDC/" style="color: #ffa2c4">
+                    OIDC
+                </a>
+            </span>
+            
+        </span>
+        
+    </div>
+    
+    <div class="content" v-pre>
+        <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>Passkey(通行密钥)作为一种新的身份验证方式近几年开始慢慢流行起来了</p>
+<p>该说不说 真的很好用</p>
+<p>其安全且方便，理论来说Passkey的安全性是高于传统的2FA的（尤其是有生物认证的情况下）</p>
+<p>但是目前只有一些大厂 比如Google Github 或者一些虚拟货币平台支持</p>
+<p>国内几乎没有厂商支持 为数不多支持的微信还要求你用非+86的手机注册才可以用</p>
+<p>我就在想，我局域网一些设备用的是弱密码 首先这不安全 其次这导致我需要记住几个不同的密码</p>
+<p>有点麻烦 何况很多时候Chrome的密码补全是不工作的</p>
+<p>有时候我root都输完了Chrome才提示让我填入密码 那我手都输完了</p>
+<p>我就在想，可不可以将局域网里面的一些服务比如ESXi vCenter TrueNAS。甚至是Windows远程桌面 SSH</p>
+<p>用反代 让他们强行支持Passkey</p>
+<p>况且前段时间我暴露的RDP服务老是被爆破 即使不是3389端口 我用了几万后的端口也会被扫到</p>
+<p>所以我需要一个局域网内的身份验证服务</p>
+<span id="more"></span> 
+
+<p>而且我们可以通过身份验证服务去搭建防火墙 给局域网所有以后可能需要暴露在公网的管理后台（比如OpenWRT 1Panel 宝塔）进行第一步认证 从而大幅度提高安全性</p>
+<h1 id="开始折腾"><a href="#开始折腾" class="headerlink" title="开始折腾"></a>开始折腾</h1><p>其实同类的竞品有很多 比如Keycloak Duo Authelia</p>
+<p>Keycloak对于LDAP支持不是很完善 后面两个太简陋了</p>
+<p>找了一下发现一个名为Authentik的解决方案很好 UI也很好看</p>
+<p>地址在这里<a target="_blank" rel="noopener" href="https://goauthentik.io/">https://goauthentik.io/</a></p>
+<h2 id="Authentik的搭建"><a href="#Authentik的搭建" class="headerlink" title="Authentik的搭建"></a>Authentik的搭建</h2><p>他推荐是用docker compose去跑</p>
+<p><del>k8s他也有相应的教程，我暂时还没有k8s的刚需，我们先用docker compose去跑</del></p>
+<p>按照他的文档跑起来就好了</p>
+<pre><code class="Bash">mkdir authentik
+cd authentik/
+wget https://docs.goauthentik.io/docker-compose.yml
+echo &quot;PG_PASS=$(openssl rand -base64 36 | tr -d &#39;\n&#39;)&quot; &gt;&gt; .env
+echo &quot;AUTHENTIK_SECRET_KEY=$(openssl rand -base64 60 | tr -d &#39;\n&#39;)&quot; &gt;&gt; .env
+docker compose pull
+docker compose up -d
+</code></pre>
+<p>2025.10.10更新：现在已经迁移到K8s 后面教程应该是一样的 这里附上K8s的YAML</p>
+<pre><code class="YAML">authentik:
+    secret_key: &quot;填写Openssl生成的经过base64编码的60位密码&quot;
+    # This sends anonymous usage-data, stack traces on errors and
+    # performance data to sentry.io, and is fully opt-in
+    error_reporting:
+        enabled: true
+    postgresql:
+        password: &quot;填写Openssl生成的经过base64编码的36位密码&quot;
+
+server:
+    ingress:
+        # Specify kubernetes ingress controller class name
+        ingressClassName: nginx
+        enabled: true
+        hosts:
+            - authentik.k8s.lan
+
+postgresql:
+    enabled: true
+    auth:
+        password: &quot;填写Openssl生成的经过base64编码的36位密码&quot;
+redis:
+    enabled: true
+</code></pre>
+<p>然后在master节点上</p>
+<pre><code class="Bash">helm repo add authentik https://charts.goauthentik.io
+helm repo update
+helm upgrade --install authentik authentik/authentik -f values.yaml
+</code></pre>
+<p>可以看到他会跑起worker server postgres redis四个容器，跑起来之后等待他显示服务为healthy就可以进入http://&lt;服务器ip&gt;:9000/if/flow/initial-setup/去进行初始化设置</p>
+<p>这里的密码请设置复杂一点</p>
+<p>跑起来之后我们就可以来研究Authentik了</p>
+<p>我们不难看到Authentik为了高度自定义，他将管理界面分为应用 流程和阶段这几个板块</p>
+<p>流程是Authentik比较特色的一个点</p>
+<p>我的理解是将认证 授权拆分成了Stage 某个特定操作（比如授权给某个应用 登录 找回密码之类的）就可以是一个Flow</p>
+<h2 id="先设置Passkey"><a href="#先设置Passkey" class="headerlink" title="先设置Passkey"></a>先设置Passkey</h2><p>首先记得我一开始的目标 先设置个Passkey先</p>
+<p>那么我们的Passkey在Authentik里叫Passwordless 无密码登录</p>
+<p>文档是这个<a target="_blank" rel="noopener" href="https://docs.goauthentik.io/add-secure-apps/flows-stages/stages/authenticator_validate/">https://docs.goauthentik.io/add-secure-apps/flows-stages/stages/authenticator_validate/</a></p>
+<p>如果要通行密钥的话我们主要是看WebAuthn这个</p>
+<p>好长一串英语 说白了就是我们首先需要去创建一个Flows</p>
+<p>我这里是这样写</p>
+<p><img src="https://s2.loli.net/2025/10/05/m9WOh7UTlRixPGy.png" alt="0e177960-3ca6-4e98-829f-248dd4d6d555.png"></p>
+<p>大可不用按照我的来 主要是为了规范化</p>
+<p>我们点进刚刚创建的Flows 然后点创建一个新的阶段</p>
+<p>类型选择Authenticator Validation Stage 我这里是第一个</p>
+<p>我这没有指定用什么设备限制 也没必要其实</p>
+<p><img src="https://s2.loli.net/2025/10/05/R7Y1zQejuhNU6qK.png" alt="d12af258-3e1f-45da-a725-d812c1eeb8c7.png"></p>
+<p><img src="https://s2.loli.net/2025/10/05/fqba94BIXRxtJWQ.png" alt="QQ_1759617203484.png"></p>
+<p><img src="https://s2.loli.net/2025/10/05/tMF34nW9moVujbP.png" alt="QQ_1759617212724.png"></p>
+<p>下一步顺序我们填写10</p>
+<p>然后完成</p>
+<p>它后面说可以添加别的验证阶段 比如验证码之类的</p>
+<p>但是我个人觉得没必要了 Passkey已经很安全了</p>
+<p>如果你用过一些虚拟货币平台你会发现提币的时候需要输入邮箱+动态验证码 如果你有Passkey只需要一个Passkey验证</p>
+<p>这是题外话了</p>
+<p>接下来我们给这个流程绑定一个已有阶段 我们选择default-authentication-login 顺序写20</p>
+<p>也就是说顺序是先用无密码认证Stage 没问题了我们就认为用户处于登录Stage</p>
+<p>下一步我们需要修改原有的登录流程</p>
+<p>我们去Flows里搜索Slug default-authentication-flow</p>
+<p>也就是正常的认证流程</p>
+<p>点击阶段绑定 我们需要编辑default-authentication-identification这个阶段</p>
+<p>流程设置下面有一个无密码流程 我们选择我们刚刚创建的passwordless-webauthn-flow</p>
+<p>更新之后我们Passkey的设置就完成了</p>
+<p>其实是有点麻烦的 但这一套给我的感觉就是给Authentik带来了超高自由性</p>
+<p>然后当我想测试的时候</p>
+<p><img src="https://s2.loli.net/2025/10/05/LvWFDOnxfRrcXzk.png" alt="86be608c-c677-4349-b548-4ff181fbe89b.png"></p>
+<p>折腾俩小时我的表情:</p>
+<p><img src="https://s2.loli.net/2025/10/05/JaGlzxN6goOWIEr.png" alt="ed3039d4-1bcd-4c6c-92f9-90505c9a7700.png"></p>
+<h2 id="SSL证书自签"><a href="#SSL证书自签" class="headerlink" title="SSL证书自签"></a>SSL证书自签</h2><p>我立马想到，这可能是因为我们没有部署SSL证书 因为Passkey对安全的高标准要求 没有https加密大概是不给用的</p>
+<p>我们需要一个自签证书的服务器，因为显然.lan域名我们不可能去找根证书服务商申请 我们只能自己给证书签名</p>
+<p>啪的一下很快找到了名为Traefik的项目，它可以自动识别Docker 自动加域名自动给域名上https</p>
+<p>虽然它不能给.lan域名申请证书，但我们自己创一份证书 信任一下就好了</p>
+<p>这里都可以单独写一篇了 详细请看下一篇</p>
+<p>有了HTTPS我们再试试</p>
+<p><img src="https://s2.loli.net/2025/10/16/ryOSg8wdUjB3ax5.jpg" alt="chrome_E09JKK5uME.jpg"></p>
+<p>嗯~~舒服了</p>
+<h2 id="服务的挂载"><a href="#服务的挂载" class="headerlink" title="服务的挂载"></a>服务的挂载</h2><p>理论来说支持单点登陆的服务有很多 Gitlab vCenter Openlist</p>
+<p>实际上的话只要支持OIDC或者SAML 都是很好配置的</p>
+<h3 id="OpenList"><a href="#OpenList" class="headerlink" title="OpenList"></a>OpenList</h3><p>我们先用Openlist做演示 因为他很简陋（ 但又能用</p>
+<p>主要还是参考他的官方文档 其实都有说</p>
+<p><img src="https://s2.loli.net/2025/10/16/8TGAu4gkWKOb39m.png" alt="chrome_74XbvB3uJ8.png"></p>
+<p>然后退出登录</p>
+<p>这时候登陆界面多了一个单点登录的按钮</p>
+<p><img src="https://s2.loli.net/2025/10/25/ZCmR16Uyi4cSLTn.png" alt="chrome_DZ6uKRVBqb.png"></p>
+<p>点一下就可以拉起Authentik 完美</p>
+<h3 id="vCenter"><a href="#vCenter" class="headerlink" title="vCenter"></a>vCenter</h3><p>我受不了vCenter每次登录都要输入administrator@后面一长串东西了 我还老是忘记</p>
+<p>盘他</p>
+
+    </div>
+    
+    
+    
+    
+    
+    
+    
+</div>
+
+            <footer id="footer">
+    <div id="footer-wrap">
+        <div>
+            &copy;
+            221 - 2025 Cainong&#39;s Blog
+            <span id="footer-icon">
+                <i class="fa-solid fa-font-awesome fa-fw"></i>
+            </span>
+            &commat;Cainong
+        </div>
+        <div>
+            Based on the <a target="_blank" rel="noopener" href="https://hexo.io">Hexo Engine</a> &amp;
+            <a target="_blank" rel="noopener" href="https://github.com/theme-particlex/hexo-theme-particlex">ParticleX Theme</a>
+        </div>
+        
+    </div>
+</footer>
+
+        </div>
+        
+        <transition name="fade">
+            <div id="preview" ref="preview" v-show="previewShow">
+                <img id="preview-content" ref="previewContent" />
+            </div>
+        </transition>
+        
+    </div>
+    <script src="/js/main.js"></script>
+    
+    
+
+
+
+
+    
+</body>
+</html>

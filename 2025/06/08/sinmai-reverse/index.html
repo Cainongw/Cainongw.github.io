@@ -1,0 +1,329 @@
+
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="utf-8" />
+    <title>记一次某八按键音游的逆向 | Cainong&#39;s Blog</title>
+    <meta name="author" content="Cainong" />
+    <meta name="description" content="" />
+    <meta name="keywords" content="" />
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"
+    />
+    <link rel="icon" href="/images/avatar.png" />
+    <link rel="preconnect" href="https://s4.zstatic.net" />
+<script src="https://s4.zstatic.net/ajax/libs/vue/3.3.7/vue.global.prod.min.js"></script>
+<link rel="stylesheet" href="https://s4.zstatic.net/ajax/libs/font-awesome/6.4.2/css/all.min.css" />
+<link rel="preconnect" href="https://fonts.googleapis.cn" />
+<link rel="preconnect" href="https://fonts.gstatic.cn" crossorigin />
+<link
+    rel="stylesheet"
+    href="https://fonts.googleapis.cn/css2?family=Fira+Code:wght@400;500;600;700&family=Lexend:wght@400;500;600;700;800;900&family=Noto+Sans+SC:wght@400;500;600;700;800;900&display=swap"
+/>
+<script> const mixins = {}; </script>
+
+<script src="https://polyfill.alicdn.com/v3/polyfill.min.js?features=default"></script>
+
+
+<script src="https://s4.zstatic.net/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="https://s4.zstatic.net/ajax/libs/highlightjs-line-numbers.js/2.8.0/highlightjs-line-numbers.min.js"></script>
+<link
+    rel="stylesheet"
+    href="https://s4.zstatic.net/ajax/libs/highlight.js/11.9.0/styles/github.min.css"
+/>
+<script src="/js/lib/highlight.js"></script>
+
+
+
+<script src="/js/lib/preview.js"></script>
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/css/main.css" />
+
+<meta name="generator" content="Hexo 5.4.2"></head>
+<body>
+    <div id="layout">
+        <transition name="fade">
+            <div id="loading" v-show="loading">
+                <div id="loading-circle">
+                    <h2>LOADING</h2>
+                    <p>加载过慢请开启缓存 浏览器默认开启</p>
+                    <img src="/images/loading.gif" />
+                </div>
+            </div>
+        </transition>
+        <div id="menu" :class="{ hidden: hiddenMenu, 'menu-color': menuColor}">
+    <nav id="desktop-menu">
+        <a class="title" href="/">
+            <span>CAINONG&#39;S BLOG</span>
+        </a>
+        
+        <a href="/">
+            <i class="fa-solid fa-house fa-fw"></i>
+            <span>&ensp;Home</span>
+        </a>
+        
+        <a href="/about">
+            <i class="fa-solid fa-id-card fa-fw"></i>
+            <span>&ensp;About</span>
+        </a>
+        
+        <a href="/archives">
+            <i class="fa-solid fa-box-archive fa-fw"></i>
+            <span>&ensp;Archives</span>
+        </a>
+        
+        <a href="/categories">
+            <i class="fa-solid fa-bookmark fa-fw"></i>
+            <span>&ensp;Categories</span>
+        </a>
+        
+        <a href="/tags">
+            <i class="fa-solid fa-tags fa-fw"></i>
+            <span>&ensp;Tags</span>
+        </a>
+        
+    </nav>
+    <nav id="mobile-menu">
+        <div class="title" @click="showMenuItems = !showMenuItems">
+            <i class="fa-solid fa-bars fa-fw"></i>
+            <span>&emsp;CAINONG&#39;S BLOG</span>
+        </div>
+        <transition name="slide">
+            <div class="items" v-show="showMenuItems">
+                
+                <a href="/">
+                    <div class="item">
+                        <div style="min-width: 20px; max-width: 50px; width: 10%">
+                            <i class="fa-solid fa-house fa-fw"></i>
+                        </div>
+                        <div style="min-width: 100px; max-width: 150%; width: 20%">Home</div>
+                    </div>
+                </a>
+                
+                <a href="/about">
+                    <div class="item">
+                        <div style="min-width: 20px; max-width: 50px; width: 10%">
+                            <i class="fa-solid fa-id-card fa-fw"></i>
+                        </div>
+                        <div style="min-width: 100px; max-width: 150%; width: 20%">About</div>
+                    </div>
+                </a>
+                
+                <a href="/archives">
+                    <div class="item">
+                        <div style="min-width: 20px; max-width: 50px; width: 10%">
+                            <i class="fa-solid fa-box-archive fa-fw"></i>
+                        </div>
+                        <div style="min-width: 100px; max-width: 150%; width: 20%">Archives</div>
+                    </div>
+                </a>
+                
+                <a href="/categories">
+                    <div class="item">
+                        <div style="min-width: 20px; max-width: 50px; width: 10%">
+                            <i class="fa-solid fa-bookmark fa-fw"></i>
+                        </div>
+                        <div style="min-width: 100px; max-width: 150%; width: 20%">Categories</div>
+                    </div>
+                </a>
+                
+                <a href="/tags">
+                    <div class="item">
+                        <div style="min-width: 20px; max-width: 50px; width: 10%">
+                            <i class="fa-solid fa-tags fa-fw"></i>
+                        </div>
+                        <div style="min-width: 100px; max-width: 150%; width: 20%">Tags</div>
+                    </div>
+                </a>
+                
+            </div>
+        </transition>
+    </nav>
+</div>
+<transition name="fade">
+    <div id="menu-curtain" @click="showMenuItems = !showMenuItems" v-show="showMenuItems"></div>
+</transition>
+
+        <div id="main" :class="loading ? 'into-enter-from': 'into-enter-active'">
+            <div class="article">
+    <div>
+        <h1>记一次某八按键音游的逆向</h1>
+    </div>
+    <div class="info">
+        <span class="date">
+            <span class="icon">
+                <i class="fa-solid fa-calendar fa-fw"></i>
+            </span>
+            2025/6/8
+        </span>
+        
+        
+        <span class="tags">
+            <span class="icon">
+                <i class="fa-solid fa-tags fa-fw"></i>
+            </span>
+            
+            
+            <span class="tag">
+                
+                <a href="/tags/%E9%80%86%E5%90%91/" style="color: #00bcd4">
+                    逆向
+                </a>
+            </span>
+            
+            <span class="tag">
+                
+                <a href="/tags/%E9%9F%B3%E6%B8%B8/" style="color: #ffa2c4">
+                    音游
+                </a>
+            </span>
+            
+        </span>
+        
+    </div>
+    
+    <div class="content" v-pre>
+        <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>兄弟炒币赚了大钱，买了ADX放家里</p>
+<p>由于兄弟几个都很变态（当然不包括我），就想到是不是可以买个郊狼回来玩玩</p>
+<p>当然不是电那种奇怪的地方（），只是电大腿之类的</p>
+<p>我的提议就是，Miss一次电一次</p>
+<h1 id="开始"><a href="#开始" class="headerlink" title="开始"></a>开始</h1><p>逆向基于的版本是DX-1.56</p>
+<p>也就是Prism Plus</p>
+<span id="more"></span> 
+
+<p>当然了，游戏文件我是不会提供的（不过这玩意已经满天飞了吧）</p>
+<p>因为我没接触过Unity逆向，第一想法是用Frida去hook，当然是可以的</p>
+<p>但是我的游戏是打过mod的，也就是<a target="_blank" rel="noopener" href="https://github.com/MewoLab/AquaMai">AquaMai</a></p>
+<p>既然现成的Mod我们去看看他的实现思路不是更好</p>
+<p>说白了AquaMai的方法就是用MelonLoader注入他的Dll，看代码很容易得知他用的是HarmonyPatch这个框架</p>
+<p>一搜不得了，这就是给Unity专用的，而且用起来简单的不得了</p>
+<p>确定好框架就可以开始逆向了</p>
+<p>很显然，我们需要知道Miss判定的函数，然后Hook他 当执行Miss函数的时候进行某些行为（比如WebSocket给那玩意开电）</p>
+<p>众所周知，这游戏是Unity写的，它的核心逻辑都在<code>Assembly-CSharp.dll</code>里面</p>
+<p>把这个Dll丢进dnSpy里面</p>
+<p>我这里假设你的<code>Assembly-CSharp.dll</code>已经脱壳了</p>
+<p>应该吧？不会有人动态解密跑这个吧 不然还hook个蛋</p>
+<p><img src="https://s2.loli.net/2025/06/08/KWHlgykI1NYRC87.png" alt=" 2025-06-08 215638.png"></p>
+<p>我一看 类名全都没混淆 简直是天堂</p>
+<p>这就是Unity的魅力吗（）</p>
+<p>首先想法肯定是搜Miss</p>
+<p><img src="https://s2.loli.net/2025/06/08/unDaQFz6MxO3hG5.png" alt=" 2025-06-08 220033.png"></p>
+<p>有点多啊</p>
+<p>全词匹配看看</p>
+<p><img src="https://s2.loli.net/2025/06/08/17Cvoc5JMZiHe4W.png" alt=" 2025-06-08 220157.png"></p>
+<p>这次少了很多</p>
+<p>我们看到左边有个Note.Judge</p>
+<p>是他吗，点进去看看</p>
+<p><img src="https://s2.loli.net/2025/06/09/WZmH1AKuGUyheBF.png" alt=" 2025-06-09 015538.png"></p>
+<p>不难发现这是一个枚举？Miss的时候=0分吗</p>
+<p>对着他的调用一顿分析</p>
+<p>看到有一堆东西调用了这个枚举</p>
+<p>挨个进去看他们在相互调用</p>
+<p><img src="https://s2.loli.net/2025/06/09/MDPTlk5HxEz7VUa.png" alt=" 2025-06-09 020037.png"></p>
+<p>一个个进去看，都没找到当miss了调用的逻辑在哪里</p>
+<p>我猜这可能是个将判定的时间转换成最终判定的方法，这个枚举就是给转换用的</p>
+<p>那不几把是我们要的，尽管可以继续分析 但这样对一个没有混淆的Dll有点太麻烦了</p>
+<p>我们接着看Miss的关键词</p>
+<p>我们看到有一个NoteJudge.Judgebox里面的玩意</p>
+<p><img src="https://s2.loli.net/2025/06/09/ELnAdjcUg96Wy3k.png" alt=" 2025-06-09 020601.png"></p>
+<p>一看这个枚举调用可多了</p>
+<p><img src="https://s2.loli.net/2025/06/09/7YqMSO4UvId8fEC.png" alt=" 2025-06-09 020829.png"></p>
+<p>前面的那堆是Debug类的，应该不是我们需要的</p>
+<p>我认为我们要找的东西应该是在NoteMananger之类的东西里面</p>
+<p>然后我在这堆调用中一眼相中了我的目标</p>
+<p><img src="https://s2.loli.net/2025/06/09/uNopxQdLy3Rj4EW.png" alt=" 2025-06-09 021159.png"></p>
+<p>这里很显然是一个switch语句通过判断Note的类型来赋予对应的DX分</p>
+<p>他在Manager类里，和我想得差不多</p>
+<p>而且Miss了DX分就是不加的，我觉得没毛病</p>
+<p>那就试试吧，理论来说我们当然可以直接反编译这个Dll重新编译</p>
+<p>但那样显然不咋健康，侵入性太强了</p>
+<p>那反正我们都有Mod，写一个Dll不是更好？</p>
+<p>赶紧去看看MelonLoader的文档</p>
+<p>哇它里面还内置了HarmonyPatch</p>
+<p>无敌了</p>
+<p>核心实现就是以下的代码了</p>
+<pre><code class="csharp">[HarmonyPatch(typeof(JudgeResultSt), nameof(JudgeResultSt.UpdateScore))]
+    public static class UpdateScorePatch
+    &#123;
+        static void Postfix(ref JudgeResultSt __instance)
+        &#123;
+            // 如果 DX分为0，视为 Miss
+            if (__instance.Deluxe == 0)
+            &#123;
+                /// 在后台线程发请求，防止主线程卡顿
+                ThreadPool.QueueUserWorkItem(_ =&gt;
+                &#123;
+                    MelonLogger.Msg(&quot;检测到 Miss，发送电击请求...&quot;);
+                    MissDetected();
+                &#125;);
+               
+            &#125;
+        &#125;
+    &#125;
+</code></pre>
+<p>效果如下</p>
+<p><del>雷电法王</del><br><img src="https://s2.loli.net/2025/06/09/hnDqfZpyVbrzRuE.jpg" alt="IMG_8724_20250609-023014_.PNG"></p>
+<p>这里用了多线程，把MissDeteced这个函数换成你需要执行的东西就好</p>
+<p>编译了放进Mods文件夹，没啥毛病就收工了</p>
+<p>具体详细用WebSocket调用郊狼的代码稍后写完我应该会丢到Github</p>
+<p>应该不会有人用到这玩意吧 不要吧</p>
+<h1 id="结尾"><a href="#结尾" class="headerlink" title="结尾"></a>结尾</h1><p>下次试试mu3的逆向</p>
+<p>chusan不是Unity 那个缓一缓</p>
+<p><del>我还记得因为和某人争论chusan是不是Unity还吵过</del></p>
+
+    </div>
+    
+    
+    
+    
+    
+    
+    
+</div>
+
+            <footer id="footer">
+    <div id="footer-wrap">
+        <div>
+            &copy;
+            221 - 2025 Cainong&#39;s Blog
+            <span id="footer-icon">
+                <i class="fa-solid fa-font-awesome fa-fw"></i>
+            </span>
+            &commat;Cainong
+        </div>
+        <div>
+            Based on the <a target="_blank" rel="noopener" href="https://hexo.io">Hexo Engine</a> &amp;
+            <a target="_blank" rel="noopener" href="https://github.com/theme-particlex/hexo-theme-particlex">ParticleX Theme</a>
+        </div>
+        
+    </div>
+</footer>
+
+        </div>
+        
+        <transition name="fade">
+            <div id="preview" ref="preview" v-show="previewShow">
+                <img id="preview-content" ref="previewContent" />
+            </div>
+        </transition>
+        
+    </div>
+    <script src="/js/main.js"></script>
+    
+    
+
+
+
+
+    
+</body>
+</html>

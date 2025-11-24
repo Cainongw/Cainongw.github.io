@@ -1,0 +1,346 @@
+
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="utf-8" />
+    <title>如何让SideStore在内网直接使用 | Cainong&#39;s Blog</title>
+    <meta name="author" content="Cainong" />
+    <meta name="description" content="" />
+    <meta name="keywords" content="" />
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"
+    />
+    <link rel="icon" href="/images/avatar.png" />
+    <link rel="preconnect" href="https://s4.zstatic.net" />
+<script src="https://s4.zstatic.net/ajax/libs/vue/3.3.7/vue.global.prod.min.js"></script>
+<link rel="stylesheet" href="https://s4.zstatic.net/ajax/libs/font-awesome/6.4.2/css/all.min.css" />
+<link rel="preconnect" href="https://fonts.googleapis.cn" />
+<link rel="preconnect" href="https://fonts.gstatic.cn" crossorigin />
+<link
+    rel="stylesheet"
+    href="https://fonts.googleapis.cn/css2?family=Fira+Code:wght@400;500;600;700&family=Lexend:wght@400;500;600;700;800;900&family=Noto+Sans+SC:wght@400;500;600;700;800;900&display=swap"
+/>
+<script> const mixins = {}; </script>
+
+<script src="https://polyfill.alicdn.com/v3/polyfill.min.js?features=default"></script>
+
+
+<script src="https://s4.zstatic.net/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="https://s4.zstatic.net/ajax/libs/highlightjs-line-numbers.js/2.8.0/highlightjs-line-numbers.min.js"></script>
+<link
+    rel="stylesheet"
+    href="https://s4.zstatic.net/ajax/libs/highlight.js/11.9.0/styles/github.min.css"
+/>
+<script src="/js/lib/highlight.js"></script>
+
+
+
+<script src="/js/lib/preview.js"></script>
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/css/main.css" />
+
+<meta name="generator" content="Hexo 5.4.2"></head>
+<body>
+    <div id="layout">
+        <transition name="fade">
+            <div id="loading" v-show="loading">
+                <div id="loading-circle">
+                    <h2>LOADING</h2>
+                    <p>加载过慢请开启缓存 浏览器默认开启</p>
+                    <img src="/images/loading.gif" />
+                </div>
+            </div>
+        </transition>
+        <div id="menu" :class="{ hidden: hiddenMenu, 'menu-color': menuColor}">
+    <nav id="desktop-menu">
+        <a class="title" href="/">
+            <span>CAINONG&#39;S BLOG</span>
+        </a>
+        
+        <a href="/">
+            <i class="fa-solid fa-house fa-fw"></i>
+            <span>&ensp;Home</span>
+        </a>
+        
+        <a href="/about">
+            <i class="fa-solid fa-id-card fa-fw"></i>
+            <span>&ensp;About</span>
+        </a>
+        
+        <a href="/archives">
+            <i class="fa-solid fa-box-archive fa-fw"></i>
+            <span>&ensp;Archives</span>
+        </a>
+        
+        <a href="/categories">
+            <i class="fa-solid fa-bookmark fa-fw"></i>
+            <span>&ensp;Categories</span>
+        </a>
+        
+        <a href="/tags">
+            <i class="fa-solid fa-tags fa-fw"></i>
+            <span>&ensp;Tags</span>
+        </a>
+        
+    </nav>
+    <nav id="mobile-menu">
+        <div class="title" @click="showMenuItems = !showMenuItems">
+            <i class="fa-solid fa-bars fa-fw"></i>
+            <span>&emsp;CAINONG&#39;S BLOG</span>
+        </div>
+        <transition name="slide">
+            <div class="items" v-show="showMenuItems">
+                
+                <a href="/">
+                    <div class="item">
+                        <div style="min-width: 20px; max-width: 50px; width: 10%">
+                            <i class="fa-solid fa-house fa-fw"></i>
+                        </div>
+                        <div style="min-width: 100px; max-width: 150%; width: 20%">Home</div>
+                    </div>
+                </a>
+                
+                <a href="/about">
+                    <div class="item">
+                        <div style="min-width: 20px; max-width: 50px; width: 10%">
+                            <i class="fa-solid fa-id-card fa-fw"></i>
+                        </div>
+                        <div style="min-width: 100px; max-width: 150%; width: 20%">About</div>
+                    </div>
+                </a>
+                
+                <a href="/archives">
+                    <div class="item">
+                        <div style="min-width: 20px; max-width: 50px; width: 10%">
+                            <i class="fa-solid fa-box-archive fa-fw"></i>
+                        </div>
+                        <div style="min-width: 100px; max-width: 150%; width: 20%">Archives</div>
+                    </div>
+                </a>
+                
+                <a href="/categories">
+                    <div class="item">
+                        <div style="min-width: 20px; max-width: 50px; width: 10%">
+                            <i class="fa-solid fa-bookmark fa-fw"></i>
+                        </div>
+                        <div style="min-width: 100px; max-width: 150%; width: 20%">Categories</div>
+                    </div>
+                </a>
+                
+                <a href="/tags">
+                    <div class="item">
+                        <div style="min-width: 20px; max-width: 50px; width: 10%">
+                            <i class="fa-solid fa-tags fa-fw"></i>
+                        </div>
+                        <div style="min-width: 100px; max-width: 150%; width: 20%">Tags</div>
+                    </div>
+                </a>
+                
+            </div>
+        </transition>
+    </nav>
+</div>
+<transition name="fade">
+    <div id="menu-curtain" @click="showMenuItems = !showMenuItems" v-show="showMenuItems"></div>
+</transition>
+
+        <div id="main" :class="loading ? 'into-enter-from': 'into-enter-active'">
+            <div class="article">
+    <div>
+        <h1>如何让SideStore在内网直接使用</h1>
+    </div>
+    <div class="info">
+        <span class="date">
+            <span class="icon">
+                <i class="fa-solid fa-calendar fa-fw"></i>
+            </span>
+            2025/11/24
+        </span>
+        
+        
+        <span class="tags">
+            <span class="icon">
+                <i class="fa-solid fa-tags fa-fw"></i>
+            </span>
+            
+            
+            <span class="tag">
+                
+                <a href="/tags/iOS/" style="color: #00bcd4">
+                    iOS
+                </a>
+            </span>
+            
+            <span class="tag">
+                
+                <a href="/tags/%E8%87%AA%E7%AD%BE/" style="color: #ff7d73">
+                    自签
+                </a>
+            </span>
+            
+            <span class="tag">
+                
+                <a href="/tags/SideStore/" style="color: #03a9f4">
+                    SideStore
+                </a>
+            </span>
+            
+        </span>
+        
+    </div>
+    
+    <div class="content" v-pre>
+        <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>我还记得我blog第一篇文章讲的是如何自签名osu!Lazer</p>
+<p>几年过去了 lazer有了很大的更新</p>
+<p>自签的方式和运行也变化很大很大</p>
+<p>我后面用了SideStore 它不需要像Altstore一样局域网有一个AltServer</p>
+<p>但它有一个问题</p>
+<span id="more"></span> 
+
+<p>就是每次使用都需要打开WireGuard 然后才可以自签名</p>
+<p>其实是挺麻烦的 如果忘了开7天后就和Altstore一样挂了</p>
+<p>虽然说可以自动在后台签名 和Altstore一样</p>
+<p>但是我并不可能一直开WireGuard 我不上Google了吗</p>
+<p>近几天我重新装回来我发现他不用wg了 而是用StosVPN去做这些</p>
+<p><del>这玩意还被从AppStore下了</del></p>
+<p>后面用了Stikdebug 但这三个缺点都和wg一样的</p>
+<p>其实很蛋疼，如果你从SideStore下App的时候需要魔法</p>
+<p>那我就得先用魔法下完了 等他开始签名的时候手动去连接</p>
+<p>拉完了</p>
+<p>而且由于iOS限制，开流量的时候是不可以用的</p>
+<p>所以我就想，能不能集成到局域网中，这样只需要我在家他就自己签名，我也不用折腾了</p>
+<h1 id="开始折腾"><a href="#开始折腾" class="headerlink" title="开始折腾"></a>开始折腾</h1><p>我啪的一下找到了这个blog</p>
+<p><a target="_blank" rel="noopener" href="https://lantian.pub/article/modify-computer/sidestore-without-stosvpn-across-lan.lantian/">在内网中免 StosVPN 使用 SideStore</a></p>
+<p>太牛逼了 直接解决了我要的所有</p>
+<h2 id="原理"><a href="#原理" class="headerlink" title="原理"></a>原理</h2><p>以下参照了上面的blog</p>
+<p>之前用wg的时候可以看到</p>
+<p>他就是给iOS分配了一个10.7.0.0的IP 然后转发10.7.0.0/24的所有数据</p>
+<p>然后SideStore用10.7.0.1这个IP模拟装了iTunes的电脑去续签开发者证书</p>
+<p>wg做的事仅仅就是把从10.7.0.0发往10.7.0.1的数据包交换来源和目标IP</p>
+<p>也就是把数据包发给了自己的SideStore</p>
+<p>那就很简单了</p>
+<h2 id="OpenWRT的配置"><a href="#OpenWRT的配置" class="headerlink" title="OpenWRT的配置"></a>OpenWRT的配置</h2><p>只需要去OpenWRT加两行规则</p>
+<pre><code class="Text">table inet sidestore &#123;
+  chain RAW_PREROUTING &#123;
+    type filter hook prerouting priority raw; policy accept;
+    # 此处 192.168.0.xxx 改成你的 iOS 设备的 IP
+    ip saddr 192.168.0.123 ip daddr 10.7.0.1 ip saddr set 10.7.0.1 ip daddr set 192.168.0.123 notrack;
+    ip saddr 192.168.0.234 ip daddr 10.7.0.1 ip saddr set 10.7.0.1 ip daddr set 192.168.0.234 notrack;
+    # 可以按需添加更多的规则
+  &#125;
+&#125;
+</code></pre>
+<p>当然这需要给iOS设备手动设置一个静态IP，对于我/16的网段显然不是什么难事（</p>
+<p>我的话并不知道怎么在Web界面上调 我选择直接SSH进去</p>
+<p>然后把上面的东西粘贴进这个文件里</p>
+<pre><code class="Bash">vi /etc/sidestore.nft
+nft -f /etc/sidestore.nft
+nft list ruleset | grep &#39;table inet sidestore&#39; -A 5
+</code></pre>
+<p>能看到设定的规则就是OK了</p>
+<p><img src="https://s2.loli.net/2025/11/24/JxBF7ZVraIQ4L1k.png" alt="chrome_OXbOHzYgEE.png"></p>
+<p>然后的话开机的时候让nfttable自动加载就好了</p>
+<p>我们写一个init脚本好了</p>
+<pre><code class="Bash">vi /etc/init.d/sidestore_nft
+</code></pre>
+<p>把这个粘贴进去</p>
+<pre><code class="Bash">#!/bin/sh /etc/rc.common
+
+START=99  # 在大部分服务之后启动
+STOP=15
+
+start() &#123;
+    # 检查 nftables 文件是否存在
+    [ -f /etc/sidestore.nft ] || return 0
+
+    echo &quot;Loading sidestore nftables rules...&quot;
+    # 使用 nft -f 命令从文件加载规则，-f 会自动清空并重新加载文件中的所有内容
+    nft -f /etc/sidestore.nft
+&#125;
+
+stop() &#123;
+    echo &quot;Stopping sidestore nftables rules...&quot;
+    # 停止时，删除整个自定义表
+    nft delete table inet sidestore
+&#125;
+
+reload() &#123;
+    # reload 命令用于在防火墙重载时重新加载规则
+    stop
+    start
+&#125;
+</code></pre>
+<p>然后启用他</p>
+<pre><code class="Bash">chmod +x /etc/init.d/sidestore_nft
+/etc/init.d/sidestore_nft enable
+/etc/init.d/sidestore_nft start
+</code></pre>
+<h2 id="主路由的配置"><a href="#主路由的配置" class="headerlink" title="主路由的配置"></a>主路由的配置</h2><p>接下来在主路由上增加一条静态路由规则</p>
+<p><img src="https://s2.loli.net/2025/11/24/Y7t9ElNjAT2gBpK.png" alt="chrome_Wwm5kKQQNm.png"></p>
+<p>网关选择OpenWRT 保存</p>
+<p>然后在iOS上重新测试一下Refresh 没问题就完事了</p>
+<h1 id="Debug"><a href="#Debug" class="headerlink" title="Debug"></a>Debug</h1><p>然后就翻车了 我发现ping不通</p>
+<p>咋回事呢</p>
+<p>哦哦哦卧槽傻逼了</p>
+<p>在iKuai上静态路由nat后 转发到了OpenWRT 实际上OpenWRT上看到的地址应该是iKuai的地址</p>
+<p>所以规则只需要写一行</p>
+<pre><code>ip saddr 10.0.0.1 ip daddr 10.7.0.1 ip saddr set 10.7.0.1 ip daddr set 10.0.0.1 notrack
+</code></pre>
+<p>然后就可以了</p>
+
+    </div>
+    
+    
+    
+    
+    
+    
+    
+</div>
+
+            <footer id="footer">
+    <div id="footer-wrap">
+        <div>
+            &copy;
+            221 - 2025 Cainong&#39;s Blog
+            <span id="footer-icon">
+                <i class="fa-solid fa-font-awesome fa-fw"></i>
+            </span>
+            &commat;Cainong
+        </div>
+        <div>
+            Based on the <a target="_blank" rel="noopener" href="https://hexo.io">Hexo Engine</a> &amp;
+            <a target="_blank" rel="noopener" href="https://github.com/theme-particlex/hexo-theme-particlex">ParticleX Theme</a>
+        </div>
+        
+    </div>
+</footer>
+
+        </div>
+        
+        <transition name="fade">
+            <div id="preview" ref="preview" v-show="previewShow">
+                <img id="preview-content" ref="previewContent" />
+            </div>
+        </transition>
+        
+    </div>
+    <script src="/js/main.js"></script>
+    
+    
+
+
+
+
+    
+</body>
+</html>

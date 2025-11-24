@@ -1,0 +1,292 @@
+
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="utf-8" />
+    <title>记一次H3C S5800三层交换机的配置 | Cainong&#39;s Blog</title>
+    <meta name="author" content="Cainong" />
+    <meta name="description" content="" />
+    <meta name="keywords" content="" />
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"
+    />
+    <link rel="icon" href="/images/avatar.png" />
+    <link rel="preconnect" href="https://s4.zstatic.net" />
+<script src="https://s4.zstatic.net/ajax/libs/vue/3.3.7/vue.global.prod.min.js"></script>
+<link rel="stylesheet" href="https://s4.zstatic.net/ajax/libs/font-awesome/6.4.2/css/all.min.css" />
+<link rel="preconnect" href="https://fonts.googleapis.cn" />
+<link rel="preconnect" href="https://fonts.gstatic.cn" crossorigin />
+<link
+    rel="stylesheet"
+    href="https://fonts.googleapis.cn/css2?family=Fira+Code:wght@400;500;600;700&family=Lexend:wght@400;500;600;700;800;900&family=Noto+Sans+SC:wght@400;500;600;700;800;900&display=swap"
+/>
+<script> const mixins = {}; </script>
+
+<script src="https://polyfill.alicdn.com/v3/polyfill.min.js?features=default"></script>
+
+
+<script src="https://s4.zstatic.net/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="https://s4.zstatic.net/ajax/libs/highlightjs-line-numbers.js/2.8.0/highlightjs-line-numbers.min.js"></script>
+<link
+    rel="stylesheet"
+    href="https://s4.zstatic.net/ajax/libs/highlight.js/11.9.0/styles/github.min.css"
+/>
+<script src="/js/lib/highlight.js"></script>
+
+
+
+<script src="/js/lib/preview.js"></script>
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/css/main.css" />
+
+<meta name="generator" content="Hexo 5.4.2"></head>
+<body>
+    <div id="layout">
+        <transition name="fade">
+            <div id="loading" v-show="loading">
+                <div id="loading-circle">
+                    <h2>LOADING</h2>
+                    <p>加载过慢请开启缓存 浏览器默认开启</p>
+                    <img src="/images/loading.gif" />
+                </div>
+            </div>
+        </transition>
+        <div id="menu" :class="{ hidden: hiddenMenu, 'menu-color': menuColor}">
+    <nav id="desktop-menu">
+        <a class="title" href="/">
+            <span>CAINONG&#39;S BLOG</span>
+        </a>
+        
+        <a href="/">
+            <i class="fa-solid fa-house fa-fw"></i>
+            <span>&ensp;Home</span>
+        </a>
+        
+        <a href="/about">
+            <i class="fa-solid fa-id-card fa-fw"></i>
+            <span>&ensp;About</span>
+        </a>
+        
+        <a href="/archives">
+            <i class="fa-solid fa-box-archive fa-fw"></i>
+            <span>&ensp;Archives</span>
+        </a>
+        
+        <a href="/categories">
+            <i class="fa-solid fa-bookmark fa-fw"></i>
+            <span>&ensp;Categories</span>
+        </a>
+        
+        <a href="/tags">
+            <i class="fa-solid fa-tags fa-fw"></i>
+            <span>&ensp;Tags</span>
+        </a>
+        
+    </nav>
+    <nav id="mobile-menu">
+        <div class="title" @click="showMenuItems = !showMenuItems">
+            <i class="fa-solid fa-bars fa-fw"></i>
+            <span>&emsp;CAINONG&#39;S BLOG</span>
+        </div>
+        <transition name="slide">
+            <div class="items" v-show="showMenuItems">
+                
+                <a href="/">
+                    <div class="item">
+                        <div style="min-width: 20px; max-width: 50px; width: 10%">
+                            <i class="fa-solid fa-house fa-fw"></i>
+                        </div>
+                        <div style="min-width: 100px; max-width: 150%; width: 20%">Home</div>
+                    </div>
+                </a>
+                
+                <a href="/about">
+                    <div class="item">
+                        <div style="min-width: 20px; max-width: 50px; width: 10%">
+                            <i class="fa-solid fa-id-card fa-fw"></i>
+                        </div>
+                        <div style="min-width: 100px; max-width: 150%; width: 20%">About</div>
+                    </div>
+                </a>
+                
+                <a href="/archives">
+                    <div class="item">
+                        <div style="min-width: 20px; max-width: 50px; width: 10%">
+                            <i class="fa-solid fa-box-archive fa-fw"></i>
+                        </div>
+                        <div style="min-width: 100px; max-width: 150%; width: 20%">Archives</div>
+                    </div>
+                </a>
+                
+                <a href="/categories">
+                    <div class="item">
+                        <div style="min-width: 20px; max-width: 50px; width: 10%">
+                            <i class="fa-solid fa-bookmark fa-fw"></i>
+                        </div>
+                        <div style="min-width: 100px; max-width: 150%; width: 20%">Categories</div>
+                    </div>
+                </a>
+                
+                <a href="/tags">
+                    <div class="item">
+                        <div style="min-width: 20px; max-width: 50px; width: 10%">
+                            <i class="fa-solid fa-tags fa-fw"></i>
+                        </div>
+                        <div style="min-width: 100px; max-width: 150%; width: 20%">Tags</div>
+                    </div>
+                </a>
+                
+            </div>
+        </transition>
+    </nav>
+</div>
+<transition name="fade">
+    <div id="menu-curtain" @click="showMenuItems = !showMenuItems" v-show="showMenuItems"></div>
+</transition>
+
+        <div id="main" :class="loading ? 'into-enter-from': 'into-enter-active'">
+            <div class="article">
+    <div>
+        <h1>记一次H3C S5800三层交换机的配置</h1>
+    </div>
+    <div class="info">
+        <span class="date">
+            <span class="icon">
+                <i class="fa-solid fa-calendar fa-fw"></i>
+            </span>
+            2025/10/27
+        </span>
+        
+        
+        <span class="tags">
+            <span class="icon">
+                <i class="fa-solid fa-tags fa-fw"></i>
+            </span>
+            
+            
+            <span class="tag">
+                
+                <a href="/tags/%E4%BA%A4%E6%8D%A2%E6%9C%BA/" style="color: #ffa2c4">
+                    交换机
+                </a>
+            </span>
+            
+            <span class="tag">
+                
+                <a href="/tags/%E7%BD%91%E5%B7%A5/" style="color: #ff7d73">
+                    网工
+                </a>
+            </span>
+            
+        </span>
+        
+    </div>
+    
+    <div class="content" v-pre>
+        <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>前段时间刮台风，我原来的路由器被水淹了</p>
+<p>把路由器拿起来水都从缝隙漏出来了</p>
+<p>所以索性换路由器了 因为我家两条宽带 所以选择用iKuai去分流</p>
+<p>然后咸鱼收了一台H3C S5800作为核心交换机</p>
+<p>十年前的玩意了 居然有4万兆 16千兆 才300块钱</p>
+<p>光猫接到iKuai的直通网口，一条万兆接口接到交换机</p>
+<p>路由器不是重点，重点是交换机的配置</p>
+<span id="more"></span> 
+
+<h1 id="计划"><a href="#计划" class="headerlink" title="计划"></a>计划</h1><p>不得不说GPT在这一块就是一坨了 给的命令全是错的</p>
+<p>我的打算是除了我的电脑以外，局域网所有设备都不能访问管理端口以及服务器上的任何设备</p>
+<p>之前在iKuai的ACL上面配置过，但那个是针对IP的 恶意设备可以通过修改IP来绕过</p>
+<p>后面我可能还会考虑加上Radius认证 让我移动设备也可以划入管理VLAN</p>
+<p>虽然说局域网已经够安全了 但是既然都用三层了那就好好配置一下吧（</p>
+<p>首先的话买一条console线插上去</p>
+<h1 id="开始折腾"><a href="#开始折腾" class="headerlink" title="开始折腾"></a>开始折腾</h1><h2 id="SSH和Web管理的开启"><a href="#SSH和Web管理的开启" class="headerlink" title="SSH和Web管理的开启"></a>SSH和Web管理的开启</h2><p>我可不想坐在热的要死的机房用笔记本敲命令</p>
+<pre><code class="我也不知道这算什么文本类型">&lt;H3C&gt; system-view
+[H3C] ip http enable
+[H3C] ip https enable
+[H3C]public-key local create rsa
+[H3C] ip ssh enable
+</code></pre>
+<p>上述命令生成SSH密钥并开启http的web管理</p>
+<p>我们还没有配置vlan 默认的所有端口都连在vlan 1上</p>
+<pre><code>[H3C] interface vlan-interface 1
+[H3C-VLAN-interface1] ip address 192.168.0.200 255.255.255.0
+[H3C-VLAN-interface1] quit
+</code></pre>
+<p>这里定义了交换机的地址为192.168.0.200/24</p>
+<p>我与日常使用的网段是分开的 而且只有我的电脑能访问这个管理网段</p>
+<pre><code>[H3C] local-user abc
+[H3C-luser-abc] password simple 123456
+[H3C-luser-abc] service-type web
+[H3C-luser-abc] service-type ssh
+[H3C-luser-abc] authorization-attribute level 3
+[H3C-luser-abc] quit
+</code></pre>
+<p>创建一个名为abc的用户 密码是123456 请改成自己的名且复杂点</p>
+<pre><code>[H3C]user-interface vty 0 4
+[H3C-ui-vty0-4]authentication-mode scheme
+[H3C-ui-vty0-4]protocol inbound ssh
+[H3C-ui-vty0-4]quit
+</code></pre>
+<p>然后设置abc的登录方式为password并开启ssh</p>
+<pre><code>[H3C]ssh user abc service-type stelnet authentication-type password
+</code></pre>
+<p>然后用能访问192.168.0.200/24的设备连接SSH 密码就是你之前设置的</p>
+<p><img src="https://s2.loli.net/2025/10/28/eJM3wAoT1Wz8Bky.png" alt="MobaXterm_aHUFOV5cwo.png"></p>
+<p><img src="https://s2.loli.net/2025/10/28/n6VyOq1AjbeSfUJ.png" alt="chrome_nr3D2Ur33C.png"></p>
+<p>完事</p>
+<h2 id="DHCP-Snooping"><a href="#DHCP-Snooping" class="headerlink" title="DHCP Snooping"></a>DHCP Snooping</h2>
+    </div>
+    
+    
+    
+    
+    
+    
+    
+</div>
+
+            <footer id="footer">
+    <div id="footer-wrap">
+        <div>
+            &copy;
+            221 - 2025 Cainong&#39;s Blog
+            <span id="footer-icon">
+                <i class="fa-solid fa-font-awesome fa-fw"></i>
+            </span>
+            &commat;Cainong
+        </div>
+        <div>
+            Based on the <a target="_blank" rel="noopener" href="https://hexo.io">Hexo Engine</a> &amp;
+            <a target="_blank" rel="noopener" href="https://github.com/theme-particlex/hexo-theme-particlex">ParticleX Theme</a>
+        </div>
+        
+    </div>
+</footer>
+
+        </div>
+        
+        <transition name="fade">
+            <div id="preview" ref="preview" v-show="previewShow">
+                <img id="preview-content" ref="previewContent" />
+            </div>
+        </transition>
+        
+    </div>
+    <script src="/js/main.js"></script>
+    
+    
+
+
+
+
+    
+</body>
+</html>

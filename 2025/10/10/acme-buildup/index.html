@@ -1,0 +1,668 @@
+
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="utf-8" />
+    <title>记一次基于small-step对局域网内证书的自签名 | Cainong&#39;s Blog</title>
+    <meta name="author" content="Cainong" />
+    <meta name="description" content="" />
+    <meta name="keywords" content="" />
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"
+    />
+    <link rel="icon" href="/images/avatar.png" />
+    <link rel="preconnect" href="https://s4.zstatic.net" />
+<script src="https://s4.zstatic.net/ajax/libs/vue/3.3.7/vue.global.prod.min.js"></script>
+<link rel="stylesheet" href="https://s4.zstatic.net/ajax/libs/font-awesome/6.4.2/css/all.min.css" />
+<link rel="preconnect" href="https://fonts.googleapis.cn" />
+<link rel="preconnect" href="https://fonts.gstatic.cn" crossorigin />
+<link
+    rel="stylesheet"
+    href="https://fonts.googleapis.cn/css2?family=Fira+Code:wght@400;500;600;700&family=Lexend:wght@400;500;600;700;800;900&family=Noto+Sans+SC:wght@400;500;600;700;800;900&display=swap"
+/>
+<script> const mixins = {}; </script>
+
+<script src="https://polyfill.alicdn.com/v3/polyfill.min.js?features=default"></script>
+
+
+<script src="https://s4.zstatic.net/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="https://s4.zstatic.net/ajax/libs/highlightjs-line-numbers.js/2.8.0/highlightjs-line-numbers.min.js"></script>
+<link
+    rel="stylesheet"
+    href="https://s4.zstatic.net/ajax/libs/highlight.js/11.9.0/styles/github.min.css"
+/>
+<script src="/js/lib/highlight.js"></script>
+
+
+
+<script src="/js/lib/preview.js"></script>
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/css/main.css" />
+
+<meta name="generator" content="Hexo 5.4.2"></head>
+<body>
+    <div id="layout">
+        <transition name="fade">
+            <div id="loading" v-show="loading">
+                <div id="loading-circle">
+                    <h2>LOADING</h2>
+                    <p>加载过慢请开启缓存 浏览器默认开启</p>
+                    <img src="/images/loading.gif" />
+                </div>
+            </div>
+        </transition>
+        <div id="menu" :class="{ hidden: hiddenMenu, 'menu-color': menuColor}">
+    <nav id="desktop-menu">
+        <a class="title" href="/">
+            <span>CAINONG&#39;S BLOG</span>
+        </a>
+        
+        <a href="/">
+            <i class="fa-solid fa-house fa-fw"></i>
+            <span>&ensp;Home</span>
+        </a>
+        
+        <a href="/about">
+            <i class="fa-solid fa-id-card fa-fw"></i>
+            <span>&ensp;About</span>
+        </a>
+        
+        <a href="/archives">
+            <i class="fa-solid fa-box-archive fa-fw"></i>
+            <span>&ensp;Archives</span>
+        </a>
+        
+        <a href="/categories">
+            <i class="fa-solid fa-bookmark fa-fw"></i>
+            <span>&ensp;Categories</span>
+        </a>
+        
+        <a href="/tags">
+            <i class="fa-solid fa-tags fa-fw"></i>
+            <span>&ensp;Tags</span>
+        </a>
+        
+    </nav>
+    <nav id="mobile-menu">
+        <div class="title" @click="showMenuItems = !showMenuItems">
+            <i class="fa-solid fa-bars fa-fw"></i>
+            <span>&emsp;CAINONG&#39;S BLOG</span>
+        </div>
+        <transition name="slide">
+            <div class="items" v-show="showMenuItems">
+                
+                <a href="/">
+                    <div class="item">
+                        <div style="min-width: 20px; max-width: 50px; width: 10%">
+                            <i class="fa-solid fa-house fa-fw"></i>
+                        </div>
+                        <div style="min-width: 100px; max-width: 150%; width: 20%">Home</div>
+                    </div>
+                </a>
+                
+                <a href="/about">
+                    <div class="item">
+                        <div style="min-width: 20px; max-width: 50px; width: 10%">
+                            <i class="fa-solid fa-id-card fa-fw"></i>
+                        </div>
+                        <div style="min-width: 100px; max-width: 150%; width: 20%">About</div>
+                    </div>
+                </a>
+                
+                <a href="/archives">
+                    <div class="item">
+                        <div style="min-width: 20px; max-width: 50px; width: 10%">
+                            <i class="fa-solid fa-box-archive fa-fw"></i>
+                        </div>
+                        <div style="min-width: 100px; max-width: 150%; width: 20%">Archives</div>
+                    </div>
+                </a>
+                
+                <a href="/categories">
+                    <div class="item">
+                        <div style="min-width: 20px; max-width: 50px; width: 10%">
+                            <i class="fa-solid fa-bookmark fa-fw"></i>
+                        </div>
+                        <div style="min-width: 100px; max-width: 150%; width: 20%">Categories</div>
+                    </div>
+                </a>
+                
+                <a href="/tags">
+                    <div class="item">
+                        <div style="min-width: 20px; max-width: 50px; width: 10%">
+                            <i class="fa-solid fa-tags fa-fw"></i>
+                        </div>
+                        <div style="min-width: 100px; max-width: 150%; width: 20%">Tags</div>
+                    </div>
+                </a>
+                
+            </div>
+        </transition>
+    </nav>
+</div>
+<transition name="fade">
+    <div id="menu-curtain" @click="showMenuItems = !showMenuItems" v-show="showMenuItems"></div>
+</transition>
+
+        <div id="main" :class="loading ? 'into-enter-from': 'into-enter-active'">
+            <div class="article">
+    <div>
+        <h1>记一次基于small-step对局域网内证书的自签名</h1>
+    </div>
+    <div class="info">
+        <span class="date">
+            <span class="icon">
+                <i class="fa-solid fa-calendar fa-fw"></i>
+            </span>
+            2025/10/10
+        </span>
+        
+        
+        <span class="tags">
+            <span class="icon">
+                <i class="fa-solid fa-tags fa-fw"></i>
+            </span>
+            
+            
+            <span class="tag">
+                
+                <a href="/tags/%E6%9C%8D%E5%8A%A1%E5%99%A8/" style="color: #00a596">
+                    服务器
+                </a>
+            </span>
+            
+            <span class="tag">
+                
+                <a href="/tags/Kubernetes/" style="color: #00bcd4">
+                    Kubernetes
+                </a>
+            </span>
+            
+            <span class="tag">
+                
+                <a href="/tags/HomeLab/" style="color: #ff7d73">
+                    HomeLab
+                </a>
+            </span>
+            
+            <span class="tag">
+                
+                <a href="/tags/SSL/" style="color: #00bcd4">
+                    SSL
+                </a>
+            </span>
+            
+        </span>
+        
+    </div>
+    
+    <div class="content" v-pre>
+        <p>我们已经解决了K8s内集群的证书 现在需要解决我们直接跑在虚拟机上的一些服务的证书签名了</p>
+<p>之前是自己签名 现在发现可以用根证书+ACME统一签名</p>
+<p>因为是根证书 实际上可以在Ingress里设置任何一个域名（即使他已经存在）</p>
+<p>甚至可以把baidu换成google（</p>
+<span id="more"></span> 
+
+<h1 id="方案选择"><a href="#方案选择" class="headerlink" title="方案选择"></a>方案选择</h1><h2 id="Caddy"><a href="#Caddy" class="headerlink" title="Caddy"></a>Caddy</h2><p>我们可以使用Caddy的tls internal去简单的给局域网的服务设置反代</p>
+<p>我的打算是Caddy在K8s上运行 我们给他单独分配一个LoadBalanceIP</p>
+<p>直接贴上yml</p>
+<pre><code class="YAML">---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations: &#123;&#125;
+  labels:
+    k8s.kuboard.cn/name: caddy-deployment
+  name: caddy-deployment
+  namespace: caddy-namespace
+spec:
+  progressDeadlineSeconds: 600
+  replicas: 1
+  revisionHistoryLimit: 3
+  selector:
+    matchLabels:
+      k8s.kuboard.cn/name: caddy-deployment
+  template:
+    metadata:
+      labels:
+        k8s.kuboard.cn/name: caddy-deployment
+    spec:
+      containers:
+        - image: caddy
+          imagePullPolicy: IfNotPresent
+          name: caddy
+          ports:
+            - containerPort: 80
+              name: http
+            - containerPort: 443
+              name: https
+          volumeMounts:
+            - mountPath: /etc/caddy/Caddyfile
+              name: volume-piaii
+              subPath: Caddyfile
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext: &#123;&#125;
+      terminationGracePeriodSeconds: 30
+      volumes:
+        - name: caddy-volume
+          persistentVolumeClaim:
+            claimName: caddy-pvc
+        - configMap:
+            items:
+              - key: Caddyfile
+                path: Caddyfile
+            name: caddy-config
+          name: volume-piaii
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    metallb.io/ip-allocated-from-pool: default-address-pool
+  labels:
+    k8s.kuboard.cn/name: caddy-deployment
+  name: caddy-deployment
+  namespace: caddy-namespace
+spec:
+  allocateLoadBalancerNodePorts: true
+  externalTrafficPolicy: Cluster
+  internalTrafficPolicy: Cluster
+  ipFamilies:
+    - IPv4
+  ipFamilyPolicy: SingleStack
+  ports:
+    - name: http
+      nodePort: 31922
+      port: 80
+      protocol: TCP
+      targetPort: 80
+    - name: https
+      nodePort: 30408
+      port: 443
+      protocol: TCP
+      targetPort: 443
+  selector:
+    k8s.kuboard.cn/name: caddy-deployment
+  sessionAffinity: None
+  type: LoadBalancer
+status:
+  loadBalancer:
+    ingress:
+      - ip: 192.168.0.241
+        ipMode: VIP
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: caddy-config
+data:
+  Caddyfile: |
+    gitlab.lan &#123;
+        reverse_proxy 192.168.0.37:80
+        tls internal
+    &#125;
+</code></pre>
+<p>以上yml创建了一个Deployment 并且设置了ConfigMap以及PVC存储Caddy的数据</p>
+<p>我这里用的是Longhorn</p>
+<p>然后Caddy的Service被分配了一个LoadbalanceIP</p>
+<p>只需要把.lan域名全部指向Caddy的LoadbalanceIP就可以用了</p>
+<p><img src="https://s2.loli.net/2025/10/11/I9NK8Wnqp4CuzMy.png" alt="bca4266e-b846-4f8f-b639-34468486409d.png"></p>
+<p>没问题 启动后 Caddy 会在 /data/pki/authorities/local/ 下创建内部 CA 及根证书 信任Caddy的证书直接能用</p>
+<p>这个很简单 那问题来了</p>
+<p>我觉得K8s内和局域网内我需要信任两个证书（*.k8s.lan appname.lan） 太麻烦了</p>
+<p>Caddy的TLS internal主要是给测试用的</p>
+<p>有没有更高级 可自定义性更强的方案呢</p>
+<h2 id="自建ACME"><a href="#自建ACME" class="headerlink" title="自建ACME"></a>自建ACME</h2><p>我在思考 既然Let’s Encrypt无法为lan域名签证书</p>
+<p>那我们在局域网自己搭建一个证书签发机构不就可以了</p>
+<p>然后让Traefik之类的服务去连接我们自己的证书机构负责签名</p>
+<h3 id="Step-Ca搭建"><a href="#Step-Ca搭建" class="headerlink" title="Step-Ca搭建"></a>Step-Ca搭建</h3><p>因为这玩意折腾我一天了 我这里不想写折腾过程了 <del>懒</del></p>
+<p>首先的话我们需要在本地有Stepca的CLI</p>
+<pre><code class="Powershell">winget install Smallstep.step-ca
+</code></pre>
+<p>当然你在Linux上也是可以的</p>
+<pre><code class="Bash">apt-get update &amp;&amp; apt-get install -y --no-install-recommends curl vim gpg ca-certificates
+curl -fsSL https://packages.smallstep.com/keys/apt/repo-signing-key.gpg -o /etc/apt/trusted.gpg.d/smallstep.asc &amp;&amp; \
+    echo &#39;deb [signed-by=/etc/apt/trusted.gpg.d/smallstep.asc] https://packages.smallstep.com/stable/debian debs main&#39; \
+    | tee /etc/apt/sources.list.d/smallstep.list
+apt-get update &amp;&amp; apt-get -y install step-cli step-ca
+</code></pre>
+<p>我们有主要是为了生成初始证书</p>
+<p>也可以用init pod去生成 但那个太麻烦 我懒得写yml 望周知（（</p>
+<p>然后的话我们自己创建一下证书</p>
+<pre><code class="Bash"># 根证书创建
+step certificate create \
+  &quot;Cainong Root CA&quot; \
+  certs/root_ca.crt \
+  secrets/root_ca_key \
+  --profile root-ca \
+  --no-password \
+  --insecure \
+  --not-after 87600h
+
+# 创建中间证书并用根证书签名
+step certificate create \
+  &quot;Cainong Intermediate CA&quot; \
+  certs/intermediate_ca.crt \
+  secrets/intermediate_ca_key \
+  --profile intermediate-ca \
+  --ca certs/root_ca.crt \
+  --ca-key secrets/root_ca_key \
+  --no-password \
+  --insecure \
+  --not-after 43800h
+</code></pre>
+<p>step-ca需要根证书 中间证书 中间证书的私钥</p>
+<p>也就是说，step-ca实际上是使用的中间证书给域名颁发证书</p>
+<p>所以我们需要把/secret/intermediate_ca_key intermediate_ca.crt  root_ca.crt这两个文件传到Master节点上</p>
+<p>然后执行</p>
+<pre><code class="Bash">kubectl create secret generic step-ca-certs -n step-ca  --from-file=root-ca.crt=certs/root_ca.crt --from-file=intermediate_ca.crt=certs/intermediate_ca.crt
+</code></pre>
+<p>这里只放Deployment的YAML了 Service我相信你会的</p>
+<pre><code class="YAML">apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations: &#123;&#125;
+  labels:
+    k8s.kuboard.cn/name: step-ca-server
+  name: step-ca-server
+  namespace: step-ca
+spec:
+  selector:
+    matchLabels:
+      k8s.kuboard.cn/name: step-ca-server
+  template:
+    metadata:
+      annotations:
+      labels:
+        k8s.kuboard.cn/name: step-ca-server
+    spec:
+      containers:
+        - env:
+            - name: DOCKER_STEPCA_INIT_NAME
+              value: Smallstep
+            - name: DOCKER_STEPCA_INIT_REMOTE_MANAGEMENT
+              value: &#39;true&#39;
+            - name: DOCKER_STEPCA_INIT_DNS_NAMES
+              value: stepca.k8s.lan
+            - name: CA_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  key: password
+                  name: step-ca-password
+          image: &#39;smallstep/step-ca:latest&#39;
+          imagePullPolicy: IfNotPresent
+          name: step-ca-server
+          ports:
+            - containerPort: 9000
+              name: stepca
+              protocol: TCP
+          volumeMounts:
+            - mountPath: /home/step/config/ca.json
+              name: config
+              subPath: ca.json
+            - mountPath: /home/step/certs/intermediate_ca.crt
+              name: intermediate-ca
+              subPath: intermediate_ca.crt
+            - mountPath: /home/step/certs/root_ca.crt
+              name: root-ca
+              subPath: root_ca.crt
+            - mountPath: /home/step/secrets/intermediate_ca_key
+              name: intermediate-ca-key
+              subPath: intermediate_ca_key
+            - mountPath: /home/step/secrets/password
+              name: password
+              subPath: password
+            - mountPath: /home/step/db
+              name: data
+      securityContext:
+        runAsGroup: 0
+        runAsUser: 0
+      volumes:
+        - configMap:
+            defaultMode: 420
+            name: step-ca-configmap
+          name: config
+        - name: intermediate-ca
+          secret:
+            defaultMode: 420
+            items:
+              - key: intermediate_ca.crt
+                path: intermediate_ca.crt
+            secretName: step-ca-certs
+        - name: root-ca
+          secret:
+            defaultMode: 420
+            items:
+              - key: root-ca.crt
+                path: root_ca.crt
+            secretName: step-ca-certs
+        - name: intermediate-ca-key
+          secret:
+            defaultMode: 420
+            items:
+              - key: intermediate_ca_key
+                path: intermediate_ca_key
+            secretName: step-ca-password
+        - name: password
+          secret:
+            defaultMode: 420
+            items:
+              - key: password
+                path: password
+            secretName: step-ca-password
+        - name: data
+          persistentVolumeClaim:
+            claimName: step-ca-pvc
+</code></pre>
+<p>不难看到我是用kuboard配置的 手写YAML真要命的</p>
+<p>然后是configmap</p>
+<pre><code class="YAML">apiVersion: v1
+data:
+  ca.json: |2-
+     &#123;
+          &quot;root&quot;: &quot;/home/step/certs/root_ca.crt&quot;,
+          &quot;crt&quot;: &quot;/home/step/certs/intermediate_ca.crt&quot;,
+          &quot;key&quot;: &quot;/home/step/secrets/intermediate_ca_key&quot;,
+          &quot;address&quot;: &quot;:9000&quot;,
+          &quot;dnsNames&quot;: [&quot;step-ca-server.step-ca.svc.cluster.local&quot;, &quot;ca.k8s.lan&quot;],
+          &quot;logger&quot;: &#123;
+            &quot;format&quot;: &quot;text&quot;
+          &#125;,
+          &quot;db&quot;: &#123;
+            &quot;type&quot;: &quot;badger&quot;,
+            &quot;dataSource&quot;: &quot;/home/step/db&quot;
+          &#125;,
+          &quot;authority&quot;: &#123;
+            &quot;provisioners&quot;: [
+              &#123;
+                &quot;type&quot;: &quot;ACME&quot;,
+                &quot;name&quot;: &quot;acme&quot;,
+                &quot;forceCN&quot;: true
+              &#125;
+            ]
+          &#125;
+        &#125;
+kind: ConfigMap
+metadata:
+  name: step-ca-configmap
+  namespace: step-ca
+</code></pre>
+<p>不出意外step-ca 就能跑起来了</p>
+<p>但现在又有个小问题</p>
+<p>Ingress与ACME的Service之间通信是用HTTP 这是不允许的</p>
+<p>并且ACME要求全程都使用https</p>
+<p>也就是说</p>
+<p>客户端-&gt;Ingress-&gt;Service-&gt;ACME Pod全部都要用https</p>
+<p>也就是说 我们需要先给Ingress申请一个证书 我给ca服务的域名是ca.k8s.lan</p>
+<p>回到我们一开始申请证书的地方，我们用根证书先给ca.k8s.lan申请一个先</p>
+<pre><code class="Bash">step certificate create &quot;ca.k8s.lan&quot; ca.k8s.lan.crt ca.k8s.lan.key \
+  --ca-key secrets/root_ca_key \
+  --ca certs/root_ca.crt \
+  --san ca.k8s.lan \
+  --not-after 87600h \
+  --insecure --no-password
+</code></pre>
+<p>然后把这个证书传到集群内作为TLS Secret 给Ingress装上</p>
+<p>还没完 我们需要解决Ingress解密Https请求 我们让Ingress不解密 直接传给Pod</p>
+<p>我们需要给Ingres加上这两个设置</p>
+<pre><code class="YAML">annotations:
+  nginx.ingress.kubernetes.io/ssl-passthrough: &quot;true&quot;
+  nginx.ingress.kubernetes.io/backend-protocol: &quot;HTTPS&quot;
+</code></pre>
+<p>然后不出意外的话就可以在局域网内给证书签名了 值得一提的是申请证书的设备也要信任我们的根证书才可以</p>
+<p><img src="https://s2.loli.net/2025/10/12/Bq89wvnAUNzGrQu.png" alt="1a7dc71693a84a6df5025c77055ad11b.png"></p>
+<h3 id="Certmanager"><a href="#Certmanager" class="headerlink" title="Certmanager"></a>Certmanager</h3><p>在K8s集群内最好的方式应该还是用Certmanager去负责Ingress的自签名，创建好Issuer之后只需要在Ingress配置里加个标签 Certmanager就会自动帮我们完成http挑战+证书申请+部署</p>
+<p>还是很方便的</p>
+<p>在Master节点上执行</p>
+<pre><code class="Bash">helm install   cert-manager oci://quay.io/jetstack/charts/cert-manager   --version v1.19.0   --namespace cert-manager   --create-namespace   --set crds.enabled=true
+</code></pre>
+<p>然后创建一个Cluster Issuer</p>
+<pre><code class="YAML">apiVersion: cert-manager.io/v1
+kind: ClusterIssuer
+metadata:
+  name: step-ca
+spec:
+  acme:
+    server: https://ca.k8s.lan/acme/acme/directory  #ACME服务器地址
+    email: admin@k8s.lan
+spec:
+  acme:
+    privateKeySecretRef:
+      name: my-acme-account-key
+    server: https://ca.k8s.lan/acme/acme/directory
+    solvers:
+      - http01:
+          ingress:
+            class: nginx-ingress  # Ingress类名 负责http挑战
+</code></pre>
+<p>还没完 因为我们是自己创的证书 所以我们需要让Certmanager也信任根证书才行</p>
+<p>简单来说就是把root cert挂载到Certmanager的/etc/ssl/certs/里</p>
+<p>还没完 挂了之后重启Pod还是不认 我们还需要添加环境变量SSL_CERT_FILE=/etc/ssl/certs/root_ca.crt</p>
+<p>以上都完成之后就可以创建一个Ingress试试了</p>
+<pre><code class="YAML">apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    cert-manager.io/cluster-issuer: my-acme-issuer # 这里要改
+  labels:
+    app: longhorn-ui
+  name: longhorn-ui
+  namespace: longhorn-system
+spec:
+  ingressClassName: nginx-ingress
+  rules:
+    - host: longhorn.k8s.lan
+      http:
+        paths:
+          - backend:
+              service:
+                name: longhorn-ui
+                port:
+                  number: 8000
+            path: /
+            pathType: Prefix
+  tls:
+    - hosts:
+        - longhorn.k8s.lan  # 这里改成你需要的域名
+      secretName: longhorn-tls-secret  # SSL的Secret 名称随意
+</code></pre>
+<p>只需要添加cert-manager.io/cluster-issuer这一行 他就会自动完成证书申请+挑战+证书部署</p>
+<p>还是很强大的</p>
+<p>至此局域网内的证书基本就完善了 应该没啥要折腾的了</p>
+<h1 id="后续一个小更新："><a href="#后续一个小更新：" class="headerlink" title="后续一个小更新："></a>后续一个小更新：</h1><p>step-ca默认证书有效期只有24小时 有点太短了其实</p>
+<p>我们去修改一下他的configmap</p>
+<pre><code class="JSON">&#123;
+    &quot;root&quot;: &quot;/home/step/certs/root_ca.crt&quot;,
+    &quot;crt&quot;: &quot;/home/step/certs/intermediate_ca.crt&quot;,
+    &quot;key&quot;: &quot;/home/step/secrets/intermediate_ca_key&quot;,
+    &quot;address&quot;: &quot;:9000&quot;,
+    &quot;dnsNames&quot;: [
+        &quot;step-ca-server.step-ca.svc.cluster.local&quot;,
+        &quot;ca.k8s.lan&quot;
+    ],
+    &quot;logger&quot;: &#123;
+        &quot;format&quot;: &quot;text&quot;
+    &#125;,
+    &quot;db&quot;: &#123;
+        &quot;type&quot;: &quot;badger&quot;,
+        &quot;dataSource&quot;: &quot;/home/step/db&quot;
+    &#125;,
+    &quot;authority&quot;: &#123;
+        &quot;provisioners&quot;: [
+            &#123;
+                &quot;type&quot;: &quot;ACME&quot;,
+                &quot;name&quot;: &quot;acme&quot;,
+                &quot;forceCN&quot;: true,
+                &quot;claims&quot;: &#123;
+                  &quot;minTLSCertDuration&quot;: &quot;1h&quot;,
+                  &quot;maxTLSCertDuration&quot;: &quot;8760h&quot;,
+                  &quot;defaultTLSCertDuration&quot;: &quot;168h&quot;
+                &#125;
+            &#125;
+        ]
+    &#125;
+&#125;
+</code></pre>
+<p>这样的话默认有效期就是7天 足够了</p>
+<p>当然你把”defaultTLSCertDuration”改成比如87600h有效期直接10年 也是可以的</p>
+<p>但各种服务定期能续签才能说明ACME工作正常 不然啥时候炸了你都不知道（</p>
+
+    </div>
+    
+    
+    
+    
+    
+    
+    
+</div>
+
+            <footer id="footer">
+    <div id="footer-wrap">
+        <div>
+            &copy;
+            221 - 2025 Cainong&#39;s Blog
+            <span id="footer-icon">
+                <i class="fa-solid fa-font-awesome fa-fw"></i>
+            </span>
+            &commat;Cainong
+        </div>
+        <div>
+            Based on the <a target="_blank" rel="noopener" href="https://hexo.io">Hexo Engine</a> &amp;
+            <a target="_blank" rel="noopener" href="https://github.com/theme-particlex/hexo-theme-particlex">ParticleX Theme</a>
+        </div>
+        
+    </div>
+</footer>
+
+        </div>
+        
+        <transition name="fade">
+            <div id="preview" ref="preview" v-show="previewShow">
+                <img id="preview-content" ref="previewContent" />
+            </div>
+        </transition>
+        
+    </div>
+    <script src="/js/main.js"></script>
+    
+    
+
+
+
+
+    
+</body>
+</html>

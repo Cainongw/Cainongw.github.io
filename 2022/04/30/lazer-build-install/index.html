@@ -1,0 +1,338 @@
+
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="utf-8" />
+    <title>iOS上osu!lazer的手动构建与自签安装 | Cainong&#39;s Blog</title>
+    <meta name="author" content="Cainong" />
+    <meta name="description" content="" />
+    <meta name="keywords" content="" />
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"
+    />
+    <link rel="icon" href="/images/avatar.png" />
+    <link rel="preconnect" href="https://s4.zstatic.net" />
+<script src="https://s4.zstatic.net/ajax/libs/vue/3.3.7/vue.global.prod.min.js"></script>
+<link rel="stylesheet" href="https://s4.zstatic.net/ajax/libs/font-awesome/6.4.2/css/all.min.css" />
+<link rel="preconnect" href="https://fonts.googleapis.cn" />
+<link rel="preconnect" href="https://fonts.gstatic.cn" crossorigin />
+<link
+    rel="stylesheet"
+    href="https://fonts.googleapis.cn/css2?family=Fira+Code:wght@400;500;600;700&family=Lexend:wght@400;500;600;700;800;900&family=Noto+Sans+SC:wght@400;500;600;700;800;900&display=swap"
+/>
+<script> const mixins = {}; </script>
+
+<script src="https://polyfill.alicdn.com/v3/polyfill.min.js?features=default"></script>
+
+
+<script src="https://s4.zstatic.net/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="https://s4.zstatic.net/ajax/libs/highlightjs-line-numbers.js/2.8.0/highlightjs-line-numbers.min.js"></script>
+<link
+    rel="stylesheet"
+    href="https://s4.zstatic.net/ajax/libs/highlight.js/11.9.0/styles/github.min.css"
+/>
+<script src="/js/lib/highlight.js"></script>
+
+
+
+<script src="/js/lib/preview.js"></script>
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/css/main.css" />
+
+<meta name="generator" content="Hexo 5.4.2"></head>
+<body>
+    <div id="layout">
+        <transition name="fade">
+            <div id="loading" v-show="loading">
+                <div id="loading-circle">
+                    <h2>LOADING</h2>
+                    <p>加载过慢请开启缓存 浏览器默认开启</p>
+                    <img src="/images/loading.gif" />
+                </div>
+            </div>
+        </transition>
+        <div id="menu" :class="{ hidden: hiddenMenu, 'menu-color': menuColor}">
+    <nav id="desktop-menu">
+        <a class="title" href="/">
+            <span>CAINONG&#39;S BLOG</span>
+        </a>
+        
+        <a href="/">
+            <i class="fa-solid fa-house fa-fw"></i>
+            <span>&ensp;Home</span>
+        </a>
+        
+        <a href="/about">
+            <i class="fa-solid fa-id-card fa-fw"></i>
+            <span>&ensp;About</span>
+        </a>
+        
+        <a href="/archives">
+            <i class="fa-solid fa-box-archive fa-fw"></i>
+            <span>&ensp;Archives</span>
+        </a>
+        
+        <a href="/categories">
+            <i class="fa-solid fa-bookmark fa-fw"></i>
+            <span>&ensp;Categories</span>
+        </a>
+        
+        <a href="/tags">
+            <i class="fa-solid fa-tags fa-fw"></i>
+            <span>&ensp;Tags</span>
+        </a>
+        
+    </nav>
+    <nav id="mobile-menu">
+        <div class="title" @click="showMenuItems = !showMenuItems">
+            <i class="fa-solid fa-bars fa-fw"></i>
+            <span>&emsp;CAINONG&#39;S BLOG</span>
+        </div>
+        <transition name="slide">
+            <div class="items" v-show="showMenuItems">
+                
+                <a href="/">
+                    <div class="item">
+                        <div style="min-width: 20px; max-width: 50px; width: 10%">
+                            <i class="fa-solid fa-house fa-fw"></i>
+                        </div>
+                        <div style="min-width: 100px; max-width: 150%; width: 20%">Home</div>
+                    </div>
+                </a>
+                
+                <a href="/about">
+                    <div class="item">
+                        <div style="min-width: 20px; max-width: 50px; width: 10%">
+                            <i class="fa-solid fa-id-card fa-fw"></i>
+                        </div>
+                        <div style="min-width: 100px; max-width: 150%; width: 20%">About</div>
+                    </div>
+                </a>
+                
+                <a href="/archives">
+                    <div class="item">
+                        <div style="min-width: 20px; max-width: 50px; width: 10%">
+                            <i class="fa-solid fa-box-archive fa-fw"></i>
+                        </div>
+                        <div style="min-width: 100px; max-width: 150%; width: 20%">Archives</div>
+                    </div>
+                </a>
+                
+                <a href="/categories">
+                    <div class="item">
+                        <div style="min-width: 20px; max-width: 50px; width: 10%">
+                            <i class="fa-solid fa-bookmark fa-fw"></i>
+                        </div>
+                        <div style="min-width: 100px; max-width: 150%; width: 20%">Categories</div>
+                    </div>
+                </a>
+                
+                <a href="/tags">
+                    <div class="item">
+                        <div style="min-width: 20px; max-width: 50px; width: 10%">
+                            <i class="fa-solid fa-tags fa-fw"></i>
+                        </div>
+                        <div style="min-width: 100px; max-width: 150%; width: 20%">Tags</div>
+                    </div>
+                </a>
+                
+            </div>
+        </transition>
+    </nav>
+</div>
+<transition name="fade">
+    <div id="menu-curtain" @click="showMenuItems = !showMenuItems" v-show="showMenuItems"></div>
+</transition>
+
+        <div id="main" :class="loading ? 'into-enter-from': 'into-enter-active'">
+            <div class="article">
+    <div>
+        <h1>iOS上osu!lazer的手动构建与自签安装</h1>
+    </div>
+    <div class="info">
+        <span class="date">
+            <span class="icon">
+                <i class="fa-solid fa-calendar fa-fw"></i>
+            </span>
+            2022/4/30
+        </span>
+        
+        
+        <span class="tags">
+            <span class="icon">
+                <i class="fa-solid fa-tags fa-fw"></i>
+            </span>
+            
+            
+            <span class="tag">
+                
+                <a href="/tags/iOS/" style="color: #ffa2c4">
+                    iOS
+                </a>
+            </span>
+            
+            <span class="tag">
+                
+                <a href="/tags/osu-lazer/" style="color: #03a9f4">
+                    osu!lazer
+                </a>
+            </span>
+            
+            <span class="tag">
+                
+                <a href="/tags/%E6%89%8B%E5%8A%A8%E6%9E%84%E5%BB%BA/" style="color: #ffa2c4">
+                    手动构建
+                </a>
+            </span>
+            
+            <span class="tag">
+                
+                <a href="/tags/%E8%87%AA%E7%AD%BE%E5%AE%89%E8%A3%85/" style="color: #ff7d73">
+                    自签安装
+                </a>
+            </span>
+            
+        </span>
+        
+    </div>
+    
+    <div class="content" v-pre>
+        <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>在不知道多久之前，我注意到<code>lazer</code>有<code>iOS</code>版本的时候，我就满怀期待的冲向了<code>osu</code>官网</p>
+<p>哦~~是<code>TestFlight</code></p>
+<p>结果 一点进去</p>
+<span id="more"></span> 
+
+<p><img src="https://s2.loli.net/2022/04/30/gtRnZvdmlhIeX2p.png" alt="IMG_1620.PNG"></p>
+<p>uhmmmm？</p>
+<p>后来我不知道等了多久，也没见<code>TestFlight</code>出名额</p>
+<p>但是！</p>
+<p>众所周知，<code>osu!lazer</code>是开源的</p>
+<p>于是乎我就想到，我们是不是可以自己手动构建，然后自签安装？</p>
+<p>刚好我发现网上似乎也没有这方面的内容</p>
+<p>于是就有了这篇文章</p>
+<h1 id="你需要什么"><a href="#你需要什么" class="headerlink" title="你需要什么"></a>你需要什么</h1><p>蛋疼的来了，构建ipa安装包需要mac环境</p>
+<p>因此，如果你没有mac环境，你有以下两个选择</p>
+<ol>
+<li><p>用<code>Vmvare</code>，或者<code>Linux KVM</code>等安装一个</p>
+</li>
+<li><p>用别人预先构建好的安装包</p>
+</li>
+<li><p><del>开摆 上电脑玩</del></p>
+</li>
+</ol>
+<p>第一种的话网上有很多教程，关键词搜索<strong>MacOS</strong> <strong>虚拟机</strong>等有很多，再安装完之后再按照下面的走就好了</p>
+<p>如果你选择第二种，你可以从<a target="_blank" rel="noopener" href="https://share.weiyun.com/72K9WJy5">这里</a>下载我构建好的安装包，然后直接跳转到签名的部分惹</p>
+<p><del>什么？你问我第三种怎么办？</del></p>
+<h1 id="构建"><a href="#构建" class="headerlink" title="构建"></a>构建</h1><p>由于需要Mac，以下都是基于Mac环境进行</p>
+<p>很显然，为了手动构建，我们需要去<a target="_blank" rel="noopener" href="https://github.com/ppy/osu">这里</a>下载<code>osu</code>的源码</p>
+<p>由于构建需要<code>Visual Studio</code>环境，所以你还需要去<a target="_blank" rel="noopener" href="https://visualstudio.microsoft.com/zh-hans/">这里</a>下载<code>Visual Studio For Mac 2022</code></p>
+<p>!!请下载<strong>2022</strong>版本!!否则最新版的<code>.NET</code>会报错！！</p>
+<p>以及，<code>osu</code>所需要的<code>.NET</code>环境，去<a target="_blank" rel="noopener" href="https://dotnet.microsoft.com/zh-cn/download/dotnet/thank-you/sdk-6.0.202-macos-x64-installer">这里</a>下载</p>
+<p>安装<code>Visual Studio</code>时需要勾选上<code>.NET iOS Android</code>三个选项，就像这样：</p>
+<p><img src="https://s2.loli.net/2022/05/01/7GPCqtcFv6rAJKy.png" alt="截屏2022-05-01 00.11.26.png"></p>
+<p>请务必勾选上<code>Android</code>，这很重要</p>
+<p>然后，当然还有苹果开发所需的<code>xcode</code>，在<code>App Store</code>中搜索安装</p>
+<p>完成后解压，不出意外的话他打开应该是这样的：</p>
+<p><img src="https://s2.loli.net/2022/04/30/BqwZ498ViKSR7HL.png" alt="截屏2022-04-30 20.41.24.png"></p>
+<p>我们需要的就是里面的<code>osu.iOS.slnf</code></p>
+<p>直接拖进我们安装完成的<code>Visual Studio</code>中</p>
+<p>等待它<code>Restore Package</code>结束，应该是这样的：</p>
+<p><img src="https://s2.loli.net/2022/05/01/nAkBcxzhYQfi8Ip.png" alt="截屏2022-05-01 00.14.26.png"></p>
+<p>然后打开<code>xcode</code>，新建一个项目，我这里名为<code>test</code></p>
+<p>注意选择为<code>iOS</code></p>
+<p><img src="https://s2.loli.net/2022/05/01/ZgcrlBLGKnzsqo6.png" alt="截屏2022-05-01 00.16.56.png"></p>
+<p>然后在左上角<code>Xcode————Preferences————Accounts</code>里登陆你的Apple ID，并在Manage Certificates里新建一个开发者证书，完事后点击右下角的Download Manual Profiles</p>
+<p><img src="https://s2.loli.net/2022/05/01/l1Y2eoTtLxk7PgQ.png" alt="A6A355B3-73F6-4C08-8394-D411EBDC13C6.png"></p>
+<p>然后在你项目的<code>target</code>中选择<code>Signing &amp; Capabilities</code></p>
+<p>将第一个勾打上，<code>Team</code>选择你<code>Apple ID</code>的名字</p>
+<p><img src="https://s2.loli.net/2022/05/01/wRzJlk3LiUxqHCV.png" alt="2A6AB163-A76E-49C4-9DB5-6021A0838147.png"></p>
+<p>然后修改<code>Bundle Identifier</code>，直到下面的<code>Status</code>不是错误</p>
+<p>我这里改成了<code>osu.ppy.lazer</code></p>
+<p>像这样就可以了</p>
+<p><img src="https://s2.loli.net/2022/05/01/EFLPqYSJVuw2rm9.png" alt="EBAA2C60-70B0-497F-AA68-6DA70E234551.png"></p>
+<p>这一步是为了假装自己有证书，避免Visual Studio报错</p>
+<p>然后回到我们的<code>Visual Studio</code></p>
+<p>在上面选择项目————活动配置————Release|iPhone</p>
+<p><img src="https://s2.loli.net/2022/05/01/GnsXBDi4jdRtEfb.jpg" alt="418708CD-1AD9-4449-9160-4A467615E578.png"></p>
+<p>接着在左边展开<code>osu.iOS</code>，双击<code>Info.plist</code></p>
+<p>将第一项捆绑包标识符修改为之前在Xcode里输入进<code>Bundle Identifier</code>里的数据</p>
+<p>我这里就是<code>osu.ppy.lazer</code></p>
+<p><img src="https://s2.loli.net/2022/05/01/8arOvQ6mpjTBKxY.jpg" alt="624C2AD6-4813-4569-9A37-8B73205CC0B9.png"></p>
+<p>在上面选择生成————生成osu.iOS</p>
+<p><img src="https://s2.loli.net/2022/05/01/BANqgnKV2RaPE9H.jpg" alt="07309EA0-9375-402C-A858-9901504D3B68.png"></p>
+<p>等一段时间，再点存档以供发布</p>
+<p>如果没有报错的话，你就可以来到生成————存档————查看存档这里</p>
+<p>选择右下角的签名并分发…</p>
+<p>选择第一项<code>Ad Hoc</code></p>
+<p>一路下一步</p>
+<p>最后你就得到了我们的<code>osu.ipa</code></p>
+<h1 id="签名"><a href="#签名" class="headerlink" title="签名"></a>签名</h1><p>如果你没有mac环境，你可以从<a target="_blank" rel="noopener" href="https://share.weiyun.com/72K9WJy5">这里</a>下载我构建好的安装包</p>
+<p>在这里我提供三种签名的方法</p>
+<h2 id="AltStore（推荐！）"><a href="#AltStore（推荐！）" class="headerlink" title="AltStore（推荐！）"></a>AltStore（推荐！）</h2><p>这个方法好处就在于，他可以定时自动续签 <del>简直爽到爆有没有</del></p>
+<p>如果你想用此方法，需要你将<code>osu.ipa</code>传到你设备中</p>
+<p> 去<a target="_blank" rel="noopener" href="https://altstore.io/">这里</a>下载AltStore并按照教程安装<code>AltStore</code>在你的设备上</p>
+<p> <img src="https://s2.loli.net/2022/05/01/KnX1CGxRkpb4HFz.jpg" alt="IMG_AB248109DEE6-1.jpeg"></p>
+<p> 点击左上角的加号，选择你传进来的ipa，等待就好啦</p>
+<p> 为了以后可以自动续签，你还可以用数据线连接上电脑后，打开在wifi下自动同步（<code>win</code>下需要<code>iTunes</code>）</p>
+<p> 由于<code>AltServer</code>在<code>Windows</code>下还是<code>beta</code>版本，如果你遇到了报错，你可以尝试以下方法</p>
+<h2 id="SideLoadly"><a href="#SideLoadly" class="headerlink" title="SideLoadly"></a>SideLoadly</h2><p> 这可谓是iOS自签神器，只要号没问题我就没见到这玩意签名不了的包</p>
+<p> 去<a target="_blank" rel="noopener" href="https://sideloadly.io/">这里</a>下载<code>SideLoadly</code></p>
+<p> 将<code>ipa</code>拖进来，输入你的<code>AppleID</code>，跟着走就好了</p>
+<h2 id="爱思签名"><a href="#爱思签名" class="headerlink" title="爱思签名"></a>爱思签名</h2><p> <del>太简单了 这里不写了 咕咕</del></p>
+
+    </div>
+    
+    
+    
+    
+    
+    
+    
+</div>
+
+            <footer id="footer">
+    <div id="footer-wrap">
+        <div>
+            &copy;
+            221 - 2025 Cainong&#39;s Blog
+            <span id="footer-icon">
+                <i class="fa-solid fa-font-awesome fa-fw"></i>
+            </span>
+            &commat;Cainong
+        </div>
+        <div>
+            Based on the <a target="_blank" rel="noopener" href="https://hexo.io">Hexo Engine</a> &amp;
+            <a target="_blank" rel="noopener" href="https://github.com/theme-particlex/hexo-theme-particlex">ParticleX Theme</a>
+        </div>
+        
+    </div>
+</footer>
+
+        </div>
+        
+        <transition name="fade">
+            <div id="preview" ref="preview" v-show="previewShow">
+                <img id="preview-content" ref="previewContent" />
+            </div>
+        </transition>
+        
+    </div>
+    <script src="/js/main.js"></script>
+    
+    
+
+
+
+
+    
+</body>
+</html>

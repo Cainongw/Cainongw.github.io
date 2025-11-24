@@ -1,0 +1,383 @@
+
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="utf-8" />
+    <title>Certd的搭建与证书自动部署与通知 | Cainong&#39;s Blog</title>
+    <meta name="author" content="Cainong" />
+    <meta name="description" content="" />
+    <meta name="keywords" content="" />
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"
+    />
+    <link rel="icon" href="/images/avatar.png" />
+    <link rel="preconnect" href="https://s4.zstatic.net" />
+<script src="https://s4.zstatic.net/ajax/libs/vue/3.3.7/vue.global.prod.min.js"></script>
+<link rel="stylesheet" href="https://s4.zstatic.net/ajax/libs/font-awesome/6.4.2/css/all.min.css" />
+<link rel="preconnect" href="https://fonts.googleapis.cn" />
+<link rel="preconnect" href="https://fonts.gstatic.cn" crossorigin />
+<link
+    rel="stylesheet"
+    href="https://fonts.googleapis.cn/css2?family=Fira+Code:wght@400;500;600;700&family=Lexend:wght@400;500;600;700;800;900&family=Noto+Sans+SC:wght@400;500;600;700;800;900&display=swap"
+/>
+<script> const mixins = {}; </script>
+
+<script src="https://polyfill.alicdn.com/v3/polyfill.min.js?features=default"></script>
+
+
+<script src="https://s4.zstatic.net/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="https://s4.zstatic.net/ajax/libs/highlightjs-line-numbers.js/2.8.0/highlightjs-line-numbers.min.js"></script>
+<link
+    rel="stylesheet"
+    href="https://s4.zstatic.net/ajax/libs/highlight.js/11.9.0/styles/github.min.css"
+/>
+<script src="/js/lib/highlight.js"></script>
+
+
+
+<script src="/js/lib/preview.js"></script>
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/css/main.css" />
+
+<meta name="generator" content="Hexo 5.4.2"></head>
+<body>
+    <div id="layout">
+        <transition name="fade">
+            <div id="loading" v-show="loading">
+                <div id="loading-circle">
+                    <h2>LOADING</h2>
+                    <p>加载过慢请开启缓存 浏览器默认开启</p>
+                    <img src="/images/loading.gif" />
+                </div>
+            </div>
+        </transition>
+        <div id="menu" :class="{ hidden: hiddenMenu, 'menu-color': menuColor}">
+    <nav id="desktop-menu">
+        <a class="title" href="/">
+            <span>CAINONG&#39;S BLOG</span>
+        </a>
+        
+        <a href="/">
+            <i class="fa-solid fa-house fa-fw"></i>
+            <span>&ensp;Home</span>
+        </a>
+        
+        <a href="/about">
+            <i class="fa-solid fa-id-card fa-fw"></i>
+            <span>&ensp;About</span>
+        </a>
+        
+        <a href="/archives">
+            <i class="fa-solid fa-box-archive fa-fw"></i>
+            <span>&ensp;Archives</span>
+        </a>
+        
+        <a href="/categories">
+            <i class="fa-solid fa-bookmark fa-fw"></i>
+            <span>&ensp;Categories</span>
+        </a>
+        
+        <a href="/tags">
+            <i class="fa-solid fa-tags fa-fw"></i>
+            <span>&ensp;Tags</span>
+        </a>
+        
+    </nav>
+    <nav id="mobile-menu">
+        <div class="title" @click="showMenuItems = !showMenuItems">
+            <i class="fa-solid fa-bars fa-fw"></i>
+            <span>&emsp;CAINONG&#39;S BLOG</span>
+        </div>
+        <transition name="slide">
+            <div class="items" v-show="showMenuItems">
+                
+                <a href="/">
+                    <div class="item">
+                        <div style="min-width: 20px; max-width: 50px; width: 10%">
+                            <i class="fa-solid fa-house fa-fw"></i>
+                        </div>
+                        <div style="min-width: 100px; max-width: 150%; width: 20%">Home</div>
+                    </div>
+                </a>
+                
+                <a href="/about">
+                    <div class="item">
+                        <div style="min-width: 20px; max-width: 50px; width: 10%">
+                            <i class="fa-solid fa-id-card fa-fw"></i>
+                        </div>
+                        <div style="min-width: 100px; max-width: 150%; width: 20%">About</div>
+                    </div>
+                </a>
+                
+                <a href="/archives">
+                    <div class="item">
+                        <div style="min-width: 20px; max-width: 50px; width: 10%">
+                            <i class="fa-solid fa-box-archive fa-fw"></i>
+                        </div>
+                        <div style="min-width: 100px; max-width: 150%; width: 20%">Archives</div>
+                    </div>
+                </a>
+                
+                <a href="/categories">
+                    <div class="item">
+                        <div style="min-width: 20px; max-width: 50px; width: 10%">
+                            <i class="fa-solid fa-bookmark fa-fw"></i>
+                        </div>
+                        <div style="min-width: 100px; max-width: 150%; width: 20%">Categories</div>
+                    </div>
+                </a>
+                
+                <a href="/tags">
+                    <div class="item">
+                        <div style="min-width: 20px; max-width: 50px; width: 10%">
+                            <i class="fa-solid fa-tags fa-fw"></i>
+                        </div>
+                        <div style="min-width: 100px; max-width: 150%; width: 20%">Tags</div>
+                    </div>
+                </a>
+                
+            </div>
+        </transition>
+    </nav>
+</div>
+<transition name="fade">
+    <div id="menu-curtain" @click="showMenuItems = !showMenuItems" v-show="showMenuItems"></div>
+</transition>
+
+        <div id="main" :class="loading ? 'into-enter-from': 'into-enter-active'">
+            <div class="article">
+    <div>
+        <h1>Certd的搭建与证书自动部署与通知</h1>
+    </div>
+    <div class="info">
+        <span class="date">
+            <span class="icon">
+                <i class="fa-solid fa-calendar fa-fw"></i>
+            </span>
+            2025/10/25
+        </span>
+        
+        
+        <span class="tags">
+            <span class="icon">
+                <i class="fa-solid fa-tags fa-fw"></i>
+            </span>
+            
+            
+            <span class="tag">
+                
+                <a href="/tags/Kubernetes/" style="color: #00a596">
+                    Kubernetes
+                </a>
+            </span>
+            
+        </span>
+        
+    </div>
+    
+    <div class="content" v-pre>
+        <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>前段时间去办了商宽，可算是有公网IP了 CloudFlare Tunnel实在太慢了</p>
+<p>然后我白嫖了免费的pp.ua域名托管到了CF 现在只需要定期给域名申请证书就好了</p>
+<span id="more"></span> 
+
+<h1 id="开始折腾"><a href="#开始折腾" class="headerlink" title="开始折腾"></a>开始折腾</h1><p>搜了一圈发现有个叫Certd的方案不错，类似于Certimates，不过这个有些功能要收费并且更强大</p>
+<p>但其实他已经把东西开放出来了（）收费的地方自己写也是能实现的</p>
+<p>我需要的就是让他自动把证书部署到雷池WAF，因为我所有暴露到公网的服务都由雷池WAF提供</p>
+<h2 id="搭建"><a href="#搭建" class="headerlink" title="搭建"></a>搭建</h2><p>Certd我就直接照着原来的compose部署到K8s上就好</p>
+<p>这里放上yml</p>
+<pre><code class="YAML">---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations: &#123;&#125;
+  labels:
+    k8s.kuboard.cn/name: certd-deployment
+  name: certd-deployment
+  namespace: certd
+spec:
+  selector:
+    matchLabels:
+      k8s.kuboard.cn/name: certd-deployment
+  template:
+    metadata:
+      labels:
+        k8s.kuboard.cn/name: certd-deployment
+    spec:
+      containers:
+        - env:
+            - name: TZ
+              value: Asia/Shanghai
+            - name: certd_system_resetAdminPasswd
+              value: &#39;false&#39;
+          image: &#39;registry.cn-shenzhen.aliyuncs.com/handsfree/certd:latest&#39;
+          imagePullPolicy: IfNotPresent
+          name: certd
+          ports:
+            - containerPort: 7002
+              name: https
+              protocol: TCP
+            - containerPort: 7001
+              name: http
+              protocol: TCP
+          resources: &#123;&#125;
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+          volumeMounts:
+            - mountPath: /etc/localtime
+              name: localtime
+              readOnly: true
+            - mountPath: /etc/timezone
+              name: timezone
+              readOnly: true
+            - mountPath: /app/data
+              name: data
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext: &#123;&#125;
+      volumes:
+        - hostPath:
+            path: /etc/localtime
+            type: File
+          name: localtime
+        - hostPath:
+            path: /etc/timezone
+            type: &#39;&#39;
+          name: timezone
+        - name: data
+          persistentVolumeClaim:
+            claimName: certd-data
+---
+apiVersion: v1
+kind: Service
+metadata:
+  annotations: &#123;&#125;
+  labels:
+    k8s.kuboard.cn/name: certd-deployment
+  name: certd-deployment
+  namespace: certd
+spec:
+  ports:
+    - name: http
+      port: 7001
+      protocol: TCP
+      targetPort: 7001
+    - name: https
+      port: 7002
+      protocol: TCP
+      targetPort: 7002
+  selector:
+    k8s.kuboard.cn/name: certd-deployment
+  sessionAffinity: None
+  type: ClusterIP
+status:
+  loadBalancer: &#123;&#125;
+
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    cert-manager.io/cluster-issuer: my-acme-issuer
+  labels:
+    k8s.kuboard.cn/name: certd-deployment
+  name: certd-deployment
+  namespace: certd
+spec:
+  ingressClassName: nginx-ingress
+  rules:
+    - host: certd.k8s.lan
+      http:
+        paths:
+          - backend:
+              service:
+                name: certd-deployment
+                port:
+                  number: 7001
+            path: /
+            pathType: Prefix
+  tls:
+    - hosts:
+        - certd.k8s.lan
+      secretName: certd-tls-secret
+</code></pre>
+<p>然后局域网访问certd.k8s.lan进入管理员</p>
+<p>默认账号密码是admin 123456 记得修改</p>
+<h2 id="证书流水线的创建"><a href="#证书流水线的创建" class="headerlink" title="证书流水线的创建"></a>证书流水线的创建</h2><p>首先的话创建一个流水线，我这里这么写：</p>
+<p><img src="https://s2.loli.net/2025/10/25/GSDoajxgvAC1O3b.png" alt="chrome_DpNOEIH7GC.png"></p>
+<p>然后的话去CF申请一个Token，这里不过多赘述了</p>
+<p>域名所有权验证有HTTP和DNS两种方式，DNS就是让ACME直接与权威DNS解析商通信确认有Challenge的解析</p>
+<p>Http则无法申请泛域名，这里的话最适合我们的还是DNS Challenge</p>
+<p>然后手动运行证书申请，把申请的证书先复制一份到雷池（伏笔）</p>
+<p>然后选择部署到雷池 这么写就好</p>
+<p><img src="https://s2.loli.net/2025/10/25/T9NBWyvwQ3Mmodl.png" alt="chrome_gP5Clcb40I.png"></p>
+<p>我真正想说的其实是通知的配置，也是比较有意思的</p>
+<h2 id="通知配置"><a href="#通知配置" class="headerlink" title="通知配置"></a>通知配置</h2><p>我这边用的是bark，因为我用的iOS，Bark免费而且及其简单易用</p>
+<p>我前面说过，Certd有些功能需要付费才能使用</p>
+<p><img src="https://s2.loli.net/2025/10/25/aJlEDqsb4HQAVB3.png" alt="chrome_X7Wu1BMGfy.png"></p>
+<p>真的是这样吗（（</p>
+<p>我们选择自定义web hook请求</p>
+<p>Bark的API同时支持GET和POST</p>
+<p>那不就简单了吗</p>
+<p><img src="https://s2.loli.net/2025/10/25/sqSpLF4lCZ6RoPk.png" alt="chrome_ITmalBDa8v.png"></p>
+<p>这么写就好了</p>
+<p>那么能不能用呢</p>
+<p>当然是可以的了（）不然我也不会发出来</p>
+<p><img src="https://s2.loli.net/2025/10/25/TUqidOPN3l7sV4M.png" alt="QQ_yNsf9ogEXm.png"></p>
+
+    </div>
+    
+    
+    
+    
+    
+    
+    
+</div>
+
+            <footer id="footer">
+    <div id="footer-wrap">
+        <div>
+            &copy;
+            221 - 2025 Cainong&#39;s Blog
+            <span id="footer-icon">
+                <i class="fa-solid fa-font-awesome fa-fw"></i>
+            </span>
+            &commat;Cainong
+        </div>
+        <div>
+            Based on the <a target="_blank" rel="noopener" href="https://hexo.io">Hexo Engine</a> &amp;
+            <a target="_blank" rel="noopener" href="https://github.com/theme-particlex/hexo-theme-particlex">ParticleX Theme</a>
+        </div>
+        
+    </div>
+</footer>
+
+        </div>
+        
+        <transition name="fade">
+            <div id="preview" ref="preview" v-show="previewShow">
+                <img id="preview-content" ref="previewContent" />
+            </div>
+        </transition>
+        
+    </div>
+    <script src="/js/main.js"></script>
+    
+    
+
+
+
+
+    
+</body>
+</html>

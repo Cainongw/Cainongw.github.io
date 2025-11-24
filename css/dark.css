@@ -1,0 +1,64 @@
+body {
+  background: #121212;
+  color: #e0e0e0;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  color: #f0f0f0;
+}
+
+a {
+  color: #90caf9;
+}
+
+a:hover {
+  color: #64b5f6;
+  opacity: 0.9;
+}
+
+#home-card #card-style,
+#home-posts .post,
+.timeline-content {
+  background: #1e1e1e;
+  box-shadow: 0 0 20px rgba(0,0,0,0.5);
+}
+
+#footer #footer-wrap {
+  border-top: 1px solid #444;
+  color: #aaa;
+}
+
+blockquote {
+  background: #333;
+  border-left: 3px solid #90caf9;
+}
+
+code {
+  background: #2c2c2c;
+  color: #fff;
+}
+
+.input {
+  background: #222;
+  border: 1px solid #555;
+  color: #eee;
+}
+
+.input:focus {
+  border-color: #90caf9;
+  box-shadow: 0 0 0 3px rgba(144,202,249,0.3);
+}
+
+#menu {
+  background: #1c1c1c;
+}
+
+#menu #desktop-menu .title,
+#menu #desktop-menu a {
+  color: #eee;
+}
+
+#loading {
+  background: #121212;
+  color: #eee;
+}

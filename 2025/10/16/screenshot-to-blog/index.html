@@ -1,0 +1,276 @@
+
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="utf-8" />
+    <title>论如何截图并自动上传到图床 | Cainong&#39;s Blog</title>
+    <meta name="author" content="Cainong" />
+    <meta name="description" content="" />
+    <meta name="keywords" content="" />
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"
+    />
+    <link rel="icon" href="/images/avatar.png" />
+    <link rel="preconnect" href="https://s4.zstatic.net" />
+<script src="https://s4.zstatic.net/ajax/libs/vue/3.3.7/vue.global.prod.min.js"></script>
+<link rel="stylesheet" href="https://s4.zstatic.net/ajax/libs/font-awesome/6.4.2/css/all.min.css" />
+<link rel="preconnect" href="https://fonts.googleapis.cn" />
+<link rel="preconnect" href="https://fonts.gstatic.cn" crossorigin />
+<link
+    rel="stylesheet"
+    href="https://fonts.googleapis.cn/css2?family=Fira+Code:wght@400;500;600;700&family=Lexend:wght@400;500;600;700;800;900&family=Noto+Sans+SC:wght@400;500;600;700;800;900&display=swap"
+/>
+<script> const mixins = {}; </script>
+
+<script src="https://polyfill.alicdn.com/v3/polyfill.min.js?features=default"></script>
+
+
+<script src="https://s4.zstatic.net/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="https://s4.zstatic.net/ajax/libs/highlightjs-line-numbers.js/2.8.0/highlightjs-line-numbers.min.js"></script>
+<link
+    rel="stylesheet"
+    href="https://s4.zstatic.net/ajax/libs/highlight.js/11.9.0/styles/github.min.css"
+/>
+<script src="/js/lib/highlight.js"></script>
+
+
+
+<script src="/js/lib/preview.js"></script>
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/css/main.css" />
+
+<meta name="generator" content="Hexo 5.4.2"></head>
+<body>
+    <div id="layout">
+        <transition name="fade">
+            <div id="loading" v-show="loading">
+                <div id="loading-circle">
+                    <h2>LOADING</h2>
+                    <p>加载过慢请开启缓存 浏览器默认开启</p>
+                    <img src="/images/loading.gif" />
+                </div>
+            </div>
+        </transition>
+        <div id="menu" :class="{ hidden: hiddenMenu, 'menu-color': menuColor}">
+    <nav id="desktop-menu">
+        <a class="title" href="/">
+            <span>CAINONG&#39;S BLOG</span>
+        </a>
+        
+        <a href="/">
+            <i class="fa-solid fa-house fa-fw"></i>
+            <span>&ensp;Home</span>
+        </a>
+        
+        <a href="/about">
+            <i class="fa-solid fa-id-card fa-fw"></i>
+            <span>&ensp;About</span>
+        </a>
+        
+        <a href="/archives">
+            <i class="fa-solid fa-box-archive fa-fw"></i>
+            <span>&ensp;Archives</span>
+        </a>
+        
+        <a href="/categories">
+            <i class="fa-solid fa-bookmark fa-fw"></i>
+            <span>&ensp;Categories</span>
+        </a>
+        
+        <a href="/tags">
+            <i class="fa-solid fa-tags fa-fw"></i>
+            <span>&ensp;Tags</span>
+        </a>
+        
+    </nav>
+    <nav id="mobile-menu">
+        <div class="title" @click="showMenuItems = !showMenuItems">
+            <i class="fa-solid fa-bars fa-fw"></i>
+            <span>&emsp;CAINONG&#39;S BLOG</span>
+        </div>
+        <transition name="slide">
+            <div class="items" v-show="showMenuItems">
+                
+                <a href="/">
+                    <div class="item">
+                        <div style="min-width: 20px; max-width: 50px; width: 10%">
+                            <i class="fa-solid fa-house fa-fw"></i>
+                        </div>
+                        <div style="min-width: 100px; max-width: 150%; width: 20%">Home</div>
+                    </div>
+                </a>
+                
+                <a href="/about">
+                    <div class="item">
+                        <div style="min-width: 20px; max-width: 50px; width: 10%">
+                            <i class="fa-solid fa-id-card fa-fw"></i>
+                        </div>
+                        <div style="min-width: 100px; max-width: 150%; width: 20%">About</div>
+                    </div>
+                </a>
+                
+                <a href="/archives">
+                    <div class="item">
+                        <div style="min-width: 20px; max-width: 50px; width: 10%">
+                            <i class="fa-solid fa-box-archive fa-fw"></i>
+                        </div>
+                        <div style="min-width: 100px; max-width: 150%; width: 20%">Archives</div>
+                    </div>
+                </a>
+                
+                <a href="/categories">
+                    <div class="item">
+                        <div style="min-width: 20px; max-width: 50px; width: 10%">
+                            <i class="fa-solid fa-bookmark fa-fw"></i>
+                        </div>
+                        <div style="min-width: 100px; max-width: 150%; width: 20%">Categories</div>
+                    </div>
+                </a>
+                
+                <a href="/tags">
+                    <div class="item">
+                        <div style="min-width: 20px; max-width: 50px; width: 10%">
+                            <i class="fa-solid fa-tags fa-fw"></i>
+                        </div>
+                        <div style="min-width: 100px; max-width: 150%; width: 20%">Tags</div>
+                    </div>
+                </a>
+                
+            </div>
+        </transition>
+    </nav>
+</div>
+<transition name="fade">
+    <div id="menu-curtain" @click="showMenuItems = !showMenuItems" v-show="showMenuItems"></div>
+</transition>
+
+        <div id="main" :class="loading ? 'into-enter-from': 'into-enter-active'">
+            <div class="article">
+    <div>
+        <h1>论如何截图并自动上传到图床</h1>
+    </div>
+    <div class="info">
+        <span class="date">
+            <span class="icon">
+                <i class="fa-solid fa-calendar fa-fw"></i>
+            </span>
+            2025/10/16
+        </span>
+        
+        
+    </div>
+    
+    <div class="content" v-pre>
+        <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>我之前给blog配图的时候一直都是用QQ截图然后手动拖进上传sm.ms 然后把他生成出来的markdown格式复制进来</p>
+<p>这样的话我需要：</p>
+<pre><code>QQ截图-&gt;保存-&gt;打开浏览器-&gt;打开图床-&gt;拖进图床-&gt;点上传-&gt;复制Markdown-&gt;找到配图的地方-&gt;粘贴
+</code></pre>
+<p>这一套流程下来导致我真的懒得配图</p>
+<p>然后在我这几天高频写blog的时候我想起来我用的图床是有api的</p>
+<p><img src="https://s2.loli.net/2025/10/16/efbXzI2sAmZR1xF.jpg" alt="0EB48A240B08EA27871A38C6D5CCA226.jpg"></p>
+<p>尼玛 那我之前古法上传图片算什么</p>
+<span id="more"></span> 
+
+<h1 id="明确需求"><a href="#明确需求" class="headerlink" title="明确需求"></a>明确需求</h1><p>我需要一个截图，满足以下功能：</p>
+<ol>
+<li>支持区域选择 而不是全屏截图</li>
+<li>软件截图后弹出确认</li>
+<li>确认后自动上传</li>
+<li>最好能有打码 屏蔽隐私信息例如token之类的</li>
+<li>并把Markdown格式的连接复制到我的剪切板</li>
+<li>最好能支持多图并行上传 按顺序复制到剪切板</li>
+</ol>
+<p>然后的话还有一些附加功能 比如：</p>
+<ul>
+<li>复制Code的时候根据窗口名字自动加上代码块和代码类型</li>
+</ul>
+<p>（比如xShell默认是Bash VS默认是CSharp idea默认是kotlin或者java）</p>
+<p>那么有没有现成的轮子呢</p>
+<p>我觉得完全满足需求的只能自己写 但是上传api应该是有的</p>
+<p>啊没错 他就是已经躺在我steam库好几年的ShareX</p>
+<h2 id="ShareX的配置"><a href="#ShareX的配置" class="headerlink" title="ShareX的配置"></a>ShareX的配置</h2><p>我们先去看看图床的<a target="_blank" rel="noopener" href="https://doc.sm.ms/">Docs</a></p>
+<p>然后去ShareX 左边选Custom Uploader Settings</p>
+<p>文档里有说上传的Hearder怎么写</p>
+<p>我们先用Python测试下 我一时半会没看懂ShareX咋配置的</p>
+<pre><code class="Python">import requests
+import io
+from PIL import Image
+URL = &quot;https://sm.ms/api/v2/upload&quot;
+
+headers = &#123;&quot;Authorization&quot;: &quot;你的token&quot; &#125;
+img = Image.open(&quot;test.jpg&quot;)
+buffer = io.BytesIO()
+img.save(buffer, format=&#39;JPEG&#39;)
+buffer.seek(0)
+
+files = &#123;&quot;smfile&quot;: (&quot;screenshot.jpg&quot;, buffer, &quot;image/jpeg&quot;)&#125;
+response = requests.post(URL,headers=headers,files=files)
+print(response.json())
+</code></pre>
+<p>传上去了</p>
+<p>那也就是说方法要是POST Token放在header里 文件头名字得叫smfile</p>
+<p>不管了 先把ShareX配置先</p>
+<p>我测试了一圈 最后配置是这样的：</p>
+<p><img src="https://s2.loli.net/2025/10/16/uhOx6FmVZBXv8Mc.png" alt="Discord_fMu0nuZGD5.png"></p>
+<p>URL那里填：![{json:data.filename}]({json:data.url})</p>
+<p>然后去配置一下快捷键</p>
+<p><img src="https://s2.loli.net/2025/10/16/WqTXyc3sp8JKbAE.png" alt="ShareX_0rb24lvNjN.png"></p>
+<p>完事了 我要的需求大部分都完成了</p>
+<p>其余的可能需要自己写了 有空再写吧 刚刚git init（</p>
+
+    </div>
+    
+    
+    
+    
+    
+    
+    
+</div>
+
+            <footer id="footer">
+    <div id="footer-wrap">
+        <div>
+            &copy;
+            221 - 2025 Cainong&#39;s Blog
+            <span id="footer-icon">
+                <i class="fa-solid fa-font-awesome fa-fw"></i>
+            </span>
+            &commat;Cainong
+        </div>
+        <div>
+            Based on the <a target="_blank" rel="noopener" href="https://hexo.io">Hexo Engine</a> &amp;
+            <a target="_blank" rel="noopener" href="https://github.com/theme-particlex/hexo-theme-particlex">ParticleX Theme</a>
+        </div>
+        
+    </div>
+</footer>
+
+        </div>
+        
+        <transition name="fade">
+            <div id="preview" ref="preview" v-show="previewShow">
+                <img id="preview-content" ref="previewContent" />
+            </div>
+        </transition>
+        
+    </div>
+    <script src="/js/main.js"></script>
+    
+    
+
+
+
+
+    
+</body>
+</html>
