@@ -1,0 +1,397 @@
+
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="utf-8" />
+    <title>Unity游戏逆向与mod开发：与你共享Lo-Fi故事 | Cainong&#39;s Blog</title>
+    <meta name="author" content="Cainong" />
+    <meta name="description" content="" />
+    <meta name="keywords" content="" />
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"
+    />
+    <link rel="icon" href="/images/avatar.png" />
+    <link rel="preconnect" href="https://s4.zstatic.net" />
+<script src="https://s4.zstatic.net/ajax/libs/vue/3.3.7/vue.global.prod.min.js"></script>
+<link rel="stylesheet" href="https://s4.zstatic.net/ajax/libs/font-awesome/6.4.2/css/all.min.css" />
+<link rel="preconnect" href="https://fonts.googleapis.cn" />
+<link rel="preconnect" href="https://fonts.gstatic.cn" crossorigin />
+<link
+    rel="stylesheet"
+    href="https://fonts.googleapis.cn/css2?family=Fira+Code:wght@400;500;600;700&family=Lexend:wght@400;500;600;700;800;900&family=Noto+Sans+SC:wght@400;500;600;700;800;900&display=swap"
+/>
+<script> const mixins = {}; </script>
+
+<script src="https://polyfill.alicdn.com/v3/polyfill.min.js?features=default"></script>
+
+
+<script src="https://s4.zstatic.net/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="https://s4.zstatic.net/ajax/libs/highlightjs-line-numbers.js/2.8.0/highlightjs-line-numbers.min.js"></script>
+<link
+    rel="stylesheet"
+    href="https://s4.zstatic.net/ajax/libs/highlight.js/11.9.0/styles/github.min.css"
+/>
+<script src="/js/lib/highlight.js"></script>
+
+
+
+<script src="/js/lib/preview.js"></script>
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/css/main.css" />
+
+<meta name="generator" content="Hexo 5.4.2"></head>
+<body>
+    <div id="layout">
+        <transition name="fade">
+            <div id="loading" v-show="loading">
+                <div id="loading-circle">
+                    <h2>LOADING</h2>
+                    <p>加载过慢请开启缓存 浏览器默认开启</p>
+                    <img src="/images/loading.gif" />
+                </div>
+            </div>
+        </transition>
+        <div id="menu" :class="{ hidden: hiddenMenu, 'menu-color': menuColor}">
+    <nav id="desktop-menu">
+        <a class="title" href="/">
+            <span>CAINONG&#39;S BLOG</span>
+        </a>
+        
+        <a href="/">
+            <i class="fa-solid fa-house fa-fw"></i>
+            <span>&ensp;Home</span>
+        </a>
+        
+        <a href="/about">
+            <i class="fa-solid fa-id-card fa-fw"></i>
+            <span>&ensp;About</span>
+        </a>
+        
+        <a href="/archives">
+            <i class="fa-solid fa-box-archive fa-fw"></i>
+            <span>&ensp;Archives</span>
+        </a>
+        
+        <a href="/categories">
+            <i class="fa-solid fa-bookmark fa-fw"></i>
+            <span>&ensp;Categories</span>
+        </a>
+        
+        <a href="/tags">
+            <i class="fa-solid fa-tags fa-fw"></i>
+            <span>&ensp;Tags</span>
+        </a>
+        
+    </nav>
+    <nav id="mobile-menu">
+        <div class="title" @click="showMenuItems = !showMenuItems">
+            <i class="fa-solid fa-bars fa-fw"></i>
+            <span>&emsp;CAINONG&#39;S BLOG</span>
+        </div>
+        <transition name="slide">
+            <div class="items" v-show="showMenuItems">
+                
+                <a href="/">
+                    <div class="item">
+                        <div style="min-width: 20px; max-width: 50px; width: 10%">
+                            <i class="fa-solid fa-house fa-fw"></i>
+                        </div>
+                        <div style="min-width: 100px; max-width: 150%; width: 20%">Home</div>
+                    </div>
+                </a>
+                
+                <a href="/about">
+                    <div class="item">
+                        <div style="min-width: 20px; max-width: 50px; width: 10%">
+                            <i class="fa-solid fa-id-card fa-fw"></i>
+                        </div>
+                        <div style="min-width: 100px; max-width: 150%; width: 20%">About</div>
+                    </div>
+                </a>
+                
+                <a href="/archives">
+                    <div class="item">
+                        <div style="min-width: 20px; max-width: 50px; width: 10%">
+                            <i class="fa-solid fa-box-archive fa-fw"></i>
+                        </div>
+                        <div style="min-width: 100px; max-width: 150%; width: 20%">Archives</div>
+                    </div>
+                </a>
+                
+                <a href="/categories">
+                    <div class="item">
+                        <div style="min-width: 20px; max-width: 50px; width: 10%">
+                            <i class="fa-solid fa-bookmark fa-fw"></i>
+                        </div>
+                        <div style="min-width: 100px; max-width: 150%; width: 20%">Categories</div>
+                    </div>
+                </a>
+                
+                <a href="/tags">
+                    <div class="item">
+                        <div style="min-width: 20px; max-width: 50px; width: 10%">
+                            <i class="fa-solid fa-tags fa-fw"></i>
+                        </div>
+                        <div style="min-width: 100px; max-width: 150%; width: 20%">Tags</div>
+                    </div>
+                </a>
+                
+            </div>
+        </transition>
+    </nav>
+</div>
+<transition name="fade">
+    <div id="menu-curtain" @click="showMenuItems = !showMenuItems" v-show="showMenuItems"></div>
+</transition>
+
+        <div id="main" :class="loading ? 'into-enter-from': 'into-enter-active'">
+            <div class="article">
+    <div>
+        <h1>Unity游戏逆向与mod开发：与你共享Lo-Fi故事</h1>
+    </div>
+    <div class="info">
+        <span class="date">
+            <span class="icon">
+                <i class="fa-solid fa-calendar fa-fw"></i>
+            </span>
+            2025/12/4
+        </span>
+        
+        
+        <span class="tags">
+            <span class="icon">
+                <i class="fa-solid fa-tags fa-fw"></i>
+            </span>
+            
+            
+            <span class="tag">
+                
+                <a href="/tags/%E9%80%86%E5%90%91/" style="color: #00a596">
+                    逆向
+                </a>
+            </span>
+            
+            <span class="tag">
+                
+                <a href="/tags/Unity/" style="color: #ffa2c4">
+                    Unity
+                </a>
+            </span>
+            
+        </span>
+        
+    </div>
+    
+    <div class="content" v-pre>
+        <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>看Steam家庭共享库的时候发现个这个游戏</p>
+<p><img src="https://s2.loli.net/2025/12/04/quTDSCksjg268oH.jpg" alt="steamwebhelper_5QFVfBDr7h.jpg"></p>
+<p>基本上就是一个番茄钟+音乐+ToDo List的游戏&amp;工具 顺便放了一个少女陪你干活</p>
+<p>做的还是很精致的 我也很喜欢</p>
+<span id="more"></span> 
+
+<p>但他游戏只能播放内置的和自己添加的音乐，我干活喜欢听自己喜欢的</p>
+<p>但我并不大可能把音乐全下下来，况且现在全都是加密格式（说你呢网易云ncm）</p>
+<p>Todo的话我用的是Microsoft Todo 我希望他能同步到游戏里 甚至在游戏里去增加Todo事项</p>
+<p>也算借助微软全平台同步了（</p>
+<p>上次用的MelonLoader，我看到鉴赏下面已经有人写了个同步时间的插件，基于BepInEX的</p>
+<p>所以我打算用相同的BepInEX版本去写一个插件，实现上述功能</p>
+<h1 id="计划"><a href="#计划" class="headerlink" title="计划"></a>计划</h1><p>首先的话我不打算让游戏直接读取wav之类的，那我还不如直接用播放器放然后把游戏静音了</p>
+<p>况且这样容易分散注意力</p>
+<p>所以我想做的只需要读取Windows多媒体的API（SMTC） 获得歌曲名字 显示在游戏里</p>
+<p>然后可以用游戏自带的上一曲下一曲 以及调节音量就可以</p>
+<p>这样的话通用性也强，有时候Apple Music没歌我会跑去网易云 也支持浏览器放的歌</p>
+<p>Todo的话就先放Todo列表（ 我还没研究Microsoft Todo有没有API去读取之类的</p>
+<h1 id="游戏的逆向"><a href="#游戏的逆向" class="headerlink" title="游戏的逆向"></a>游戏的逆向</h1><h2 id="音乐播放器"><a href="#音乐播放器" class="headerlink" title="音乐播放器"></a>音乐播放器</h2><h3 id="逆向游戏"><a href="#逆向游戏" class="headerlink" title="逆向游戏"></a>逆向游戏</h3><p>点开游戏文件夹发现是mono封装 好事</p>
+<p>丢进dnSpy里</p>
+<p>游戏体量不是很大 类名命名也很规范</p>
+<p>游戏的主逻辑都在Bulbul这个命名空间里</p>
+<p>音乐相关的基本都在Music开头这里</p>
+<p><img src="https://s2.loli.net/2025/12/04/aiseZOhlknFqCMj.png" alt="dnSpy_pmvvyRy20E.png"></p>
+<p>然后找到了这里</p>
+<p><img src="https://s2.loli.net/2025/12/04/lmsqKhoxQjYgwI7.png" alt="dnSpy_noudfUIA3j.png"></p>
+<p>后面发现并不是这个（</p>
+<p>我们可以用Unity Explore去找</p>
+<p>这里直接说结论了，游戏使用TextMeshProGUI去渲染字体</p>
+<p>歌名位于名为MusicTitleText的GameObject中</p>
+<p>打开dnSpy发现父对象MusicUI不位于任何命名空间中 <del>被坑了</del></p>
+<p>可以发现歌名就是在这里被赋值</p>
+<p><img src="https://s2.loli.net/2025/12/09/InoVdgyO2Jw9bNG.png" alt="Discord_N41EQ9UOta.png"></p>
+<p>但是其实有个比较蛋疼的问题 就是Unity游戏怎么调用SMTC呢</p>
+<h3 id="SMTC读取"><a href="#SMTC读取" class="headerlink" title="SMTC读取"></a>SMTC读取</h3><p>一开始是想直接调用Windows API 但马上发现不大现实</p>
+<p>这不就成大便了 你一个游戏插件引用几个Windows库是要干嘛 而且兼容性也会彻底变成一坨屎</p>
+<p>而且Unity Mono不能加载winmd</p>
+<p>GPT给我的方案是纯COM读取 这也是狗屎 我上一曲下一曲岂不是都得写一个方法 我还要处理不同的数据类型类型和异步 这也是噩梦</p>
+<p>我啪的一下找到了这个库</p>
+<p><img src="https://s2.loli.net/2025/12/04/IcF9tGTPgzysYQr.png" alt="chrome_5qEAw7Vfzw.png"></p>
+<p>支持.NET4.6+ 刚好满足我们需要</p>
+<p>吗？</p>
+<p><img src="https://s2.loli.net/2025/12/04/P3DQmFRnczExtJ8.png" alt="devenv_P0a0dSrAwp.png"></p>
+<p>我们想监听事件更新还是逃不过Windows Runtime的API</p>
+<p>那咋办</p>
+<p>找了一下Unity文档发现想用WinRT API只能在UWP下使用</p>
+<p>（挠头</p>
+<p>思考了一个小时我算是明白为啥游戏作者没有这个功能了（</p>
+<p>第二天又折腾了一个早上，基本上逃不过这个问题</p>
+<p><img src="https://s2.loli.net/2025/12/05/iHrqfac6UWwPBRn.png" alt="Discord_IE61hcbfza.png"></p>
+<p>基本上的话<code>Windows.Foundation.UniversalApiContract</code>这个合约是在Unity上UWP平台才能有 Unity Standalone是不能调用的</p>
+<p>靠北啊</p>
+<h3 id="C-中间层的编写"><a href="#C-中间层的编写" class="headerlink" title="C++中间层的编写"></a>C++中间层的编写</h3><p>有句经典名言，没有什么是不能加一个中间层解决的</p>
+<p>我们可以在Native层写一个C++的dll，直接让C++调用WinRT API，这不需要.NET运行时参与</p>
+<p>如果用C#那就要直接处理COM口 还要解决异步的问题 那还是睡觉吧</p>
+<p>也就不会有兼容问题（大概）Mono也不会因为我引入了WinRT来跟我爆了</p>
+<p>这里完全触及我的盲区 我一直都不想学没有GC机制的语言 而且Win API调用更是一坨</p>
+<p><del>搞了半天不仅要手搓轮子还要换个语言搓</del></p>
+<p>还好有Ai 几个小时就完事了 已经放到Github了</p>
+<p><a target="_blank" rel="noopener" href="https://github.com/Cainongw/SMTC-Bridge-Cpp">SMTC-Bridge-Cpp</a></p>
+<p>然后用P/Invoke导入这个dll里面的方法</p>
+<p><img src="https://s2.loli.net/2025/12/08/VvDdcpZSbUlsKLA.png" alt="Chill_With_You_iAfHeBSVtX.png"></p>
+<p>终于是解决在Mono里读取SMTC的问题了 接下来就是逆向和Patch了</p>
+<h3 id="游戏歌曲名"><a href="#游戏歌曲名" class="headerlink" title="游戏歌曲名"></a>游戏歌曲名</h3><p>根据我们上面得出来的东西去Patch一下，核心代码如下</p>
+<pre><code class="C#">[HarmonyPatch(typeof(MusicUI), &quot;OnChangeMusic&quot;, new Type[] &#123; typeof(string), typeof(string), typeof(MusicChangeKind) &#125;)]
+public static class DynamicSMTCUISyncPatch
+&#123;
+    [HarmonyPrefix]
+    public static bool Prefix(ref string musicTitle, ref string artistName)
+    &#123;
+        if (SMTCStatus.IsPlaying)
+        &#123;
+            musicTitle = SMTCStatus.Title;
+            artistName = SMTCStatus.Artist;
+            return false; // 替换游戏内的方法
+        &#125;
+        else
+        &#123;
+            // 返回 true，允许原始方法继续执行。
+            return true;
+        &#125;
+    &#125;
+&#125;
+</code></pre>
+<p><img src="https://s2.loli.net/2025/12/09/qnWTzhApwlf9Uuj.png" alt="Discord_0PiIX1wtRP.png"></p>
+<p>但这样不大完美 他需要在游戏里手动点一下上一曲下一曲才可以替换歌名</p>
+<p>所以我们还要获取游戏的MusicUI实例去手动触发游戏逻辑让其更新UI</p>
+<pre><code class="C#">_musicUIInstance = FindObjectOfType&lt;MusicUI&gt;();
+
+if (_musicUIInstance != null)
+
+ // 成功找到实例，继续准备反射方法
+    Type musicChangeKindType = AccessTools.TypeByName(&quot;MusicChangeKind&quot;);
+
+    if (musicChangeKindType != null)
+    &#123;
+        _onChangeMusicMethod = AccessTools.Method(
+            typeof(MusicUI),
+            &quot;OnChangeMusic&quot;,
+            new Type[] &#123; typeof(string), typeof(string), musicChangeKindType &#125;
+        );
+    &#125;
+</code></pre>
+<p>以及触发游戏内的更新逻辑</p>
+<pre><code class="c#">private static void TriggerGameUIUpdate(bool smtcIsPlaying)
+&#123;
+    if (smtcIsPlaying)
+    &#123;
+        // SMTC 正在播放 -&gt; 游戏 UI 应该显示“暂停”图标
+        _musicUIInstance.OnPlayMusic();
+    &#125;
+    else
+    &#123;
+        // SMTC 处于暂停/停止 -&gt; 游戏 UI 应该显示“播放”图标
+        _musicUIInstance.OnPauseMusic();
+    &#125;
+    object musicChangeKindManual = Enum.Parse(AccessTools.TypeByName(&quot;MusicChangeKind&quot;), &quot;Manual&quot;);
+
+    object[] parameters = new object[]
+    &#123;
+        &quot;Placeholder Title&quot;,
+        &quot;Placeholder Artist&quot;,
+        musicChangeKindManual
+    &#125;;
+
+    _onChangeMusicMethod.Invoke(_musicUIInstance, parameters);
+    _logger.LogDebug($&quot;主动调用 OnChangeMusic。SMTC IsPlaying=&#123;smtcIsPlaying&#125;&quot;);
+&#125;
+</code></pre>
+<p>游戏内的<code>OnChangeMusic</code>方法接受三个参数，Title Artist和ChangeKind</p>
+<p>前面两个很显然，第三个就是改变歌曲的方式，游戏里是一个枚举，有Auto Manual和PlaylistCellClick</p>
+<p>也就是自动切换 手动 点击列表歌曲</p>
+<p>我们手动替换的话应该适合Manual或者Auto</p>
+<p>别的与音乐有关的UI代码都在MusicUI类中，用UE找到并Patch就好，这里不过多赘述了</p>
+<p>接下来基本就是</p>
+<h2 id="ToDo-List同步"><a href="#ToDo-List同步" class="headerlink" title="ToDo List同步"></a>ToDo List同步</h2><p>已放进Todo列表中（）</p>
+<h1 id="一些踩雷"><a href="#一些踩雷" class="headerlink" title="一些踩雷"></a>一些踩雷</h1><p>过程中还踩了些雷 一个是获取歌曲信息cpp库的线程</p>
+<h2 id="Mutex锁问题"><a href="#Mutex锁问题" class="headerlink" title="Mutex锁问题"></a>Mutex锁问题</h2><p><img src="https://s2.loli.net/2025/12/09/maIwyDWpA8f4Kcu.png" alt="QQ_CfAAtjaldu.png"></p>
+<p>在实际测试的过程中我遇到过很多这个报错</p>
+<p>因为在Cpp库中我们注册了SessionMananger去管理SMTC的session，并使用了mutex锁去保护Unity线程和C++库之前的读写，确保每次Unity读到的是完整且正确的数据</p>
+<p>在实际调用，需要Unity在OnDestry生命周期调用Shutdown函数去让C++清理这些锁</p>
+<p>但是实际游戏mod中不正常退出是很常见的，尤其是任务管理器杀进程和游戏崩溃的时候</p>
+<p>这个说实话我没啥办法 只能一直改一直测 我也没经验</p>
+<h2 id="OnUpdate函数的类"><a href="#OnUpdate函数的类" class="headerlink" title="OnUpdate函数的类"></a>OnUpdate函数的类</h2><p>一个就是在BepInEX中，含有Update函数的组件必须继承MonoBehaviour类(而不是MelonLoader一样继承MelonMod类)</p>
+<p>并且要创建新的GameObject并挂载</p>
+<p>以及最重要的 hideFlags 否则Mono会销毁这个组件</p>
+<pre><code class="C#">private static GameObject _runner;
+_runner = new GameObject(&quot;SMTCSyncRunner&quot;);
+_runner.hideFlags = HideFlags.HideAndDontSave;
+DontDestroyOnLoad(_runner);
+_runner.SetActive(true);
+//挂载组件
+var behaviour =  _runner.AddComponent&lt;SMTCSyncBehaviour&gt;();
+</code></pre>
+<p>也折腾了我几个小时 Update函数一直不跑我都纳闷死了</p>
+
+    </div>
+    
+    
+    
+    
+    
+    
+    
+</div>
+
+            <footer id="footer">
+    <div id="footer-wrap">
+        <div>
+            &copy;
+            221 - 2025 Cainong&#39;s Blog
+            <span id="footer-icon">
+                <i class="fa-solid fa-font-awesome fa-fw"></i>
+            </span>
+            &commat;Cainong
+        </div>
+        <div>
+            Based on the <a target="_blank" rel="noopener" href="https://hexo.io">Hexo Engine</a> &amp;
+            <a target="_blank" rel="noopener" href="https://github.com/theme-particlex/hexo-theme-particlex">ParticleX Theme</a>
+        </div>
+        
+    </div>
+</footer>
+
+        </div>
+        
+        <transition name="fade">
+            <div id="preview" ref="preview" v-show="previewShow">
+                <img id="preview-content" ref="previewContent" />
+            </div>
+        </transition>
+        
+    </div>
+    <script src="/js/main.js"></script>
+    
+    
+
+
+
+
+    
+</body>
+</html>
