@@ -175,14 +175,14 @@
             
             <span class="tag">
                 
-                <a href="/tags/%E9%80%86%E5%90%91/" style="color: #00a596">
+                <a href="/tags/%E9%80%86%E5%90%91/" style="color: #00bcd4">
                     逆向
                 </a>
             </span>
             
             <span class="tag">
                 
-                <a href="/tags/Unity/" style="color: #ffa2c4">
+                <a href="/tags/Unity/" style="color: #ff7d73">
                     Unity
                 </a>
             </span>
@@ -196,9 +196,11 @@
 <p><img src="https://s2.loli.net/2025/12/04/quTDSCksjg268oH.jpg" alt="steamwebhelper_5QFVfBDr7h.jpg"></p>
 <p>基本上就是一个番茄钟+音乐+ToDo List的游戏&amp;工具 顺便放了一个少女陪你干活</p>
 <p>做的还是很精致的 我也很喜欢</p>
+<p>Mod已经写完了 是一个同步音乐信息到游戏的mod 感兴趣的可以下下来看看</p>
+<p><a target="_blank" rel="noopener" href="https://github.com/Cainongw/ChillMusicInformationSyncMod">ChillMusicInformationSyncMod</a></p>
 <span id="more"></span> 
 
-<p>但他游戏只能播放内置的和自己添加的音乐，我干活喜欢听自己喜欢的</p>
+<p>游戏只能播放内置的和自己添加的音乐，我干活喜欢听自己喜欢的</p>
 <p>但我并不大可能把音乐全下下来，况且现在全都是加密格式（说你呢网易云ncm）</p>
 <p>Todo的话我用的是Microsoft Todo 我希望他能同步到游戏里 甚至在游戏里去增加Todo事项</p>
 <p>也算借助微软全平台同步了（</p>
@@ -326,7 +328,8 @@ if (_musicUIInstance != null)
 <p>也就是自动切换 手动 点击列表歌曲</p>
 <p>我们手动替换的话应该适合Manual或者Auto</p>
 <p>别的与音乐有关的UI代码都在MusicUI类中，用UE找到并Patch就好，这里不过多赘述了</p>
-<p>接下来基本就是</p>
+<p>接下来基本就是写代码</p>
+<p>基本上都是对着FacilityMusic这个类Patch，也不过多赘述了 毕竟Mono封装和看源码也差不多</p>
 <h2 id="ToDo-List同步"><a href="#ToDo-List同步" class="headerlink" title="ToDo List同步"></a>ToDo List同步</h2><p>已放进Todo列表中（）</p>
 <h1 id="一些踩雷"><a href="#一些踩雷" class="headerlink" title="一些踩雷"></a>一些踩雷</h1><p>过程中还踩了些雷 一个是获取歌曲信息cpp库的线程</p>
 <h2 id="Mutex锁问题"><a href="#Mutex锁问题" class="headerlink" title="Mutex锁问题"></a>Mutex锁问题</h2><p><img src="https://s2.loli.net/2025/12/09/maIwyDWpA8f4Kcu.png" alt="QQ_CfAAtjaldu.png"></p>
@@ -347,6 +350,30 @@ _runner.SetActive(true);
 var behaviour =  _runner.AddComponent&lt;SMTCSyncBehaviour&gt;();
 </code></pre>
 <p>也折腾了我几个小时 Update函数一直不跑我都纳闷死了</p>
+<h2 id="实例的查找"><a href="#实例的查找" class="headerlink" title="实例的查找"></a>实例的查找</h2><p>后续发现其实根本不需要创建GameObject去使用Update函数</p>
+<p>因为是事件驱动+异步获取的，所以FindObjectOfType这个操作我们可以用Harmony去实现</p>
+<p>也就是Patch游戏实例化代码的地方让他顺便把实例传给我们的函数就好了</p>
+<pre><code class="Csharp"> [HarmonyPatch(typeof(FacilityMusic), &quot;Setup&quot;)]
+ public static class MusicUISetupPatch
+ &#123;
+     private static readonly FieldInfo MusicUIField = AccessTools.Field(typeof(FacilityMusic), &quot;_musicUI&quot;);
+     [HarmonyPostfix]
+     public static void Postfix(FacilityMusic __instance)
+     &#123;
+         // 检查 MusicUISync 是否已经捕获了实例
+         if (!MusicUISync.isMusicUISynced()) 
+         &#123;
+             // 确保只执行一次初始同步逻辑
+             MusicUI musicUIInstance = MusicUIField?.GetValue(__instance) as MusicUI;
+             MusicUISync.GetInstance(__instance , musicUIInstance);
+
+             MusicUIHider.GetInstance(musicUIInstance);
+         &#125;
+     &#125;
+ &#125;
+</code></pre>
+<p>我后续是同时需要FacilityMusic和MusicUI这两个实例，一次Patch直接拿到两个实例 刚刚好</p>
+<p>其实用实例的话我们就不用Patch音乐名的部分了，手动调用Onchangemusic去更新也可以</p>
 
     </div>
     
