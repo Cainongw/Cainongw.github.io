@@ -181,8 +181,53 @@
         
 
 <div class="post">
+    <a href="/2025/12/21/bepinex-develop02/">
+        <h2 class="post-title">Unity游戏逆向与mod开发：与你共享Lo-Fi故事(2) Todo同步</h2>
+    </a>
+    <div class="category-and-date">
+        
+        <span class="date">
+            <span class="icon">
+                <i class="fa-solid fa-calendar fa-fw"></i>
+            </span>
+            2025/12/21
+        </span>
+        
+        
+    </div>
+    <div class="description">
+        <div class="content" v-pre>
+            
+            <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>我大概是写完了那个同步SMTC的mod，接下来就是用DOTween加动效还有一些细节修改就好了</p>
+<p>那么我要实现我第二个目标了，就是Todo的同步</p>
+            
+        </div>
+    </div>
+    <div class="post-tags">
+        
+        <span class="icon">
+            <i class="fa-solid fa-tags fa-fw"></i>
+        </span>
+        
+        
+        
+        <span class="tag">
+            
+            <a href="/tags/%E9%80%86%E5%90%91/" style="color: #ffa2c4">逆向</a>
+        </span>
+        
+        <span class="tag">
+            
+            <a href="/tags/Unity/" style="color: #00bcd4">Unity</a>
+        </span>
+        
+    </div>
+    <a href="/2025/12/21/bepinex-develop02/" class="go-post">阅读全文</a>
+</div>
+
+<div class="post">
     <a href="/2025/12/04/beplnex-develop01/">
-        <h2 class="post-title">Unity游戏逆向与mod开发：与你共享Lo-Fi故事</h2>
+        <h2 class="post-title">Unity游戏逆向与mod开发：与你共享Lo-Fi故事(1)</h2>
     </a>
     <div class="category-and-date">
         
@@ -267,12 +312,12 @@
         
         <span class="tag">
             
-            <a href="/tags/Git/" style="color: #ff7d73">Git</a>
+            <a href="/tags/Git/" style="color: #ffa2c4">Git</a>
         </span>
         
         <span class="tag">
             
-            <a href="/tags/Github/" style="color: #ffa2c4">Github</a>
+            <a href="/tags/Github/" style="color: #00a596">Github</a>
         </span>
         
     </div>
@@ -315,17 +360,17 @@
         
         <span class="tag">
             
-            <a href="/tags/iOS/" style="color: #00bcd4">iOS</a>
+            <a href="/tags/iOS/" style="color: #ffa2c4">iOS</a>
         </span>
         
         <span class="tag">
             
-            <a href="/tags/%E8%87%AA%E7%AD%BE/" style="color: #ff7d73">自签</a>
+            <a href="/tags/%E8%87%AA%E7%AD%BE/" style="color: #00a596">自签</a>
         </span>
         
         <span class="tag">
             
-            <a href="/tags/SideStore/" style="color: #ffa2c4">SideStore</a>
+            <a href="/tags/SideStore/" style="color: #00bcd4">SideStore</a>
         </span>
         
     </div>
@@ -353,28 +398,6 @@
             <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>我已经搭建了很多七七八八的服务 应该是完全满足DevOps的需求了</p>
 <p>但我还完全没有体验过整个流程呢</p>
 <p>刚好我自己给Aqua的前端改了点代码 我决定搞一个自动部署</p>
-<h1 id="折腾开始"><a href="#折腾开始" class="headerlink" title="折腾开始"></a>折腾开始</h1><p>需求很简单，在我改完代码之后Push到我自己的Gitlab，然后自动Build镜像并推送到我的Harbor，然后Kubernete Deployment Rollout拉取新镜像</p>
-<p>我不打算用Jetkins 一个是他的UI老丑 一个就是没必要 Gitlab对我已经很强大了 足矣</p>
-<p><del>其实也是因为懒不想重新搭一个</del></p>
-<h2 id="Gitlab-Runner的搭建"><a href="#Gitlab-Runner的搭建" class="headerlink" title="Gitlab Runner的搭建"></a>Gitlab Runner的搭建</h2><p>那首先肯定是要搭建Runner，直接在K8s部署肯定是最好的</p>
-<p>首先先去Gitlab创建一个runner拿到token</p>
-<p><img src="https://s2.loli.net/2025/11/15/SY8rbTPxtX1MGEp.png" alt="chrome_Q7zJHn0Q3i.png"></p>
-<p>然后连上Master</p>
-<pre><code class="Bash">helm repo add gitlab https://charts.gitlab.io
-helm install gitlab-runner \
-  --namespace=gitlab-runner \
-  --create-namespace \
-  --set gitlabUrl=https://gitlab.example.com \
-  --set runnerToken=xxx \
-  --set rbac.create=true \
-  --set rbac.clusterWideAccess=true \
-  gitlab/gitlab-runner
-</code></pre>
-<p>我们让helm自己创建serviceAccount就好 不给自己埋坑（</p>
-<p><img src="https://s2.loli.net/2025/11/15/uicD2F3f7REs6QB.png" alt="chrome_MHyUxcTMJC.png"></p>
-<p>没啥问题 接下来就是下一步</p>
-<h2 id="CI-CD配置"><a href="#CI-CD配置" class="headerlink" title="CI/CD配置"></a>CI/CD配置</h2><p>其实我们需要的就是自动构建Nginx镜像，把npm build好的文件放进去就好了</p>
-
             
         </div>
     </div>
@@ -388,17 +411,17 @@ helm install gitlab-runner \
         
         <span class="tag">
             
-            <a href="/tags/Kubernetes/" style="color: #ffa2c4">Kubernetes</a>
+            <a href="/tags/Kubernetes/" style="color: #00a596">Kubernetes</a>
         </span>
         
         <span class="tag">
             
-            <a href="/tags/HomeLab/" style="color: #00bcd4">HomeLab</a>
+            <a href="/tags/HomeLab/" style="color: #03a9f4">HomeLab</a>
         </span>
         
         <span class="tag">
             
-            <a href="/tags/DevOps/" style="color: #00a596">DevOps</a>
+            <a href="/tags/DevOps/" style="color: #ffa2c4">DevOps</a>
         </span>
         
     </div>
@@ -439,67 +462,16 @@ helm install gitlab-runner \
         
         <span class="tag">
             
-            <a href="/tags/Kubernetes/" style="color: #00bcd4">Kubernetes</a>
+            <a href="/tags/Kubernetes/" style="color: #03a9f4">Kubernetes</a>
         </span>
         
         <span class="tag">
             
-            <a href="/tags/HomeLab/" style="color: #ffa2c4">HomeLab</a>
+            <a href="/tags/HomeLab/" style="color: #ff7d73">HomeLab</a>
         </span>
         
     </div>
     <a href="/2025/11/11/filebrowser-buildup/" class="go-post">阅读全文</a>
-</div>
-
-<div class="post">
-    <a href="/2025/11/01/remote-access2/">
-        <h2 class="post-title">论远程零信任访问的搭建(2)Sidecar容器的使用</h2>
-    </a>
-    <div class="category-and-date">
-        
-        <span class="date">
-            <span class="icon">
-                <i class="fa-solid fa-calendar fa-fw"></i>
-            </span>
-            2025/11/1
-        </span>
-        
-        
-    </div>
-    <div class="description">
-        <div class="content" v-pre>
-            
-            <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>我们终于搭建好了Headscale控制平面和UI，并解决了统一登陆，现在零信任网络已经完全可以使用了</p>
-<p>我们需要完成最后一步：把服务添加进来</p>
-<p>在这里就是我的AquaDX Sidecar容器</p>
-            
-        </div>
-    </div>
-    <div class="post-tags">
-        
-        <span class="icon">
-            <i class="fa-solid fa-tags fa-fw"></i>
-        </span>
-        
-        
-        
-        <span class="tag">
-            
-            <a href="/tags/HomeLab/" style="color: #ffa2c4">HomeLab</a>
-        </span>
-        
-        <span class="tag">
-            
-            <a href="/tags/WireGuard/" style="color: #ff7d73">WireGuard</a>
-        </span>
-        
-        <span class="tag">
-            
-            <a href="/tags/%E8%99%9A%E6%8B%9F%E7%BD%91%E8%B7%AF/" style="color: #ffa2c4">虚拟网路</a>
-        </span>
-        
-    </div>
-    <a href="/2025/11/01/remote-access2/" class="go-post">阅读全文</a>
 </div>
 
 <div class="post">
@@ -541,12 +513,12 @@ helm install gitlab-runner \
         
         <span class="tag">
             
-            <a href="/tags/HomeLab/" style="color: #00bcd4">HomeLab</a>
+            <a href="/tags/HomeLab/" style="color: #ff7d73">HomeLab</a>
         </span>
         
         <span class="tag">
             
-            <a href="/tags/WireGuard/" style="color: #ff7d73">WireGuard</a>
+            <a href="/tags/WireGuard/" style="color: #ffa2c4">WireGuard</a>
         </span>
         
         <span class="tag">
@@ -556,6 +528,57 @@ helm install gitlab-runner \
         
     </div>
     <a href="/2025/11/01/remote-access1/" class="go-post">阅读全文</a>
+</div>
+
+<div class="post">
+    <a href="/2025/11/01/remote-access2/">
+        <h2 class="post-title">论远程零信任访问的搭建(2)Sidecar容器的使用</h2>
+    </a>
+    <div class="category-and-date">
+        
+        <span class="date">
+            <span class="icon">
+                <i class="fa-solid fa-calendar fa-fw"></i>
+            </span>
+            2025/11/1
+        </span>
+        
+        
+    </div>
+    <div class="description">
+        <div class="content" v-pre>
+            
+            <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>我们终于搭建好了Headscale控制平面和UI，并解决了统一登陆，现在零信任网络已经完全可以使用了</p>
+<p>我们需要完成最后一步：把服务添加进来</p>
+<p>在这里就是我的AquaDX Sidecar容器</p>
+            
+        </div>
+    </div>
+    <div class="post-tags">
+        
+        <span class="icon">
+            <i class="fa-solid fa-tags fa-fw"></i>
+        </span>
+        
+        
+        
+        <span class="tag">
+            
+            <a href="/tags/HomeLab/" style="color: #ff7d73">HomeLab</a>
+        </span>
+        
+        <span class="tag">
+            
+            <a href="/tags/WireGuard/" style="color: #00a596">WireGuard</a>
+        </span>
+        
+        <span class="tag">
+            
+            <a href="/tags/%E8%99%9A%E6%8B%9F%E7%BD%91%E8%B7%AF/" style="color: #ffa2c4">虚拟网路</a>
+        </span>
+        
+    </div>
+    <a href="/2025/11/01/remote-access2/" class="go-post">阅读全文</a>
 </div>
 
 <div class="post">
@@ -596,7 +619,7 @@ helm install gitlab-runner \
         
         <span class="tag">
             
-            <a href="/tags/%E4%BA%A4%E6%8D%A2%E6%9C%BA/" style="color: #03a9f4">交换机</a>
+            <a href="/tags/%E4%BA%A4%E6%8D%A2%E6%9C%BA/" style="color: #00bcd4">交换机</a>
         </span>
         
         <span class="tag">
@@ -645,12 +668,12 @@ helm install gitlab-runner \
         
         <span class="tag">
             
-            <a href="/tags/%E6%9C%8D%E5%8A%A1%E5%99%A8/" style="color: #ffa2c4">服务器</a>
+            <a href="/tags/%E6%9C%8D%E5%8A%A1%E5%99%A8/" style="color: #00bcd4">服务器</a>
         </span>
         
         <span class="tag">
             
-            <a href="/tags/Kubernetes/" style="color: #00a596">Kubernetes</a>
+            <a href="/tags/Kubernetes/" style="color: #ff7d73">Kubernetes</a>
         </span>
         
         <span class="tag">
@@ -660,46 +683,6 @@ helm install gitlab-runner \
         
     </div>
     <a href="/2025/10/25/waf-buildup/" class="go-post">阅读全文</a>
-</div>
-
-<div class="post">
-    <a href="/2025/10/25/cert-auto-application/">
-        <h2 class="post-title">Certd的搭建与证书自动部署与通知</h2>
-    </a>
-    <div class="category-and-date">
-        
-        <span class="date">
-            <span class="icon">
-                <i class="fa-solid fa-calendar fa-fw"></i>
-            </span>
-            2025/10/25
-        </span>
-        
-        
-    </div>
-    <div class="description">
-        <div class="content" v-pre>
-            
-            <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>前段时间去办了商宽，可算是有公网IP了 CloudFlare Tunnel实在太慢了</p>
-<p>然后我白嫖了免费的pp.ua域名托管到了CF 现在只需要定期给域名申请证书就好了</p>
-            
-        </div>
-    </div>
-    <div class="post-tags">
-        
-        <span class="icon">
-            <i class="fa-solid fa-tags fa-fw"></i>
-        </span>
-        
-        
-        
-        <span class="tag">
-            
-            <a href="/tags/Kubernetes/" style="color: #ffa2c4">Kubernetes</a>
-        </span>
-        
-    </div>
-    <a href="/2025/10/25/cert-auto-application/" class="go-post">阅读全文</a>
 </div>
 
 

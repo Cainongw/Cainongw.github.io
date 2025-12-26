@@ -3,7 +3,7 @@
 <html lang="zh">
 <head>
     <meta charset="utf-8" />
-    <title>关于使用Ai超分与补帧的一些折腾心得 | Cainong&#39;s Blog</title>
+    <title>Unity游戏逆向与mod开发：与你共享Lo-Fi故事(2) Todo同步 | Cainong&#39;s Blog</title>
     <meta name="author" content="Cainong" />
     <meta name="description" content="" />
     <meta name="keywords" content="" />
@@ -156,14 +156,14 @@
         <div id="main" :class="loading ? 'into-enter-from': 'into-enter-active'">
             <div class="article">
     <div>
-        <h1>关于使用Ai超分与补帧的一些折腾心得</h1>
+        <h1>Unity游戏逆向与mod开发：与你共享Lo-Fi故事(2) Todo同步</h1>
     </div>
     <div class="info">
         <span class="date">
             <span class="icon">
                 <i class="fa-solid fa-calendar fa-fw"></i>
             </span>
-            2023/11/27
+            2025/12/21
         </span>
         
         
@@ -175,22 +175,15 @@
             
             <span class="tag">
                 
-                <a href="/tags/AI/" style="color: #ff7d73">
-                    AI
+                <a href="/tags/%E9%80%86%E5%90%91/" style="color: #03a9f4">
+                    逆向
                 </a>
             </span>
             
             <span class="tag">
                 
-                <a href="/tags/%E5%9B%BE%E5%83%8F%E5%A4%84%E7%90%86/" style="color: #ffa2c4">
-                    图像处理
-                </a>
-            </span>
-            
-            <span class="tag">
-                
-                <a href="/tags/Python/" style="color: #ff7d73">
-                    Python
+                <a href="/tags/Unity/" style="color: #ffa2c4">
+                    Unity
                 </a>
             </span>
             
@@ -199,19 +192,53 @@
     </div>
     
     <div class="content" v-pre>
-        <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>在B站上刷到了一些音游BGA的120fps版本，感觉很爽？</p>
-<p>但是我没会员我看不到啊</p>
-<p>刚好闲着无聊，自己研究一下吧</p>
+        <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>我大概是写完了那个同步SMTC的mod，接下来就是用DOTween加动效还有一些细节修改就好了</p>
+<p>那么我要实现我第二个目标了，就是Todo的同步</p>
 <span id="more"></span> 
 
-<h1 id="折腾开始"><a href="#折腾开始" class="headerlink" title="折腾开始"></a>折腾开始</h1><p>不用想都知道干这个肯定需要ffmpeg，所以请务必确保ffmpeg已经被加入到你的环境变量中以便后续操作</p>
-<p>我选择的示例视频是Tuyu的</p>
-<p>建议使用二次元，转场少的视频，在补帧的时候能获得更好的效果</p>
-<h2 id="补帧"><a href="#补帧" class="headerlink" title="补帧"></a>补帧</h2><p>搜了一圈，补帧的选择挺多的</p>
-<h3 id="光流法"><a href="#光流法" class="headerlink" title="光流法"></a>光流法</h3><p>我接触的第一个是用Premire里的这个</p>
-<p>但是那个效果跟屎一样的，毕竟是早期技术，要求不能太多</p>
-<p>百度都有教程，由于效果太屎了，我这里就不过多赘述</p>
-<p>WIP..</p>
+<h1 id="鉴权问题"><a href="#鉴权问题" class="headerlink" title="鉴权问题"></a>鉴权问题</h1><p>既然要同步我们游戏肯定得获取Token去操作</p>
+<p>那方案有几种</p>
+<ul>
+<li>拉起浏览器，用户授权 mod拿到refresh token</li>
+<li>或者Device Code Flow让用户输代码授权</li>
+</ul>
+<p>第一种方式实现有点复杂，因为我们得在mod内部启动一个httplistener去监听Oauth的回调地址</p>
+<p>第二种简单一点但是我觉得很不健康也不够易用 所以我还是打算拉起浏览器</p>
+<h1 id="开始坐牢"><a href="#开始坐牢" class="headerlink" title="开始坐牢"></a>开始坐牢</h1><p>微软现在的模型不是单一的GPG Key或者Access Token</p>
+<p>而是OAuth授权并获取Refresh Token，用Refresh Token获取Access Token,然后用Access Token去获取Todo数据</p>
+<p>也就是说我得先创建App拿到ClientID才能去走OAuth的模型</p>
+<h2 id="Azure-Portal申请"><a href="#Azure-Portal申请" class="headerlink" title="Azure Portal申请"></a>Azure Portal申请</h2><p>第一步就卡住了，微软死活不给我创建Azure账号</p>
+<p>后面交了工单结果有人专门联系我去一对一处理 <del>微软牛逼 我不骂你了</del></p>
+<p>不管怎么说我们得先创建一个App 在Microsoft Entra里面</p>
+<p><img src="https://s2.loli.net/2025/12/23/pSrJEAXCHybeoZv.png" alt="chrome_r2R4KB7leW.png"></p>
+<p>然后拿到ClientID再去研究怎么写代码</p>
+<p><img src="https://s2.loli.net/2025/12/23/p2SjJGo7RANkKXc.png" alt="chrome_zIe6LXhlu2.png"></p>
+<h2 id="Api处理"><a href="#Api处理" class="headerlink" title="Api处理"></a>Api处理</h2><p>微软其实有提供SDK去干这些，但mod加这么大的SDK估计又要出一堆兼容性问题</p>
+<p>而且手动构建http url也不算麻烦 就自己维护好了</p>
+<p>到时候应该会写个库丢出来</p>
+<p>我在思考的是如何实现更新后迅速同步到游戏中</p>
+<p>微软本来的Todo是基于Windows Push Notification Services实现动态更新的</p>
+<p>游戏做不到，而且官方自己应用的Api Key限流应该很高 几秒一次轮询都没问题</p>
+<p>所以游戏的话方法不多 我暂时打算还是30秒一次查询</p>
+<h2 id="游戏逆向"><a href="#游戏逆向" class="headerlink" title="游戏逆向"></a>游戏逆向</h2><p>有UE之后找类就好找很多了，游戏和这个有关的大概是这几个类：</p>
+<ul>
+<li>FacilityTodo</li>
+<li>TodoListUI</li>
+<li>TodoListData</li>
+<li>TodoData</li>
+<li>管理Todo持久化数据的 SaveDataManager</li>
+</ul>
+<p>和音乐播放器设计其实如出一辙了</p>
+<p>FacilityTodo这个类负责初始化UI以及管理数据</p>
+<p>主要也是对着这个类做手脚</p>
+<p>剩下的基本就是写代码</p>
+<h1 id="碎碎念"><a href="#碎碎念" class="headerlink" title="碎碎念"></a>碎碎念</h1><p>我看到别人给游戏做的mod里面被塞满了功能我其实不是特别理解</p>
+<p>比如同步天气为什么要带一个全解锁的功能呢</p>
+<p>就算不分两个repo起码分成两个dll吧</p>
+<p>还有比如让游戏支持flac的同时为啥要<strong>顺便</strong>加上wallpaper engine支持</p>
+<p>模块化设计呢 functional programing呢</p>
+<p>总不能写mod也和微信一样想着包揽万象吧</p>
+<p>当然别人怎么写是别人的事 我fork就是了 单纯吐槽一下</p>
 
     </div>
     

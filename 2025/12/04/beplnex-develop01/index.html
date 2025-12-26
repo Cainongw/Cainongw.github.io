@@ -3,7 +3,7 @@
 <html lang="zh">
 <head>
     <meta charset="utf-8" />
-    <title>Unity游戏逆向与mod开发：与你共享Lo-Fi故事 | Cainong&#39;s Blog</title>
+    <title>Unity游戏逆向与mod开发：与你共享Lo-Fi故事(1) | Cainong&#39;s Blog</title>
     <meta name="author" content="Cainong" />
     <meta name="description" content="" />
     <meta name="keywords" content="" />
@@ -156,7 +156,7 @@
         <div id="main" :class="loading ? 'into-enter-from': 'into-enter-active'">
             <div class="article">
     <div>
-        <h1>Unity游戏逆向与mod开发：与你共享Lo-Fi故事</h1>
+        <h1>Unity游戏逆向与mod开发：与你共享Lo-Fi故事(1)</h1>
     </div>
     <div class="info">
         <span class="date">
@@ -175,14 +175,14 @@
             
             <span class="tag">
                 
-                <a href="/tags/%E9%80%86%E5%90%91/" style="color: #00bcd4">
+                <a href="/tags/%E9%80%86%E5%90%91/" style="color: #00a596">
                     逆向
                 </a>
             </span>
             
             <span class="tag">
                 
-                <a href="/tags/Unity/" style="color: #ff7d73">
+                <a href="/tags/Unity/" style="color: #03a9f4">
                     Unity
                 </a>
             </span>
@@ -257,6 +257,21 @@
 <p>然后用P/Invoke导入这个dll里面的方法</p>
 <p><img src="https://s2.loli.net/2025/12/08/VvDdcpZSbUlsKLA.png" alt="Chill_With_You_iAfHeBSVtX.png"></p>
 <p>终于是解决在Mono里读取SMTC的问题了 接下来就是逆向和Patch了</p>
+<h3 id="2025-12-26更新：一坨狗屎"><a href="#2025-12-26更新：一坨狗屎" class="headerlink" title="2025.12.26更新：一坨狗屎"></a>2025.12.26更新：一坨狗屎</h3><p>解决上下一曲之后我想解决音量调整和循环随机按钮</p>
+<p>这时候Windows的傻逼生态就显现出来了</p>
+<p>首先是进程名字：SMTC不支持调音量，但我们可以用音量合成器单独调一个进程的音量，只要我们知道他的进程名字</p>
+<p>正常x86的进程注册SMTC Session的时候就是neteastmusic.exe</p>
+<p>他的进程名字也是neteastmusic.exe</p>
+<p>UWP的就牛逼了 是AppleInc.AppleMusicWin_nzyj5cx40ttqa!App</p>
+<p> ？</p>
+<p>结果他的进程名字是AppleMusic.exe</p>
+<p>那我怎么匹配</p>
+<p>SMTC对于播放控制的逻辑是随机播放（Shuffle Mode）为开启或者关闭</p>
+<p>然后随机播放是 None Track List三个模式</p>
+<p>然而AppleMusic是不支持SMTC控制播放模式的，尽管他的实现是符合SMTC逻辑的</p>
+<p>然后网易云音乐装了BetterNCM之后支持随机播放控制，尽管他把随机列表单曲心动模式塞进了一个按钮里</p>
+<p>然后网易云设计也是人才 播放器前后端分离，实际播放音乐的是C++后端，音量播放器不控制</p>
+<p>写了半天发现发现根本没必要做 做了也没法用 放弃</p>
 <h3 id="游戏歌曲名"><a href="#游戏歌曲名" class="headerlink" title="游戏歌曲名"></a>游戏歌曲名</h3><p>根据我们上面得出来的东西去Patch一下，核心代码如下</p>
 <pre><code class="C#">[HarmonyPatch(typeof(MusicUI), &quot;OnChangeMusic&quot;, new Type[] &#123; typeof(string), typeof(string), typeof(MusicChangeKind) &#125;)]
 public static class DynamicSMTCUISyncPatch

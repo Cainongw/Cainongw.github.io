@@ -175,21 +175,21 @@
             
             <span class="tag">
                 
-                <a href="/tags/Kubernetes/" style="color: #00bcd4">
+                <a href="/tags/Kubernetes/" style="color: #03a9f4">
                     Kubernetes
                 </a>
             </span>
             
             <span class="tag">
                 
-                <a href="/tags/HomeLab/" style="color: #00a596">
+                <a href="/tags/HomeLab/" style="color: #ffa2c4">
                     HomeLab
                 </a>
             </span>
             
             <span class="tag">
                 
-                <a href="/tags/DevOps/" style="color: #00bcd4">
+                <a href="/tags/DevOps/" style="color: #ff7d73">
                     DevOps
                 </a>
             </span>
@@ -202,9 +202,14 @@
         <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>我已经搭建了很多七七八八的服务 应该是完全满足DevOps的需求了</p>
 <p>但我还完全没有体验过整个流程呢</p>
 <p>刚好我自己给Aqua的前端改了点代码 我决定搞一个自动部署</p>
+<span id="more"></span> 
+
 <h1 id="折腾开始"><a href="#折腾开始" class="headerlink" title="折腾开始"></a>折腾开始</h1><p>需求很简单，在我改完代码之后Push到我自己的Gitlab，然后自动Build镜像并推送到我的Harbor，然后Kubernete Deployment Rollout拉取新镜像</p>
-<p>我不打算用Jetkins 一个是他的UI老丑 一个就是没必要 Gitlab对我已经很强大了 足矣</p>
+<p>我不打算用Jenkins 一个是他的UI老丑 一个就是没必要 Gitlab对我已经很强大了</p>
 <p><del>其实也是因为懒不想重新搭一个</del></p>
+<p>一个是我后面去看了Jenkins的逻辑是在Agent上部署搭建环境然后构建 那就意味着</p>
+<p>Nodejs要一个Agent Python要一个 Java要一个 当然你可以把所有环境塞在一台机器里 但那何必呢</p>
+<p>Docker拉构建环境的镜像 构建后用后即焚 节省资源同时能保证环境的一致 同时也便于更新</p>
 <h2 id="Gitlab-Runner的搭建"><a href="#Gitlab-Runner的搭建" class="headerlink" title="Gitlab Runner的搭建"></a>Gitlab Runner的搭建</h2><p>那首先肯定是要搭建Runner，直接在K8s部署肯定是最好的</p>
 <p>首先先去Gitlab创建一个runner拿到token</p>
 <p><img src="https://s2.loli.net/2025/11/15/SY8rbTPxtX1MGEp.png" alt="chrome_Q7zJHn0Q3i.png"></p>
@@ -222,7 +227,14 @@ helm install gitlab-runner \
 <p>我们让helm自己创建serviceAccount就好 不给自己埋坑（</p>
 <p><img src="https://s2.loli.net/2025/11/15/uicD2F3f7REs6QB.png" alt="chrome_MHyUxcTMJC.png"></p>
 <p>没啥问题 接下来就是下一步</p>
-<h2 id="CI-CD配置"><a href="#CI-CD配置" class="headerlink" title="CI/CD配置"></a>CI/CD配置</h2><p>其实我们需要的就是自动构建Nginx镜像，把npm build好的文件放进去就好了</p>
+<h2 id="CI-CD配置"><a href="#CI-CD配置" class="headerlink" title="CI/CD配置"></a>CI/CD配置</h2><p>需求大概是：</p>
+<ol>
+<li>我Push代码到我自己的Gitlab</li>
+<li>Gitlab Runner开始执行流水线，npm build出静态文件</li>
+<li>构建Nginx镜像</li>
+<li>Push到Harbor</li>
+<li>K8s触发Rollout</li>
+</ol>
 
     </div>
     
